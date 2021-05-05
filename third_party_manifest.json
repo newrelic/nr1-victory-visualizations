@@ -1,0 +1,55 @@
+{
+  "lastUpdated": "Wed May 05 2021 13:39:28 GMT-0700 (Pacific Daylight Time)",
+  "projectName": "nr1-victory-visualizations",
+  "projectUrl": "https://github.com/newrelic/nr1-victory-visualizations",
+  "includeDev": true,
+  "dependencies": {
+    "prop-types@15.7.2": {
+      "name": "prop-types",
+      "version": "15.7.2",
+      "range": "^15.6.2",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/facebook/prop-types",
+      "versionedRepoUrl": "https://github.com/facebook/prop-types/tree/v15.7.2",
+      "licenseFile": "node_modules/prop-types/LICENSE",
+      "licenseUrl": "https://github.com/facebook/prop-types/blob/v15.7.2/LICENSE",
+      "licenseTextSource": "file"
+    },
+    "react-dom@16.14.0": {
+      "name": "react-dom",
+      "version": "16.14.0",
+      "range": "^16.6.3",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/facebook/react",
+      "versionedRepoUrl": "https://github.com/facebook/react/tree/v16.14.0",
+      "licenseFile": "node_modules/react-dom/LICENSE",
+      "licenseUrl": "https://github.com/facebook/react/blob/v16.14.0/LICENSE",
+      "licenseTextSource": "file"
+    },
+    "react@16.14.0": {
+      "name": "react",
+      "version": "16.14.0",
+      "range": "^16.6.3",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/facebook/react",
+      "versionedRepoUrl": "https://github.com/facebook/react/tree/v16.14.0",
+      "licenseFile": "node_modules/react/LICENSE",
+      "licenseUrl": "https://github.com/facebook/react/blob/v16.14.0/LICENSE",
+      "licenseTextSource": "file"
+    }
+  },
+  "devDependencies": {
+    "prettier@2.2.1": {
+      "name": "prettier",
+      "version": "2.2.1",
+      "range": "^2.2.1",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/prettier/prettier",
+      "versionedRepoUrl": "https://github.com/prettier/prettier/tree/v2.2.1",
+      "licenseFile": "node_modules/prettier/LICENSE",
+      "licenseUrl": "https://github.com/prettier/prettier/blob/v2.2.1/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "James Long"
+    }
+  }
+}
