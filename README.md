@@ -1,50 +1,121 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-# [Name of Project] [build badges go here when available]
+# Victory visualizations
 
->[Brief description - what is the project and value does it provide? How often should users expect to get releases? How is versioning set up? Where does this project want to go?]
+![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr1-victory-visualizations?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr1-victory-visualizations/badge.svg)](https://snyk.io/test/github/newrelic/nr1-victory-visualizations)
 
-## Installation
+## About this Nerdpack
 
-> [Include a step-by-step procedure on how to get your code installed. Be sure to include any third-party dependencies that need to be installed separately]
+This Nerdpack provides NRQL-based custom visualizations built on top of the
+[Victory](https://formidable.com/open-source/victory/) charting library.
 
-## Getting Started
->[Simple steps to start working with the software similar to a "Hello World"]
+## Open source license
 
-## Usage
->[**Optional** - Include more thorough instructions on how to use the software. This section might not be needed if the Getting Started section is enough. Remove this section if it's not needed.]
+This project is distributed under the [Apache 2 license](LICENSE).
 
+## What do you need to make this work?
 
-## Building
+<!--
+> List any prerequisites for using your app, and include links to other New Relic features when necessary.
 
->[**Optional** - Include this section if users will need to follow specific instructions to build the software from source. Be sure to include any third party build dependencies that need to be installed separately. Remove this section if it's not needed.]
+> For example:
 
-## Testing
+Required:
 
->[**Optional** - Include instructions on how to run tests if we include tests with the codebase. Remove this section if it's not needed.]
+- [New Relic Infrastructure agent(s) installed](https://docs.newrelic.com/docs/agents/manage-apm-agents/installation/install-agent#infra-install) on your cloud computing devices and the related access to [New Relic One](https://newrelic.com/platform).
 
-## Support
+You'll get the best possible data out of this application if you also:
 
-New Relic hosts and moderates an online forum where customers can interact with New Relic employees as well as other customers to get help and share best practices. Like all official New Relic open source projects, there's a related Community topic in the New Relic Explorers Hub. You can find this project's topic/threads here:
+- [Activate the EC2 integration](https://docs.newrelic.com/docs/integrations/amazon-integrations/get-started/connect-aws-infrastructure) to group by your cloud provider account.
+- [Install APM on your applications](https://docs.newrelic.com/docs/agents/manage-apm-agents/installation/install-agent#apm-install) to group by application.
+-->
 
->Add the url for the support thread here: discuss.newrelic.com
+## Getting started
 
-## Contribute
+1. Ensure that you have
+   [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and
+   [NPM](https://www.npmjs.com/get-npm) installed. If you're unsure whether you
+   have one or both of them installed, run the following commands. (If you have
+   them installed, these commands return a version number; if not, the commands
+   aren't recognized.)
 
-We encourage your contributions to improve [project name]! Keep in mind that when you submit your pull request, you'll need to sign the CLA via the click-through using CLA-Assistant. You only have to sign the CLA one time per project.
+   ```bash
+   git --version
+   npm -v
+   ```
 
-If you have any questions, or to execute our corporate CLA (which is required if your contribution is on behalf of a company), drop us an email at opensource@newrelic.com.
+2. Install the [NR1
+   CLI](https://one.newrelic.com/launcher/developer-center.launcher) by going to
+   [the developer
+   center](https://one.newrelic.com/launcher/developer-center.launcher), and
+   following the instructions to install and set up your New Relic development
+   environment. This should take about 5 minutes.
+3. Execute the following command to clone this repository and run the code
+   locally against your New Relic data:
 
-**A note about vulnerabilities**
+   ```bash
+   nr1 nerdpack:clone -r https://github.com/newrelic/nr1-victory-visualizations.git
+   cd nr1-victory-visualizations
+   nr1 nerdpack:serve
+   ```
 
-As noted in our [security policy](../../security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
+Visit
+[https://one.newrelic.com/?nerdpacks=local](https://one.newrelic.com/?nerdpacks=local)
+to launch your app locally.
 
-If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
+## Deploying this Nerdpack
 
-If you would like to contribute to this project, review [these guidelines](./CONTRIBUTING.md).
+Open a command prompt in the app's directory and run the following commands.
 
-To all contributors, we thank you!  Without your contribution, this project would not be what it is today.  We also host a community project page dedicated to [Project Name](<LINK TO https://opensource.newrelic.com/projects/... PAGE>).
+```bash
+# If you need to create a new uuid for the account to which you're deploying this app, use the following
+# nr1 nerdpack:uuid -g [--profile=your_profile_name]
+# to see a list of APIkeys / profiles available in your development environment, run nr1 credentials:list
+nr1 nerdpack:publish [--profile=your_profile_name]
+nr1 nerdpack:tag [-t [CURRENT]] [--profile=your_profile_name]
+```
 
-## License
-[Project Name] is licensed under the [Apache 2.0](http://apache.org/licenses/LICENSE-2.0.txt) License.
->[If applicable: The [project name] also uses source code from third-party libraries. You can find full details on which libraries are used and the terms under which they are licensed in the third-party notices document.]
+Visit [https://one.newrelic.com](https://one.newrelic.com), and launch your app
+in New Relic.
+
+# Support
+
+New Relic has open-sourced this project. This project is provided AS-IS WITHOUT
+WARRANTY OR DEDICATED SUPPORT. Issues and contributions should be reported to
+the project here on GitHub.
+
+We encourage you to bring your experiences and questions to the [Explorers
+Hub](https://discuss.newrelic.com) where our community members collaborate on
+solutions and new ideas.
+
+## Community
+
+<!-- Work with the Explorer's Hub team to create a tag for your app, then update the link below. -->
+
+New Relic hosts and moderates an online forum where customers can interact with
+New Relic employees as well as other customers to get help and share best
+practices. Like all official New Relic open source projects, there's a related
+Community topic in the New Relic Explorers Hub. You can find this project's
+topic/threads here:
+
+https://discuss.newrelic.com/t/{{ APP*NAME }}
+*(Note: This URL is subject to change before GA)\_
+
+## Issues / enhancement requests
+
+Issues and enhancement requests can be submitted in the [Issues tab of this
+repository](../../issues). Please search for and review the existing open issues
+before submitting a new issue.
+
+# Contributing
+
+> Work with the Open Source Office to update the email alias below.
+
+Contributions are encouraged! If you submit an enhancement request, we'll invite
+you to contribute the change yourself. Please review our [Contributors
+Guide](CONTRIBUTING.md).
+
+Keep in mind that when you submit your pull request, you'll need to sign the CLA
+via the click-through using CLA-Assistant. If you'd like to execute our
+corporate CLA, or if you have any questions, please drop us an email at
+opensource+nr1-victory-visualizations@newrelic.com.
