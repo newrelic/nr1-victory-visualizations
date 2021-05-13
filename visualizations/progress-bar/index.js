@@ -135,9 +135,9 @@ const EmptyState = () => (
         spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
         type={HeadingText.TYPE.HEADING_4}
       >
-        This Visualization supports basic aggregate NRQL queries. For example:
+        This Visualization supports NRQL queries with a single SELECT clause returning a percentage value (0 to 100 rathern than 0 to 1). For example:
       </HeadingText>
-      <code>FROM EventType SELECT function(attribute)</code>
+      <code>FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)</code>
     </CardBody>
   </Card>
 );
