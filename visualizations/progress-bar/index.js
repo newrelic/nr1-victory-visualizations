@@ -31,9 +31,11 @@ export default class ProgressBarVisualization extends React.Component {
    * FACET into a for our visualization works well with.
    */
   transformData = (rawData) => {
-    const percent = rawData.results[0].result;
+    const percent = rawData[0].data[0].y * 100;
+    const color = rawData[0].metadata.color;
     return {
       percent,
+      color,
       pieChartData: [
         { x: 'progress', y: percent },
         { x: 'remainder', y: 100 - percent },
@@ -59,7 +61,6 @@ export default class ProgressBarVisualization extends React.Component {
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
-            formatType={NrqlQuery.FORMAT_TYPE.RAW}
             accountId={parseInt(nrqlQueries[0].accountId)}
             pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
           >
@@ -89,9 +90,8 @@ export default class ProgressBarVisualization extends React.Component {
                       style={{
                         data: {
                           fill: ({ datum }) => {
-                            const color = datum.y > 50 ? 'green' : 'red';
                             return datum.x === 'progress'
-                              ? color
+                              ? transformedData.color
                               : 'transparent';
                           },
                         },
@@ -135,7 +135,9 @@ const EmptyState = () => (
         spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
         type={HeadingText.TYPE.HEADING_4}
       >
-        This Visualization supports NRQL queries with a single SELECT clause returning a percentage value (0 to 100 rathern than 0 to 1). For example:
+        This Visualization supports NRQL queries with a single SELECT clause
+        returning a percentage value (0 to 100 rathern than 0 to 1). For
+        example:
       </HeadingText>
       <code>FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)</code>
     </CardBody>
