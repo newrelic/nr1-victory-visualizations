@@ -8,7 +8,6 @@
       "name": "nrqlQueries",
       "title": "NRQL Queries",
       "type": "collection",
-      "max": 1,
       "items": [
         {
           "name": "accountId",
