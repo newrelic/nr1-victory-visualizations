@@ -22,18 +22,6 @@
           "type": "nrql"
         }
       ]
-    },
-    {
-      "name": "fill",
-      "title": "Fill color",
-      "description": "A fill color to override the default fill color",
-      "type": "string"
-    },
-    {
-      "name": "stroke",
-      "title": "Stroke color",
-      "description": "A stroke color to override the default stroke color",
-      "type": "string"
     }
   ]
 }
