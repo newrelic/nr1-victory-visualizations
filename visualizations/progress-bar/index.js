@@ -26,55 +26,21 @@ export default class ProgressBarVisualization extends React.Component {
     ),
   };
 
-  constructor() {
-    super();
-    this.state = {
-      percent: 25,
-      data: this.getData(0),
-    };
-  }
-
-  componentDidMount() {
-    let percent = 25;
-    this.setStateInterval = window.setInterval(() => {
-      percent += Math.random() * 25;
-      percent = percent > 100 ? 0 : percent;
-      this.setState({
-        percent,
-        data: this.getData(percent),
-      });
-    }, 2000);
-  }
-
-  componentWillUnmount() {
-    window.clearInterval(this.setStateInterval);
-  }
-
-  getData(percent) {
-    return [
-      { x: 1, y: percent },
-      { x: 2, y: 100 - percent },
-    ];
-  }
-
   /**
-   * Restructure the data for a non-time-series, facet-based NRQL query into a
-   * form accepted by the Recharts library's RadarChart.
-   * (https://recharts.org/api/RadarChart).
+   * Restructure the data for a aggegate NRQL query with no TIMESERIES and no
+   * FACET into a for our visualization works well with.
    */
   transformData = (rawData) => {
-    return rawData.map((entry) => ({
-      name: entry.metadata.name,
-      // Only grabbing the first data value because this is not time-series data.
-      value: entry.data[0].y,
-    }));
-  };
-
-  /**
-   * Format the given axis tick's numeric value into a string for display.
-   */
-  formatTick = (value) => {
-    return value.toLocaleString();
+    const percent = rawData[0].data[0].y * 100;
+    const color = rawData[0].metadata.color;
+    return {
+      percent,
+      color,
+      pieChartData: [
+        { x: 'progress', y: percent },
+        { x: 'remainder', y: 100 - percent },
+      ],
+    };
   };
 
   render() {
@@ -117,20 +83,21 @@ export default class ProgressBarVisualization extends React.Component {
                       animate={{ duration: 1000 }}
                       width={400}
                       height={400}
-                      data={this.state.data}
+                      data={transformedData.pieChartData}
                       innerRadius={120}
                       cornerRadius={25}
                       labels={() => null}
                       style={{
                         data: {
                           fill: ({ datum }) => {
-                            const color = datum.y > 30 ? 'green' : 'red';
-                            return datum.x === 1 ? color : 'transparent';
+                            return datum.x === 'progress'
+                              ? transformedData.color
+                              : 'transparent';
                           },
                         },
                       }}
                     />
-                    <VictoryAnimation duration={1000} data={this.state}>
+                    <VictoryAnimation duration={1000} data={transformedData}>
                       {(newProps) => {
                         return (
                           <VictoryLabel
@@ -162,15 +129,19 @@ const EmptyState = () => (
         spacingType={[HeadingText.SPACING_TYPE.LARGE]}
         type={HeadingText.TYPE.HEADING_3}
       >
-        Please provide at least one NRQL query & account ID pair
+        Please provide a NRQL query & account ID pair
       </HeadingText>
       <HeadingText
         spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
         type={HeadingText.TYPE.HEADING_4}
       >
-        An example NRQL query you can try is:
+        This Visualization supports NRQL queries with a single SELECT clause
+        returning a percentage value (0 to 100 rathern than 0 to 1). For
+        example:
       </HeadingText>
-      <code>FROM NrUsage SELECT sum(usage) FACET metric SINCE 1 week ago</code>
+      <code>
+        {'FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)'}
+      </code>
     </CardBody>
   </Card>
 );
