@@ -139,7 +139,9 @@ const EmptyState = () => (
         returning a percentage value (0 to 100 rathern than 0 to 1). For
         example:
       </HeadingText>
-      <code>FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)</code>
+      <code>
+        {'FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)'}
+      </code>
     </CardBody>
   </Card>
 );
