@@ -8,7 +8,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryTheme, VictoryBar } from 'victory';
+import { VictoryChart, VictoryTheme, VictoryBar, VictoryAxis } from 'victory';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -91,6 +91,9 @@ export default class RangeChartVisualization extends React.Component {
 
               try {
                 const transformedData = this.transformData(data);
+                const tickValues = transformedData.map(
+                  ({ facetKey }) => facetKey
+                );
                 return (
                   <VictoryChart
                     domainPadding={15}
@@ -98,6 +101,8 @@ export default class RangeChartVisualization extends React.Component {
                     height={height}
                     width={width}
                   >
+                    <VictoryAxis tickValues={tickValues} />
+                    <VictoryAxis dependentAxis />
                     <VictoryBar
                       data={transformedData}
                       y={(datum) => {
