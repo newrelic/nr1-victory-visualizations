@@ -35,9 +35,15 @@ export default class RangeChartVisualization extends React.Component {
 
     const { facetGroupData, tickValues } = rawData.reduce(
       (acc, { data, metadata }) => {
-        const facetGroupName = metadata?.groups?.find(
-          ({ type }) => type === 'facet'
-        ).value;
+        const facetGroupName = metadata?.groups?.reduce(
+          (stringAcc, { type, value }) => {
+            if (type === 'facet') {
+              stringAcc = stringAcc === '' ? value : `${stringAcc}, ${value}`;
+            }
+            return stringAcc;
+          },
+          ''
+        );
         const dataValue = data?.[0]?.y;
 
         acc.tickValues.add(facetGroupName);
