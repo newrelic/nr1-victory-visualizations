@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardBody, HeadingText } from 'nr1';
 
-const ErrorState = () => (
+const ErrorState = ({children}) => (
   <Card className="ErrorState">
     <CardBody className="ErrorState-cardBody">
       <HeadingText
@@ -9,7 +9,7 @@ const ErrorState = () => (
         spacingType={[HeadingText.SPACING_TYPE.LARGE]}
         type={HeadingText.TYPE.HEADING_3}
       >
-        Oops! Something went wrong.
+        {children ?? 'Oops! Something went wrong.'}
       </HeadingText>
     </CardBody>
   </Card>

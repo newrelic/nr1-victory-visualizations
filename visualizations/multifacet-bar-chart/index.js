@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { VictoryChart, VictoryGroup, VictoryBar, VictoryAxis } from "victory";
+import ErrorState from '../../common/error-state';
 
 import {
   Card,
@@ -13,6 +14,20 @@ import {
 
 const getNumBuckets = (data) => {
   return data.reduce((acc, curr) => acc + curr.length, 0);
+}
+
+const validateInput = (data) => {
+  const {groups} = data[0].metadata; 
+
+  const numOfAggregates = groups.filter(({type})=> type === 'function').length; 
+  const numOfFacets = groups.filter(({type}) => type === 'facet').length; 
+  
+  if (numOfAggregates === 1 && numOfFacets > 0 && numOfFacets < 3) {
+    return true; 
+  }
+
+  return false;
+  
 }
 
 export default class VictoryBarChartVisualization extends React.Component {
@@ -50,10 +65,10 @@ export default class VictoryBarChartVisualization extends React.Component {
    * TODO: try relying on the data accessor approach (does it support array index access?)
    *
    */
-  transformData = (data) => {
+  transformData = (rawData) => {
 
     //create an object that maps all of the partitions that colorFacets into groupings by the labelFacets
-    const facetGroups = data.reduce((acc, curr)=> {
+    const facetGroups = rawData.reduce((acc, curr)=> {
       const {metadata, data} = curr; 
       const [xLabelFacet, colorFacet] = metadata.name.split(',').map(name => name.trim()); 
 
@@ -72,7 +87,7 @@ export default class VictoryBarChartVisualization extends React.Component {
       return Object.entries(entry).map(([key, value]) => ({groupLabel: colorFacet, x: key, y: value})); 
     })
 
-    console.log({transformed})
+    console.log({transformed, rawData })
 
     return transformed;
   };
@@ -106,6 +121,12 @@ export default class VictoryBarChartVisualization extends React.Component {
               if (error) {
                 console.log({ error });
                 return <ErrorState />;
+              }
+
+              const isInputValid = validateInput(data)
+
+              if (!isInputValid) {
+                return <ErrorState>NRQL Query is not valid. Please make sure to have 1 aggregate function and 1-2 facets.</ErrorState>
               }
 
               const transformedData = this.transformData(data);
@@ -153,20 +174,6 @@ const EmptyState = () => (
       <code>
         FROM Transaction SELECT average(duration) FACET environment, appName
       </code>
-    </CardBody>
-  </Card>
-);
-
-const ErrorState = () => (
-  <Card className="ErrorState">
-    <CardBody className="ErrorState-cardBody">
-      <HeadingText
-        className="ErrorState-headingText"
-        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-        type={HeadingText.TYPE.HEADING_3}
-      >
-        Oops! Something went wrong.
-      </HeadingText>
     </CardBody>
   </Card>
 );
