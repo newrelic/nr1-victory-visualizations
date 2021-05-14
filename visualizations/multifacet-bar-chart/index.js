@@ -16,7 +16,7 @@ const getNumBuckets = (data) => {
   return data.reduce((acc, curr) => acc + curr.length, 0);
 }
 
-const validateInput = (data) => {
+const validateNRQLInput = (data) => {
   const {groups} = data[0].metadata; 
 
   const numOfAggregates = groups.filter(({type})=> type === 'function').length; 
@@ -83,6 +83,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     },{})
 
     //transform this into an array of arrays that can be read by Victory
+    //Could replace this with data accessor method?
     const transformed = Object.entries(facetGroups).map(([colorFacet, entry]) => {
       return Object.entries(entry).map(([key, value]) => ({groupLabel: colorFacet, x: key, y: value})); 
     })
@@ -123,7 +124,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                 return <ErrorState />;
               }
 
-              const isInputValid = validateInput(data)
+              const isInputValid = validateNRQLInput(data)
 
               if (!isInputValid) {
                 return <ErrorState>NRQL Query is not valid. Please make sure to have 1 aggregate function and 1-2 facets.</ErrorState>
@@ -133,15 +134,13 @@ export default class VictoryBarChartVisualization extends React.Component {
 
               const numBuckets = getNumBuckets(transformedData); 
 
-              //width of labels 
-              const offsetX = 80; 
               //space between each bar
               const spaceBetweenBars = 5;
-              const barWidth = (width/(numBuckets+50))
+              const barWidth = (width/numBuckets - width/(numBuckets+spaceBetweenBars))
 
               return (
-                <VictoryChart domainPadding={{ x: offsetX }} width={width} height={height} padding={{ top: 20, bottom: 40, left: 80, right: 20 }}>
-                  <VictoryGroup offset={barWidth+spaceBetweenBars} width={width} style={{data: {width: barWidth}}} colorScale={"qualitative"}>
+                <VictoryChart domainPadding={{x: barWidth*spaceBetweenBars}} width={width} height={height} padding={{ top: 20, bottom: 40, left: 100, right: 20 }}>
+                  <VictoryGroup offset={barWidth+spaceBetweenBars} style={{data: {width: barWidth}}} colorScale={"qualitative"}>
                     {transformedData.map((series) => (
                       <VictoryBar data={series} />
                     ))}
