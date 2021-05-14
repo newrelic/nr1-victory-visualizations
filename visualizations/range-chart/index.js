@@ -28,35 +28,40 @@ export default class RangeChartVisualization extends React.Component {
 
   transformData = (rawData) => {
     /*
-      data[i].metadata.color
-      data[i].metadata.groups --> for type === facet, use value as key
-      data[i].data[0].y --> first time we come across the entry, use `y` as y value and for second time use `y` as y0 value
+      data[i].metadata.color --> for bar fill color
+      data[i].metadata.groups --> for type === facet, use value as group key
+      data[i].data[0].y --> first time we come across the entry, use `y` as y0 value and for second time use `y` as y value
     */
 
-    const rangeDataByFacet = rawData.reduce((acc, { data, metadata }) => {
-      const facetValueKey = metadata?.groups?.find(
-        ({ type }) => type === 'facet'
-      ).value;
-      const dataValue = data?.[0]?.y;
-      if (acc[facetValueKey]) {
-        acc[facetValueKey].y = dataValue;
-      } else {
-        acc[facetValueKey] = {
-          color: metadata?.color,
-          y0: dataValue,
-          y: undefined,
-        };
-      }
+    const { facetGroupData, tickValues } = rawData.reduce(
+      (acc, { data, metadata }) => {
+        const facetGroupName = metadata?.groups?.find(
+          ({ type }) => type === 'facet'
+        ).value;
+        const dataValue = data?.[0]?.y;
 
-      return acc;
-    }, {});
+        acc.tickValues.add(facetGroupName);
 
-    const rangeData = Object.entries(rangeDataByFacet).map(([key, value]) => ({
-      facetKey: key,
-      ...value,
-    }));
+        acc.facetGroupData[facetGroupName]
+          ? (acc.facetGroupData[facetGroupName].y = dataValue)
+          : (acc.facetGroupData[facetGroupName] = {
+              color: metadata?.color,
+              y0: dataValue,
+            });
 
-    return rangeData;
+        return acc;
+      },
+      { facetGroupData: {}, tickValues: new Set() }
+    );
+
+    const rangeData = Object.entries(facetGroupData).map(
+      ([facetGroupName, facetGroupData]) => ({
+        facetGroupName,
+        ...facetGroupData,
+      })
+    );
+
+    return { rangeData, tickValues: Array.from(tickValues) };
   };
 
   render() {
@@ -90,10 +95,7 @@ export default class RangeChartVisualization extends React.Component {
               }
 
               try {
-                const transformedData = this.transformData(data);
-                const tickValues = transformedData.map(
-                  ({ facetKey }) => facetKey
-                );
+                const { rangeData, tickValues } = this.transformData(data);
                 return (
                   <VictoryChart
                     domainPadding={15}
@@ -104,7 +106,7 @@ export default class RangeChartVisualization extends React.Component {
                     <VictoryAxis tickValues={tickValues} />
                     <VictoryAxis dependentAxis />
                     <VictoryBar
-                      data={transformedData}
+                      data={rangeData}
                       y={(datum) => {
                         return datum.y;
                       }}
