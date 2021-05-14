@@ -27,13 +27,36 @@ export default class RangeChartVisualization extends React.Component {
   };
 
   transformData = (rawData) => {
-    return [
-      { y: 35000, error: 0.2 },
-      { y: 42000, error: 0.05 },
-      { y: 30000, error: 0.1 },
-      { y: 35000, error: 0.2 },
-      { y: 22000, error: 0.15 },
-    ];
+    /*
+      data[i].metadata.color
+      data[i].metadata.groups --> for type === facet, use value as key
+      data[i].data[0].y --> first time we come across the entry, use `y` as y value and for second time use `y` as y0 value
+    */
+
+    const rangeDataByFacet = rawData.reduce((acc, { data, metadata }) => {
+      const facetValueKey = metadata?.groups?.find(
+        ({ type }) => type === 'facet'
+      ).value;
+      const dataValue = data?.[0]?.y;
+      if (acc[facetValueKey]) {
+        acc[facetValueKey].y = dataValue;
+      } else {
+        acc[facetValueKey] = {
+          color: metadata?.color,
+          y0: dataValue,
+          y: undefined,
+        };
+      }
+
+      return acc;
+    }, {});
+
+    const rangeData = Object.entries(rangeDataByFacet).map(([key, value]) => ({
+      facetKey: key,
+      ...value,
+    }));
+
+    return rangeData;
   };
 
   render() {
