@@ -33,6 +33,17 @@ export default class RangeChartVisualization extends React.Component {
       data[i].data[0].y --> first time we come across the entry, use `y` as y0 value and for second time use `y` as y value
     */
 
+  /**
+   * Transforms from NRQL data output to VictoryBar input format.
+   *
+   * Uses 'metdata.color' for the bar fill colors
+   * Uses the 'value' property on group where type === facet for the unique entry identifier
+   * Uses the 'y' property on the data array entry for the y and y0 values
+   *
+   * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]}, }[]} rawData
+   * @returns {{rangeData: {facetGroupName: String, y: number, y0: number, color: String}[], tickValues: String[]}}
+   */
+  transformData = (rawData) => {
     const { facetGroupData, tickValues } = rawData.reduce(
       (acc, { data, metadata }) => {
         const facetGroupName = metadata?.groups?.reduce(
