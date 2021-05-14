@@ -118,10 +118,6 @@ export default class RangeChartVisualization extends React.Component {
                         },
                       }}
                       data={rangeData}
-                      y={(datum) => {
-                        return datum.y;
-                      }}
-                      y0={(datum) => datum.y0}
                     />
                   </VictoryChart>
                 );
