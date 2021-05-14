@@ -9,6 +9,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+import ErrorState from '/common/error-state';
 
 export default class ProgressBarVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -142,20 +143,6 @@ const EmptyState = () => (
       <code>
         {'FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)'}
       </code>
-    </CardBody>
-  </Card>
-);
-
-const ErrorState = () => (
-  <Card className="ErrorState">
-    <CardBody className="ErrorState-cardBody">
-      <HeadingText
-        className="ErrorState-headingText"
-        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-        type={HeadingText.TYPE.HEADING_3}
-      >
-        Oops! Something went wrong.
-      </HeadingText>
     </CardBody>
   </Card>
 );
