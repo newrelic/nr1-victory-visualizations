@@ -8,7 +8,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryTheme, VictoryErrorBar } from 'victory';
+import { VictoryChart, VictoryTheme, VictoryBar, VictoryAxis } from 'victory';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -26,14 +26,60 @@ export default class RangeChartVisualization extends React.Component {
     ),
   };
 
+  /**
+   * Builds up a unique identifier with the facet atrribute values from the FACET clause in NRQL
+   *
+   * @param {{type: string, value: string}[]} groups
+   * @return {string}
+   */
+  getFacetGroupName = (groups) => {
+    return groups.reduce((stringAcc, { type, value }) => {
+      if (type === 'facet') {
+        stringAcc = stringAcc === '' ? value : `${stringAcc}, ${value}`;
+      }
+      return stringAcc;
+    }, '');
+  };
+
+  /**
+   * Transforms from NRQL data output to VictoryBar input format.
+   *
+   * Uses 'metdata.color' for the bar fill colors
+   * Uses the 'value' property on group where type === facet for the unique entry identifier
+   * Uses the 'y' property on the data array entry for the y and y0 values
+   *
+   * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]}, }[]} rawData
+   * @returns {{rangeData: {facetGroupName: String, y: number, y0: number, color: String}[], tickValues: String[]}}
+   */
   transformData = (rawData) => {
-    return [
-      { y: 35000, error: 0.2 },
-      { y: 42000, error: 0.05 },
-      { y: 30000, error: 0.1 },
-      { y: 35000, error: 0.2 },
-      { y: 22000, error: 0.15 },
-    ];
+    const { facetGroupData, tickValues } = rawData.reduce(
+      (acc, { data, metadata }) => {
+        const facetGroupName = this.getFacetGroupName(metadata?.groups);
+        const dataValue = data?.[0]?.y;
+
+        acc.tickValues.add(facetGroupName);
+
+        const isSecondSelectValue = Boolean(acc.facetGroupData[facetGroupName]);
+        isSecondSelectValue
+          ? (acc.facetGroupData[facetGroupName].y = dataValue)
+          : (acc.facetGroupData[facetGroupName] = {
+              color: metadata?.color,
+              y0: dataValue,
+            });
+
+        return acc;
+      },
+      { facetGroupData: {}, tickValues: new Set() }
+    );
+
+    const rangeData = Object.entries(facetGroupData).map(
+      ([facetGroupName, facetGroupData]) => ({
+        facetGroupName,
+        ...facetGroupData,
+      })
+    );
+
+    return { rangeData, tickValues: Array.from(tickValues) };
   };
 
   render() {
@@ -67,7 +113,7 @@ export default class RangeChartVisualization extends React.Component {
               }
 
               try {
-                const transformedData = this.transformData(data);
+                const { rangeData, tickValues } = this.transformData(data);
                 return (
                   <VictoryChart
                     domainPadding={15}
@@ -75,10 +121,15 @@ export default class RangeChartVisualization extends React.Component {
                     height={height}
                     width={width}
                   >
-                    <VictoryErrorBar
-                      data={transformedData}
-                      errorX={(datum) => datum.error * datum.x}
-                      errorY={(datum) => datum.error * datum.y}
+                    <VictoryAxis tickValues={tickValues} />
+                    <VictoryAxis dependentAxis />
+                    <VictoryBar
+                      style={{
+                        data: {
+                          fill: ({ datum }) => datum.color,
+                        },
+                      }}
+                      data={rangeData}
                     />
                   </VictoryChart>
                 );
@@ -109,7 +160,7 @@ const EmptyState = () => (
         An example NRQL query you can try is:
       </HeadingText>
       <code>
-        FROM Transaction SELECT percentile(duration, 5), percentile(duration,
+        FROM Transaction SELECT percentile(duration, 50), percentile(duration,
         95) FACET dateOf(timestamp) SINCE 7 days ago
       </code>
       <HeadingText
@@ -137,3 +188,4 @@ const ErrorState = () => (
     </CardBody>
   </Card>
 );
+
