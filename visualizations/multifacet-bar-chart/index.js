@@ -1,6 +1,6 @@
-import React from "react";
-import PropTypes from "prop-types";
-import { VictoryChart, VictoryGroup, VictoryBar, VictoryAxis } from "victory";
+import React from 'react';
+import PropTypes from 'prop-types';
+import { VictoryChart, VictoryGroup, VictoryBar, VictoryAxis } from 'victory';
 import ErrorState from '../../common/error-state';
 
 import {
@@ -10,25 +10,25 @@ import {
   NrqlQuery,
   Spinner,
   AutoSizer,
-} from "nr1";
+} from 'nr1';
 
 const getNumBuckets = (data) => {
   return data.reduce((acc, curr) => acc + curr.length, 0);
-}
+};
 
 const validateNRQLInput = (data) => {
-  const {groups} = data[0].metadata; 
+  const { groups } = data[0].metadata;
 
-  const numOfAggregates = groups.filter(({type})=> type === 'function').length; 
-  const numOfFacets = groups.filter(({type}) => type === 'facet').length; 
-  
+  const numOfAggregates = groups.filter(({ type }) => type === 'function')
+    .length;
+  const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
+
   if (numOfAggregates === 1 && numOfFacets > 0 && numOfFacets < 3) {
-    return true; 
+    return true;
   }
 
   return false;
-  
-}
+};
 
 export default class VictoryBarChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -66,29 +66,35 @@ export default class VictoryBarChartVisualization extends React.Component {
    *
    */
   transformData = (rawData) => {
-
     //create an object that maps all of the partitions that colorFacets into groupings by the labelFacets
-    const facetGroups = rawData.reduce((acc, curr)=> {
-      const {metadata, data} = curr; 
-      const [xLabelFacet, colorFacet] = metadata.name.split(',').map(name => name.trim()); 
+    const facetGroups = rawData.reduce((acc, curr) => {
+      const { metadata, data } = curr;
+      const [xLabelFacet, colorFacet] = metadata.name
+        .split(',')
+        .map((name) => name.trim());
 
       if (acc[colorFacet]) {
-        acc[colorFacet][xLabelFacet] = data[0].y
+        acc[colorFacet][xLabelFacet] = data[0].y;
       } else {
-        acc[colorFacet] = {[xLabelFacet]: data[0].y}
+        acc[colorFacet] = { [xLabelFacet]: data[0].y };
       }
 
       return acc;
-      
-    },{})
+    }, {});
 
     //transform this into an array of arrays that can be read by Victory
     //Could replace this with data accessor method?
-    const transformed = Object.entries(facetGroups).map(([colorFacet, entry]) => {
-      return Object.entries(entry).map(([key, value]) => ({groupLabel: colorFacet, x: key, y: value})); 
-    })
+    const transformed = Object.entries(facetGroups).map(
+      ([colorFacet, entry]) => {
+        return Object.entries(entry).map(([key, value]) => ({
+          groupLabel: colorFacet,
+          x: key,
+          y: value,
+        }));
+      }
+    );
 
-    console.log({transformed, rawData })
+    console.log({ transformed, rawData });
 
     return transformed;
   };
@@ -124,23 +130,38 @@ export default class VictoryBarChartVisualization extends React.Component {
                 return <ErrorState />;
               }
 
-              const isInputValid = validateNRQLInput(data)
+              const isInputValid = validateNRQLInput(data);
 
               if (!isInputValid) {
-                return <ErrorState>NRQL Query is not valid. Please make sure to have 1 aggregate function and 1-2 facets.</ErrorState>
+                return (
+                  <ErrorState>
+                    NRQL Query is not valid. Please make sure to have 1
+                    aggregate function and 1-2 facets.
+                  </ErrorState>
+                );
               }
 
               const transformedData = this.transformData(data);
 
-              const numBuckets = getNumBuckets(transformedData); 
+              const numBuckets = getNumBuckets(transformedData);
 
               //space between each bar
               const spaceBetweenBars = 5;
-              const barWidth = (width/numBuckets - width/(numBuckets+spaceBetweenBars))
+              const barWidth =
+                width / numBuckets - width / (numBuckets + spaceBetweenBars);
 
               return (
-                <VictoryChart domainPadding={{x: barWidth*spaceBetweenBars}} width={width} height={height} padding={{ top: 20, bottom: 40, left: 100, right: 20 }}>
-                  <VictoryGroup offset={barWidth+spaceBetweenBars} style={{data: {width: barWidth}}} colorScale={"qualitative"}>
+                <VictoryChart
+                  domainPadding={{ x: barWidth * spaceBetweenBars }}
+                  width={width}
+                  height={height}
+                  padding={{ top: 20, bottom: 40, left: 100, right: 20 }}
+                >
+                  <VictoryGroup
+                    offset={barWidth + spaceBetweenBars}
+                    style={{ data: { width: barWidth } }}
+                    colorScale={'qualitative'}
+                  >
                     {transformedData.map((series) => (
                       <VictoryBar data={series} />
                     ))}
