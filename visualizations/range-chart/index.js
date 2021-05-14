@@ -106,6 +106,11 @@ export default class RangeChartVisualization extends React.Component {
                     <VictoryAxis tickValues={tickValues} />
                     <VictoryAxis dependentAxis />
                     <VictoryBar
+                      style={{
+                        data: {
+                          fill: ({ datum }) => datum.color,
+                        },
+                      }}
                       data={rangeData}
                       y={(datum) => {
                         return datum.y;
