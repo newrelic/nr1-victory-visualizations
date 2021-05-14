@@ -8,7 +8,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryTheme, VictoryErrorBar } from 'victory';
+import { VictoryChart, VictoryTheme, VictoryBar } from 'victory';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -75,10 +75,12 @@ export default class RangeChartVisualization extends React.Component {
                     height={height}
                     width={width}
                   >
-                    <VictoryErrorBar
+                    <VictoryBar
                       data={transformedData}
-                      errorX={(datum) => datum.error * datum.x}
-                      errorY={(datum) => datum.error * datum.y}
+                      y={(datum) => {
+                        return datum.y;
+                      }}
+                      y0={(datum) => datum.y0}
                     />
                   </VictoryChart>
                 );
@@ -137,3 +139,4 @@ const ErrorState = () => (
     </CardBody>
   </Card>
 );
+
