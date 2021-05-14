@@ -1,5 +1,6 @@
-.EmptyState,
-.ErrorState {
+@import '../../common/error-state/styles.scss';
+
+.EmptyState {
   height: 100%;
   text-align: center;
 
@@ -10,8 +11,4 @@
     flex-direction: column;
     justify-content: center;
   }
-}
-
-.ErrorState-headingText {
-  color: darkgrey;
 }
