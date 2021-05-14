@@ -146,7 +146,7 @@ const EmptyState = () => (
         An example NRQL query you can try is:
       </HeadingText>
       <code>
-        FROM Transaction SELECT percentile(duration, 5), percentile(duration,
+        FROM Transaction SELECT percentile(duration, 50), percentile(duration,
         95) FACET dateOf(timestamp) SINCE 7 days ago
       </code>
       <HeadingText
