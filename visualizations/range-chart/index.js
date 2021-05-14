@@ -59,7 +59,8 @@ export default class RangeChartVisualization extends React.Component {
 
         acc.tickValues.add(facetGroupName);
 
-        acc.facetGroupData[facetGroupName]
+        const isSecondSelectValue = Boolean(acc.facetGroupData[facetGroupName]);
+        isSecondSelectValue
           ? (acc.facetGroupData[facetGroupName].y = dataValue)
           : (acc.facetGroupData[facetGroupName] = {
               color: metadata?.color,
