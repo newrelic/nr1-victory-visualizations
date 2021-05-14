@@ -26,12 +26,20 @@ export default class RangeChartVisualization extends React.Component {
     ),
   };
 
-  transformData = (rawData) => {
-    /*
-      data[i].metadata.color --> for bar fill color
-      data[i].metadata.groups --> for type === facet, use value as group key
-      data[i].data[0].y --> first time we come across the entry, use `y` as y0 value and for second time use `y` as y value
-    */
+  /**
+   * Builds up a unique identifier with the facet atrribute values from the FACET clause in NRQL
+   *
+   * @param {{type: string, value: string}[]} groups
+   * @return {string}
+   */
+  getFacetGroupName = (groups) => {
+    return groups.reduce((stringAcc, { type, value }) => {
+      if (type === 'facet') {
+        stringAcc = stringAcc === '' ? value : `${stringAcc}, ${value}`;
+      }
+      return stringAcc;
+    }, '');
+  };
 
   /**
    * Transforms from NRQL data output to VictoryBar input format.
@@ -46,15 +54,7 @@ export default class RangeChartVisualization extends React.Component {
   transformData = (rawData) => {
     const { facetGroupData, tickValues } = rawData.reduce(
       (acc, { data, metadata }) => {
-        const facetGroupName = metadata?.groups?.reduce(
-          (stringAcc, { type, value }) => {
-            if (type === 'facet') {
-              stringAcc = stringAcc === '' ? value : `${stringAcc}, ${value}`;
-            }
-            return stringAcc;
-          },
-          ''
-        );
+        const facetGroupName = this.getFacetGroupName(metadata?.groups);
         const dataValue = data?.[0]?.y;
 
         acc.tickValues.add(facetGroupName);
