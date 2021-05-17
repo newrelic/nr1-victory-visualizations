@@ -49,6 +49,17 @@ export default class VictoryBarChartVisualization extends React.Component {
     ),
   };
 
+  /**
+   * Get the bar segment label and its corresponding bar label using the `value`
+   * property of entries in `metadata.groups` where `type` === "facet".
+   *
+   * The returned `segmentLabel` comes from the value of the last FACET clause
+   * attribute. The returned `barLabel` is a comma separated string of all but
+   * the last FACET clause attribute.
+   *
+   * @param {{type: string, value: string}[]} groups
+   * @returns {{barLabel: string, segmentLabel: string}}
+   */
   getFacetLabels = (groups) => {
     const facetEntries = groups?.filter(({ type }) => type === 'facet');
     return facetEntries.reduce(
@@ -67,27 +78,22 @@ export default class VictoryBarChartVisualization extends React.Component {
   };
 
   /**
-   * Group the data by facet.
-   * Shape of result:
-   *  [
-   *    [
-   *        { x: "us-west, production", y: 1, groupLabel: 'catalog-service' },
-   *        { x: "us-west, eu-production", y: 2, groupLabel: 'catalog-service' },
-   *        { x: "us-east, production", y: 1, groupLabel: 'catalog-service' },
-   *        { x: "us-east, eu-production", y: 2, groupLabel: 'catalog-service' },
-   *    ],
-   *    ...
-   *  ]
+   * Transforms NrqlQuery output to a form easy to pass to a set of VictoryBar
+   * components.
    *
-   * Handles "Other" facet
+   * Uses `metdata.color` for the bar fill colors.
    *
-   * TODO: rewrite with reduce
-   * TODO: try relying on the data accessor approach (does it support array index access?)
+   * Builds labels for bars and bar segements using the `value` property on
+   * `metadata.groups` entries where `type` === "facet".
    *
+   * Uses the `y` property on the data array entry for y axis values.
+   *
+   * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]} }[]} rawData
+   * @returns {{x: string, y: number, groupLabel: string}[][]}
    */
   transformData = (rawData) => {
-    //create an object that maps all of the partitions that colorFacets into groupings by the labelFacets
-    const facetGroups = rawData.reduce((acc, curr) => {
+    // Gather values for each bar data series.
+    const facetBreakdown = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
       const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
 
@@ -100,21 +106,15 @@ export default class VictoryBarChartVisualization extends React.Component {
       return acc;
     }, {});
 
-    //transform this into an array of arrays that can be read by Victory
-    //Could replace this with data accessor method?
-    const transformed = Object.entries(facetGroups).map(
-      ([colorFacet, entry]) => {
-        return Object.entries(entry).map(([key, value]) => ({
-          groupLabel: colorFacet,
-          x: key,
-          y: value,
-        }));
-      }
-    );
-
-    console.log({ transformed, rawData });
-
-    return transformed;
+    // Convert tiered object into an array of arrays for easy use in the stacked
+    // VictoryBar components.
+    return Object.entries(facetBreakdown).map(([colorFacet, entry]) => {
+      return Object.entries(entry).map(([key, value]) => ({
+        groupLabel: colorFacet,
+        x: key,
+        y: value,
+      }));
+    });
   };
 
   render() {
@@ -144,7 +144,6 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               if (error) {
-                console.log({ error });
                 return <ErrorState />;
               }
 
@@ -221,4 +220,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
