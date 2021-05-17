@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VictoryChart, VictoryGroup, VictoryBar, VictoryAxis } from 'victory';
+import { VictoryChart, VictoryStack, VictoryBar } from 'victory';
 import ErrorState from '../../common/error-state';
 
 import {
@@ -11,10 +11,6 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-
-const getNumBuckets = (data) => {
-  return data.reduce((acc, curr) => acc + curr.length, 0);
-};
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -28,6 +24,13 @@ const validateNRQLInput = (data) => {
   }
 
   return false;
+};
+
+const getNumBuckets = (data) => {
+  return data.reduce((acc, curr) => {
+    curr.forEach((group) => acc.add(group.x));
+    return acc;
+  }, new Set()).size;
 };
 
 export default class VictoryBarChartVisualization extends React.Component {
@@ -142,30 +145,38 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+              const numBarStacks = getNumBuckets(transformedData);
 
-              const numBuckets = getNumBuckets(transformedData);
+              const paddingLeft = 100;
 
-              //space between each bar
-              const spaceBetweenBars = 5;
-              const barWidth =
-                width / numBuckets - width / (numBuckets + spaceBetweenBars);
+              // This keeps the far right bar stack from hanging over the right
+              // when small number of bar stacks.
+              const paddingRight = numBarStacks > 3 ? 50 : 100;
+
+              // The padding changes proportionally to the width of the full width.
+              // As the chart gets wider, these numbers get closer to 1.
+              const ratioLeft = (width - paddingLeft) / width;
+              const ratioRight = (width - paddingRight) / width;
 
               return (
                 <VictoryChart
-                  domainPadding={{ x: barWidth * spaceBetweenBars }}
                   width={width}
                   height={height}
-                  padding={{ top: 20, bottom: 40, left: 100, right: 20 }}
+                  padding={{
+                    top: 20,
+                    bottom: 40,
+                    left: paddingLeft,
+                    right: paddingRight,
+                  }}
+                  domainPadding={{
+                    x: [ratioLeft * paddingLeft, ratioRight * paddingRight],
+                  }}
                 >
-                  <VictoryGroup
-                    offset={barWidth + spaceBetweenBars}
-                    style={{ data: { width: barWidth } }}
-                    colorScale={'qualitative'}
-                  >
+                  <VictoryStack colorScale={'qualitative'}>
                     {transformedData.map((series) => (
                       <VictoryBar data={series} />
                     ))}
-                  </VictoryGroup>
+                  </VictoryStack>
                 </VictoryChart>
               );
             }}
