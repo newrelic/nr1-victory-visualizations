@@ -54,15 +54,15 @@ export default class VictoryBarChartVisualization extends React.Component {
     return facetEntries.reduce(
       (acc, { value }, index) => {
         if (index === facetEntries?.length - 1) {
-          acc.colorFacet = value;
+          acc.segmentLabel = value;
         } else {
-          acc.xLabelFacet = Boolean(acc.xLabelFacet)
-            ? `${acc.xLabelFacet}, ${value}`
+          acc.barLabel = Boolean(acc.barLabel)
+            ? `${acc.barLabel}, ${value}`
             : value;
         }
         return acc;
       },
-      { xLabelFacet: undefined, colorFacet: undefined }
+      { barLabel: undefined, segmentLabel: undefined }
     );
   };
 
@@ -89,12 +89,12 @@ export default class VictoryBarChartVisualization extends React.Component {
     //create an object that maps all of the partitions that colorFacets into groupings by the labelFacets
     const facetGroups = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
-      const { xLabelFacet, colorFacet } = this.getFacetLabels(metadata?.groups);
+      const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
 
-      if (acc[colorFacet]) {
-        acc[colorFacet][xLabelFacet] = data[0].y;
+      if (acc[segmentLabel]) {
+        acc[segmentLabel][barLabel] = data[0].y;
       } else {
-        acc[colorFacet] = { [xLabelFacet]: data[0].y };
+        acc[segmentLabel] = { [barLabel]: data[0].y };
       }
 
       return acc;
