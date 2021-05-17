@@ -19,7 +19,7 @@ const validateNRQLInput = (data) => {
     .length;
   const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
 
-  if (numOfAggregates === 1 && numOfFacets > 0 && numOfFacets < 3) {
+  if (numOfAggregates === 1 && numOfFacets > 0) {
     return true;
   }
 
@@ -49,6 +49,23 @@ export default class VictoryBarChartVisualization extends React.Component {
     ),
   };
 
+  getFacetLabels = (groups) => {
+    const facetEntries = groups?.filter(({ type }) => type === 'facet');
+    return facetEntries.reduce(
+      (acc, { value }, index) => {
+        if (index === facetEntries?.length - 1) {
+          acc.colorFacet = value;
+        } else {
+          acc.xLabelFacet = Boolean(acc.xLabelFacet)
+            ? `${acc.xLabelFacet}, ${value}`
+            : value;
+        }
+        return acc;
+      },
+      { xLabelFacet: undefined, colorFacet: undefined }
+    );
+  };
+
   /**
    * Group the data by facet.
    * Shape of result:
@@ -72,9 +89,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     //create an object that maps all of the partitions that colorFacets into groupings by the labelFacets
     const facetGroups = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
-      const [xLabelFacet, colorFacet] = metadata.name
-        .split(',')
-        .map((name) => name.trim());
+      const { xLabelFacet, colorFacet } = this.getFacetLabels(metadata?.groups);
 
       if (acc[colorFacet]) {
         acc[colorFacet][xLabelFacet] = data[0].y;
@@ -147,16 +162,10 @@ export default class VictoryBarChartVisualization extends React.Component {
               const transformedData = this.transformData(data);
               const numBarStacks = getNumBuckets(transformedData);
 
-              const paddingLeft = 100;
+              const chartSidePadding = 100;
 
-              // This keeps the far right bar stack from hanging over the right
-              // when small number of bar stacks.
-              const paddingRight = numBarStacks > 3 ? 50 : 100;
-
-              // The padding changes proportionally to the width of the full width.
-              // As the chart gets wider, these numbers get closer to 1.
-              const ratioLeft = (width - paddingLeft) / width;
-              const ratioRight = (width - paddingRight) / width;
+              const domainWidth = width - chartSidePadding * 2;
+              const barAndPaddingWidth = domainWidth / numBarStacks;
 
               return (
                 <VictoryChart
@@ -165,11 +174,11 @@ export default class VictoryBarChartVisualization extends React.Component {
                   padding={{
                     top: 20,
                     bottom: 40,
-                    left: paddingLeft,
-                    right: paddingRight,
+                    left: chartSidePadding,
+                    right: chartSidePadding,
                   }}
                   domainPadding={{
-                    x: [ratioLeft * paddingLeft, ratioRight * paddingRight],
+                    x: barAndPaddingWidth / 2,
                   }}
                 >
                   <VictoryStack colorScale={'qualitative'}>
@@ -205,6 +214,11 @@ const EmptyState = () => (
       <code>
         FROM Transaction SELECT average(duration) FACET environment, appName
       </code>
+      <HeadingText>
+        where the color will be mapped to the last facet entry. In this case,
+        our last facet appName, will be denoted by different colors.
+      </HeadingText>
     </CardBody>
   </Card>
 );
+
