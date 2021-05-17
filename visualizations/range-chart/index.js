@@ -48,7 +48,7 @@ export default class RangeChartVisualization extends React.Component {
    * Uses the 'value' property on group where type === facet for the unique entry identifier
    * Uses the 'y' property on the data array entry for the y and y0 values
    *
-   * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]}, }[]} rawData
+   * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]} }[]} rawData
    * @returns {{rangeData: {facetGroupName: String, y: number, y0: number, color: String}[], tickValues: String[]}}
    */
   transformData = (rawData) => {
@@ -188,4 +188,3 @@ const ErrorState = () => (
     </CardBody>
   </Card>
 );
-
