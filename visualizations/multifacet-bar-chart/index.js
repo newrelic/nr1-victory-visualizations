@@ -31,9 +31,17 @@ const validateNRQLInput = (data) => {
   return false;
 };
 
+/**
+ * Returns the number of bars that will be shown in the stacked bar chart
+ * with a stack of "bar segments" being one "bar".
+ *
+ * @param {{x: string, y: number, color: string, segmentLabel: string}[][]} data
+ * @returns number
+ */
 const getNumBuckets = (data) => {
-  return data.reduce((acc, curr) => {
-    curr.forEach((group) => acc.add(group.x));
+  return data.reduce((acc, series) => {
+    // x on barSegment is the bar label which acts as a unique key added to the Set
+    series.forEach((barSegment) => acc.add(barSegment.x));
     return acc;
   }, new Set()).size;
 };
