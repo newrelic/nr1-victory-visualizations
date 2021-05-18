@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VictoryChart, VictoryStack, VictoryBar } from 'victory';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryStack,
+  VictoryTooltip,
+} from 'victory';
 import ErrorState from '../../common/error-state';
 
 import {
@@ -112,7 +117,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        segmentLabel,
+        label: `${segmentLabel}: ${value.y.toLocaleString()}`,
         x: barLabel,
         y: value.y,
         color: value.color,
@@ -187,6 +192,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
+                        labelComponent={<VictoryTooltip />}
                         data={series}
                         style={{
                           data: {
