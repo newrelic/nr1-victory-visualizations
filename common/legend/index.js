@@ -3,7 +3,14 @@ import { VictoryLegend } from 'victory';
 
 const Legend = ({ data, onClick, ...rest }) => {
   console.log({ data });
-  return <VictoryLegend data={data} onclick={onClick} {...rest} />;
+  return (
+    <VictoryLegend
+      orientation="horizontal"
+      data={data}
+      onclick={onClick}
+      {...rest}
+    />
+  );
 };
 
 export default Legend;

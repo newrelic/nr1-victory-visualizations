@@ -183,14 +183,24 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
-              const legendData = transformedData.flatMap((series) =>
-                series.map(({ color, segmentLabel }) => {
-                  return { name: segmentLabel, symbol: { fill: color } };
-                })
-              );
+              const legendData = transformedData.reduce((acc, curr) => {
+                curr.forEach(({ color, segmentLabel }) => {
+                  if (!acc.some(({ name }) => name === segmentLabel)) {
+                    acc.push({ name: segmentLabel, symbol: { fill: color } });
+                  }
+                });
+                return acc;
+              }, []);
+
+              // const legendData = transformedData.flatMap((series) =>
+              //   series.map(({ color, segmentLabel }) => {
+              //     return { name: segmentLabel, symbol: { fill: color } };
+              //   })
+              // );
 
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
+              const legendHeight = 50;
 
               const numBarStacks = getNumBuckets(transformedData);
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
@@ -202,7 +212,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                   height={height}
                   padding={{
                     top: 20,
-                    bottom: 40,
+                    bottom: 40 + legendHeight,
                     left: chartLeftPadding,
                     right: chartRightPadding,
                   }}
@@ -225,7 +235,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                       />
                     ))}
                   </VictoryStack>
-                  <Legend data={legendData} />
+                  <Legend data={legendData} y={height - legendHeight} />
                 </VictoryChart>
               );
             }}
