@@ -16,6 +16,8 @@ import {
   VictoryTooltip,
 } from 'victory';
 
+import ErrorState from '../../common/error-state';
+
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
@@ -181,20 +183,6 @@ const EmptyState = () => (
         The bottom of the range bar is represented by the first aggregate value.
         <br />
         The top of the range bar is represented by the second aggregate value.
-      </HeadingText>
-    </CardBody>
-  </Card>
-);
-
-const ErrorState = () => (
-  <Card className="ErrorState">
-    <CardBody className="ErrorState-cardBody">
-      <HeadingText
-        className="ErrorState-headingText"
-        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-        type={HeadingText.TYPE.HEADING_3}
-      >
-        Oops! Something went wrong.
       </HeadingText>
     </CardBody>
   </Card>
