@@ -109,9 +109,9 @@ export default class VictoryBarChartVisualization extends React.Component {
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
-      return Object.entries(entry).map(([key, value]) => ({
+      return Object.entries(entry).map(([barLabel, value]) => ({
         segmentLabel,
-        x: key,
+        x: barLabel,
         y: value,
       }));
     });
