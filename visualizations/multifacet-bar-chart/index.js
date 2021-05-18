@@ -105,16 +105,22 @@ export default class VictoryBarChartVisualization extends React.Component {
    * @returns {{x: string, y: number, color: string, segmentLabel: string}[][]}
    */
   transformData = (rawData) => {
+    const colorsBySegmentLabel = new Map();
+
     // Gather values for each bar data series.
     const facetBreakdown = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
       const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
 
+      if (!colorsBySegmentLabel.has(segmentLabel)) {
+        colorsBySegmentLabel.set(segmentLabel, metadata?.color);
+      }
+
       if (acc[segmentLabel]) {
-        acc[segmentLabel][barLabel] = { y: data[0].y, color: metadata?.color };
+        acc[segmentLabel][barLabel] = data[0].y;
       } else {
         acc[segmentLabel] = {
-          [barLabel]: { y: data[0].y, color: metadata?.color },
+          [barLabel]: data[0].y,
         };
       }
 
@@ -125,10 +131,10 @@ export default class VictoryBarChartVisualization extends React.Component {
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: `${segmentLabel}: ${value.y.toLocaleString()}`,
+        label: `${segmentLabel}: ${value.toLocaleString()}`,
         x: barLabel,
-        y: value.y,
-        color: value.color,
+        y: value,
+        color: colorsBySegmentLabel.get(segmentLabel),
       }));
     });
   };
