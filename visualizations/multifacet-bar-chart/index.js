@@ -7,6 +7,7 @@ import {
   VictoryTooltip,
 } from 'victory';
 import ErrorState from '../../common/error-state';
+import Legend from '../../common/legend';
 
 import {
   Card,
@@ -132,6 +133,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
         label: `${segmentLabel}: ${value.toLocaleString()}`,
+        segmentLabel,
         x: barLabel,
         y: value,
         color: colorsBySegmentLabel.get(segmentLabel),
@@ -181,6 +183,11 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+              const legendData = transformedData.flatMap((series) =>
+                series.map(({ color, segmentLabel }) => {
+                  return { name: segmentLabel, symbol: { fill: color } };
+                })
+              );
 
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
@@ -206,7 +213,9 @@ export default class VictoryBarChartVisualization extends React.Component {
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
-                        labelComponent={<VictoryTooltip constrainToVisibleArea />}
+                        labelComponent={
+                          <VictoryTooltip constrainToVisibleArea />
+                        }
                         data={series}
                         style={{
                           data: {
@@ -216,6 +225,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                       />
                     ))}
                   </VictoryStack>
+                  <Legend data={legendData} />
                 </VictoryChart>
               );
             }}
