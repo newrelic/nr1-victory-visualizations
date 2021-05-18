@@ -1,0 +1,20 @@
+.NrqlQueryError {
+  --error-red: #ff667a;
+  --external-spacing: 1rem;
+
+  border: 1px solid var(--error-red);
+  border-radius: 0.25rem;
+  height: calc(100% - 2 * var(--external-spacing));
+  box-sizing: border-box;
+  margin: var(--external-spacing);
+
+  &-title {
+    padding: 0.25rem 0.5rem;
+    color: white;
+    background: var(--error-red);
+  }
+
+  &-description {
+    padding: 0.5rem;
+  }
+}
