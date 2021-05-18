@@ -186,12 +186,6 @@ export default class VictoryBarChartVisualization extends React.Component {
                 return acc;
               }, []);
 
-              // const legendData = transformedData.flatMap((series) =>
-              //   series.map(({ color, segmentLabel }) => {
-              //     return { name: segmentLabel, symbol: { fill: color } };
-              //   })
-              // );
-
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
               const legendHeight = 50;
@@ -229,7 +223,11 @@ export default class VictoryBarChartVisualization extends React.Component {
                       />
                     ))}
                   </VictoryStack>
-                  <Legend data={legendData} y={height - legendHeight} />
+                  <Legend
+                    data={legendData}
+                    y={height - legendHeight}
+                    x={chartLeftPadding}
+                  />
                 </VictoryChart>
               );
             }}

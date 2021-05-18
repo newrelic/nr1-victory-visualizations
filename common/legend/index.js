@@ -1,14 +1,14 @@
 import React from 'react';
-import { VictoryLegend } from 'victory';
+import { VictoryLegend, Point } from 'victory';
 
-const Legend = ({ data, onClick, ...rest }) => {
-  console.log({ data });
+const Legend = ({ ...props }) => {
   return (
     <VictoryLegend
+      dataComponent={<Point size={5} />}
+      gutter={20}
       orientation="horizontal"
-      data={data}
-      onclick={onClick}
-      {...rest}
+      symbolSpacer={5}
+      {...props}
     />
   );
 };
