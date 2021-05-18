@@ -8,7 +8,13 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryTheme, VictoryBar, VictoryAxis } from 'victory';
+import {
+  VictoryChart,
+  VictoryTheme,
+  VictoryBar,
+  VictoryAxis,
+  VictoryTooltip,
+} from 'victory';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -61,7 +67,11 @@ export default class RangeChartVisualization extends React.Component {
 
         const isSecondSelectValue = Boolean(acc.facetGroupData[facetGroupName]);
         isSecondSelectValue
-          ? (acc.facetGroupData[facetGroupName].y = dataValue)
+          ? (acc.facetGroupData[facetGroupName] = {
+              ...acc.facetGroupData[facetGroupName],
+              y: dataValue,
+              label: `${facetGroupName} ${acc.facetGroupData[facetGroupName].y0} - ${dataValue}`,
+            })
           : (acc.facetGroupData[facetGroupName] = {
               color: metadata?.color,
               y0: dataValue,
@@ -124,6 +134,7 @@ export default class RangeChartVisualization extends React.Component {
                     <VictoryAxis tickValues={tickValues} />
                     <VictoryAxis dependentAxis />
                     <VictoryBar
+                      labelComponent={<VictoryTooltip />}
                       style={{
                         data: {
                           fill: ({ datum }) => datum.color,
