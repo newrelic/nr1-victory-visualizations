@@ -98,9 +98,11 @@ export default class VictoryBarChartVisualization extends React.Component {
       const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
 
       if (acc[segmentLabel]) {
-        acc[segmentLabel][barLabel] = data[0].y;
+        acc[segmentLabel][barLabel] = { y: data[0].y, color: metadata?.color };
       } else {
-        acc[segmentLabel] = { [barLabel]: data[0].y };
+        acc[segmentLabel] = {
+          [barLabel]: { y: data[0].y, color: metadata?.color },
+        };
       }
 
       return acc;
@@ -112,7 +114,8 @@ export default class VictoryBarChartVisualization extends React.Component {
       return Object.entries(entry).map(([barLabel, value]) => ({
         segmentLabel,
         x: barLabel,
-        y: value,
+        y: value.y,
+        color: value.color,
       }));
     });
   };
@@ -159,13 +162,13 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
-              const numBarStacks = getNumBuckets(transformedData);
 
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
 
-              const domainWidth = width - chartLeftPadding - chartRightPadding;
-              const barAndPaddingWidth = domainWidth / numBarStacks;
+              const numBarStacks = getNumBuckets(transformedData);
+              const xDomainWidth = width - chartLeftPadding - chartRightPadding;
+              const barAndPaddingWidth = xDomainWidth / numBarStacks;
 
               return (
                 <VictoryChart
@@ -181,9 +184,16 @@ export default class VictoryBarChartVisualization extends React.Component {
                     x: barAndPaddingWidth / 2,
                   }}
                 >
-                  <VictoryStack colorScale={'qualitative'}>
+                  <VictoryStack>
                     {transformedData.map((series) => (
-                      <VictoryBar data={series} />
+                      <VictoryBar
+                        data={series}
+                        style={{
+                          data: {
+                            fill: ({ datum }) => datum.color,
+                          },
+                        }}
+                      />
                     ))}
                   </VictoryStack>
                 </VictoryChart>
