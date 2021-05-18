@@ -1,0 +1,17 @@
+{
+  "tagline": "NRQL ready Victory charts",
+  "details": "This package includes visualizations for you to easily get up and going with Victory Charts (built and maintained by Formidable). These are built by New Relic as charts that you can quickly apply a NRQL query to and add a dashboard or use as a template and expand on the code already provided.\n\nAbout Victory Charts\n Victory is a set of modular charting components for React and React Native. Victory makes it easy to get started without sacrificing flexibility. Create one of a kind data visualizations with fully customizable styles and behaviors. Victory uses the same API for web and React Native applications for easy cross-platform charting.\n\nVictory is helmed by Formidable's Lauren Eastridge.\n\nAbout Formidable\nFormidable is a global design and engineering consultancy and open source software organization, specializing in React.js, React Native, GraphQL, Node.js and the extended JavaScript ecosystem. We have locations in Seattle, London, Toronto, Denver, Atlanta, and Phoenix with remote consultants worldwide. For more information, please visit formidable.com.",
+  "repository": "https://github.com/newrelic/nr1-victory-visualizations",
+  "whatsNew": "A range chart, stacked bar chart, and progress bar ready to be used with NRQL input.å",
+  "support": {
+    "email": {
+      "address": ""
+    },
+    "issues": {
+      "url": ""
+    },
+    "community": {
+      "url": ""
+    }
+  }
+}
