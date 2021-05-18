@@ -161,9 +161,10 @@ export default class VictoryBarChartVisualization extends React.Component {
               const transformedData = this.transformData(data);
               const numBarStacks = getNumBuckets(transformedData);
 
-              const chartSidePadding = 100;
+              const chartLeftPadding = 100;
+              const chartRightPadding = 25;
 
-              const domainWidth = width - chartSidePadding * 2;
+              const domainWidth = width - chartLeftPadding - chartRightPadding;
               const barAndPaddingWidth = domainWidth / numBarStacks;
 
               return (
@@ -173,8 +174,8 @@ export default class VictoryBarChartVisualization extends React.Component {
                   padding={{
                     top: 20,
                     bottom: 40,
-                    left: chartSidePadding,
-                    right: chartSidePadding,
+                    left: chartLeftPadding,
+                    right: chartRightPadding,
                   }}
                   domainPadding={{
                     x: barAndPaddingWidth / 2,
