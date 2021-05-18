@@ -1,27 +1,29 @@
 import React from 'react';
 import { VictoryTooltip } from 'victory';
 
-/*  
-TODO: 
-1. add units 
-2. center pointer to stack
-*/
-
-const TOOLTIP_PADDING = 8;
+const TOOLTIP_PADDING = 16;
 
 class Tooltip extends React.Component {
   static defaultEvents = VictoryTooltip.defaultEvents;
   render() {
-    const {datum, scale} = this.props; 
-    const diff = Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
-    const scaledY = scale.y(diff) + TOOLTIP_PADDING
+    // `defaultProps` are the props that are supplied by assigning the Tooltip to the `labelComponent`
+    const { isStackedBarChart, ...defaultProps } = this.props;
+    const { scale, datum } = defaultProps;
+
+    // this sets the position of the tooltip to the middle of the bar for a stacked bar chart
+    const scaledY = isStackedBarChart
+      ? scale.y(Math.abs(datum._y1 - datum._y0) / 2 + datum._y0) +
+      TOOLTIP_PADDING/2
+      : datum.y;
+
     return (
       <VictoryTooltip
-        {...this.props}
+        {...defaultProps}
         constrainToVisibleArea
         horizontal
         flyoutStyle={{
-          strokeWidth: 0,
+          strokeWidth: 2,
+          stroke: datum?.color ?? `#f7f8f8`,
           fill: `#f7f8f8`,
           filter: `drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))`,
         }}
@@ -31,6 +33,7 @@ class Tooltip extends React.Component {
           {
             color: '#3e4c4c',
             fontSize: '14px',
+            fontWeight: 600,
             fontFamily: `Open Sans,"Segoe UI","Tahoma",sans-serif`,
           },
           {

@@ -201,7 +201,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
-                        labelComponent={<Tooltip/>}
+                        labelComponent={<Tooltip isStackedBarChart/>}
                         data={series}
                         style={{
                           data: {
