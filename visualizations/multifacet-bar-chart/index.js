@@ -192,7 +192,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
-                        labelComponent={<VictoryTooltip />}
+                        labelComponent={<VictoryTooltip constrainToVisibleArea />}
                         data={series}
                         style={{
                           data: {
