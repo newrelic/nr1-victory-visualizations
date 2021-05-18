@@ -38,7 +38,7 @@ const validateNRQLInput = (data) => {
  * @param {{x: string, y: number, color: string, segmentLabel: string}[][]} data
  * @returns number
  */
-const getNumBuckets = (data) => {
+const getBarCount = (data) => {
   return data.reduce((acc, series) => {
     // x on barSegment is the bar label which acts as a unique key added to the Set
     series.forEach((barSegment) => acc.add(barSegment.x));
@@ -179,9 +179,10 @@ export default class VictoryBarChartVisualization extends React.Component {
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
 
-              const numBarStacks = getNumBuckets(transformedData);
+              const barCount = getBarCount(transformedData);
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
-              const barAndPaddingWidth = xDomainWidth / numBarStacks;
+              // set the width of stacked bars so that they take up about 60% of the width
+              const barWidth = (xDomainWidth * 0.6) / barCount;
 
               return (
                 <VictoryChart
@@ -194,13 +195,16 @@ export default class VictoryBarChartVisualization extends React.Component {
                     right: chartRightPadding,
                   }}
                   domainPadding={{
-                    x: barAndPaddingWidth / 2,
+                    x: barWidth,
                   }}
                 >
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
-                        labelComponent={<VictoryTooltip constrainToVisibleArea />}
+                        labelComponent={
+                          <VictoryTooltip constrainToVisibleArea />
+                        }
+                        barWidth={barWidth}
                         data={series}
                         style={{
                           data: {
@@ -245,3 +249,4 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
+
