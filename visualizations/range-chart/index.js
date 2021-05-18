@@ -44,12 +44,14 @@ export default class RangeChartVisualization extends React.Component {
   /**
    * Transforms from NRQL data output to VictoryBar input format.
    *
-   * Uses 'metdata.color' for the bar fill colors
-   * Uses the 'value' property on group where type === facet for the unique entry identifier
-   * Uses the 'y' property on the data array entry for the y and y0 values
+   * Uses `metdata.color` for the bar fill colors.
    *
-   * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]}, }[]} rawData
-   * @returns {{rangeData: {facetGroupName: String, y: number, y0: number, color: String}[], tickValues: String[]}}
+   * Uses the `value` property on group where type === facet for the unique entry identifier.
+   *
+   * Uses the `y` property on the data array entry for the `y` and `y0` values.
+   *
+   * @param {{data: {y}[], metadata: { color: string, groups: {type: string, value: string}[]} }[]} rawData
+   * @returns {{rangeData: {facetGroupName: string, y: number, y0: number, color: string}[], tickValues: string[]}}
    */
   transformData = (rawData) => {
     const { facetGroupData, tickValues } = rawData.reduce(
@@ -188,4 +190,3 @@ const ErrorState = () => (
     </CardBody>
   </Card>
 );
-
