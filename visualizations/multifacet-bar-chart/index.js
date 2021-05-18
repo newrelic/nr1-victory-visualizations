@@ -89,7 +89,7 @@ export default class VictoryBarChartVisualization extends React.Component {
    * Uses the `y` property on the data array entry for y axis values.
    *
    * @param {{data: {y}[], metadata: { color: String, groups: {type: string, value: string}[]} }[]} rawData
-   * @returns {{x: string, y: number, groupLabel: string}[][]}
+   * @returns {{x: string, y: number, segmentLabel: string}[][]}
    */
   transformData = (rawData) => {
     // Gather values for each bar data series.
@@ -108,9 +108,9 @@ export default class VictoryBarChartVisualization extends React.Component {
 
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
-    return Object.entries(facetBreakdown).map(([colorFacet, entry]) => {
+    return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([key, value]) => ({
-        groupLabel: colorFacet,
+        segmentLabel,
         x: key,
         y: value,
       }));
