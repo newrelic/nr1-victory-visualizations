@@ -10,6 +10,8 @@ TODO:
 class Tooltip extends React.Component {
   static defaultEvents = VictoryTooltip.defaultEvents;
   render() {
+    const {datum, scale} = this.props; 
+    const diff = (datum._y0 - datum.y)/2
     return (
       <VictoryTooltip
         {...this.props}
@@ -20,8 +22,8 @@ class Tooltip extends React.Component {
           fill: `#f7f8f8`,
           filter: `drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))`,
         }}
+        y={scale.y(diff)}
         flyoutPadding={8}
-        dy={8}
         style={[
           {
             color: '#3e4c4c',
