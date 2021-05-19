@@ -104,8 +104,6 @@ Support related to Victory can be found at: https://spectrum.chat/victory?tab=po
 
 # Contributing
 
-> Work with the Open Source Office to update the email alias below.
-
 Contributions are encouraged! If you submit an enhancement request, we'll invite
 you to contribute the change yourself. Please review our [Contributors
 Guide](CONTRIBUTING.md).
