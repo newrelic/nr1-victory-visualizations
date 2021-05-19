@@ -16,17 +16,15 @@ const LegendItem = ({ color, label }) => {
   );
 };
 
-const Legend = ({ items, height, style, className }) => {
+const Legend = ({ items, style, className }) => {
   return (
-    <Grid
-      className={cx('Legend', className)}
-      style={{ ...style, height }}
-      gapType={Grid.GAP_TYPE.SMALL}
-    >
-      {items.map((item) => (
-        <LegendItem {...item} />
-      ))}
-    </Grid>
+    <div className={cx('Legend', className)} style={{ ...style }}>
+      <Grid gapType={Grid.GAP_TYPE.SMALL}>
+        {items.map((item) => (
+          <LegendItem {...item} />
+        ))}
+      </Grid>
+    </div>
   );
 };
 
