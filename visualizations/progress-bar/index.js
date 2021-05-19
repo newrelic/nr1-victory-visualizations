@@ -9,7 +9,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '/common/error-state';
+import ErrorState from '/src/error-state';
 
 export default class ProgressBarVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in

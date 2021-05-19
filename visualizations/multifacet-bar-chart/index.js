@@ -4,10 +4,9 @@ import {
   VictoryBar,
   VictoryChart,
   VictoryStack,
-  VictoryTooltip,
 } from 'victory';
-import ErrorState from '../../common/error-state';
-import Tooltip from '../../common/tool-tip';
+import ErrorState from '../../src/error-state';
+import Tooltip from '../../src/tooltip';
 
 import {
   Card,
