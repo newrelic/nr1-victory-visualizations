@@ -1,0 +1,93 @@
+# Victory Charts Visualizations
+<!-- some intro info i'm not sure what should go here! woooh. maybe the description? -->
+
+To learn more about the attributes and events available in NRQL, visit the [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/) on docs.newrelic.com. 
+
+## Multifacet Bar Chart
+This visualization allows users to plot data with multiple facets in a stacked bar chart view. 
+
+For example, the query `SELECT average(duration) FROM Transaction FACET appName, environment` allows a user to see average duration of a `Transaction` event in a stacked bar chart, where each bar represents a different `environment` (e.g. production, development, ect.) and each segment of the bar represents a different `appName`. This is ideal for visualizing related facets with respect to some numeric or aggregate attribute. 
+
+### Props Config
+These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
+* `nrqlQuery` 
+* `accountId`
+
+| Prop  | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. see [Multifacet NRQL Data Details](#multifacet-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
+| `accountId`   | Associated account ID for the data you wish to plot. | Required     |
+
+
+#### Multifacet NRQL Data Details
+
+This visualization accepts a NRQL query in the form:
+
+ ```
+ SELECT [numeric attribute or aggregate of attribute] FROM [event] FACET [attribute1, attribute2, ...]
+ ``` 
+ The query requires the selected attribute to be either numeric or an aggregate function. The query also requires atleast 1 facet. The presence of 1 facet will give a standard bar chart view.
+
+| NRQL feature   | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| All but last facet attribute     | X axis label or bar on bar chart      | Required (`string` or `boolean`)     |
+| Last facet attribute   | Bar color or segment of bar on bar chart       | Required (`string` or `boolean`)       |
+| Aggregate or numeric attribute   | Y axis value or bar height       | Required (`numeric`)       |
+
+
+## Range Chart
+This visualization allows users to visualize the range of numeric attributes grouped by a facet. 
+
+For example, the query `FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago` will show the given 95th percentile of the duration as the top bar and 5th percentile of the duration as the bottom bar for each day of the last week. 
+
+### Props Config
+These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
+| Prop  | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. see [Range Chart NRQL Data Details](#range-chart-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
+| `accountId`   | Associated account ID for the data you wish to plot. | Required     |
+
+
+#### Range Chart NRQL Data Details
+
+This visualization accepts a NRQL query in the form:
+FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago
+ ```
+ SELECT [aggregate1, aggregate2] FROM [event] FACET [attribute]
+ ``` 
+ The query requires two aggregate functions to act as the top and bottom of the range for a facet. 
+
+| NRQL feature   | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| First aggregate     | Y axis position of top of range bar      | Required (`numeric` or aggregate)     |
+| Second aggregate   | Y axis position of bottom of range bar       | Required (`numeric` or aggregate)        |
+| Facet     | X axis position or x axis label   | Required (`string` or `boolean`)       |
+
+## Progress Bar
+This visualization allows users to visualize a percent of a whole. It is similar to the `bullet` chart available, but provides coloring specific to the percentage of the whole, provides a circular representation of the data, and emphasizes the percentage. This visualization allows users to guage progress or see if they are meeting certain limits.
+
+For example, the query `FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago` will show the given 95th percentile of the duration as the top bar and 5th percentile of the duration as the bottom bar for each day of the last week. 
+
+### Props Config
+These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
+| Prop  | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. see [Progress Bar NRQL Data Details](#range-chart-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
+| `accountId`   | Associated account ID for the data you wish to plot. | Required     |
+
+
+#### Progress Bar NRQL Data Details
+
+<!-- This visualization accepts a NRQL query in the form:
+FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago
+ ```
+ SELECT [aggregate1, aggregate2] FROM [event] FACET [attribute]
+ ``` 
+ The query requires two aggregate functions to act as the top and bottom of the range for a facet. 
+
+| NRQL feature   | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| First aggregate     | Top of range bar      | Required (`numeric` or aggregate)     |
+| Second aggregate   | Bottom of range bar       | Required (`numeric` or aggregate)        |
+| Facet     | X axis position or x axis label   | Required (`string` or `boolean`)       | -->
+
