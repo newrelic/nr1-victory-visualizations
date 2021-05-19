@@ -1,7 +1,5 @@
 # Victory Charts Visualizations
-[some intro info i'm not sure what should go here! woooh. maybe the description?]
-
-To learn more about the attributes and events available in NRQL, visit the [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/) on docs.newrelic.com. 
+These are a set of [custom visualizations](https://developer.newrelic.com/explore-docs/custom-viz/) built on top of [Victory Charts](https://formidable.com/open-source/victory/) that accept [NRQL]() queries. These charts can be added to any dashboard when subscribed to the this nerdpack. 
 
 ## Multifacet Bar Chart
 This visualization allows users to plot data with multiple facets in a stacked bar chart view. 
@@ -19,7 +17,7 @@ These are the values that are configurable by a user via the Custom Visualizatio
 | `accountId`   | Associated account ID for the data you wish to plot. | Required     |
 
 
-#### Multifacet NRQL Data Details
+### Multifacet NRQL Data Details
 
 This visualization accepts a NRQL query in the form:
 
@@ -48,13 +46,14 @@ These are the values that are configurable by a user via the Custom Visualizatio
 | `accountId`   | Associated account ID for the data you wish to plot. | Required     |
 
 
-#### Range Chart NRQL Data Details
+### Range Chart NRQL Data Details
 
 This visualization accepts a NRQL query in the form:
-FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago
+
  ```
  SELECT [aggregate1, aggregate2] FROM [event] FACET [attribute]
  ``` 
+
  The query requires two aggregate functions to act as the top and bottom of the range for a facet. 
 
 | NRQL feature   | Usage      | Required |
@@ -64,11 +63,13 @@ FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET
 | Facet     | X axis position or x axis label   | Required (`string` or `boolean`)       |
 
 ## Progress Bar
+
 This visualization allows users to visualize a percent of a whole. It is similar to the `bullet` chart available, but provides coloring specific to the percentage of the whole, provides a circular representation of the data, and emphasizes the percentage. This visualization allows users to guage progress or see if they are meeting certain limits.
 
-For example, the query `FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago` will show the given 95th percentile of the duration as the top bar and 5th percentile of the duration as the bottom bar for each day of the last week. 
+For example, the query `FROM PageView SELECT percentage(count(*), WHERE duration < 1)` will show out of the total number of actions in the `PageView` event, what percentage were under 1 second. 
 
 ### Props Config
+
 These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
@@ -76,7 +77,22 @@ These are the values that are configurable by a user via the Custom Visualizatio
 | `accountId`   | Associated account ID for the data you wish to plot. | Required     |
 
 
-#### Progress Bar NRQL Data Details
+### Progress Bar NRQL Data Details
 
-[fill this in]
+This visualization accepts a NRQL query in the form:
 
+ ```
+ SELECT [percentage(aggregate(attribute), WHERE...) or numeric_attribute1/numeric_attribute2 or numeric attribute] FROM [event] 
+ ``` 
+
+ The query requires a percentage or fractional value of two attributes. For example, `SELECT filter(count(*), WHERE duration < 1)/filter(count(*), WHERE duration < 2) FROM PageView` gives the number of `PageView` events that less than 1 second over the number of events less than 2 seconds. 
+
+| NRQL feature   | Usage      | Required |
+| -------------- | ----------- | ----------- |
+| `percentage(aggregate(attribute), WHERE...)` or numeric attribute | fill of circle over 100     | Required (`numeric` less than 1, aggregate functions or mathematical operations that return less a percentage or fraction)     |
+
+## Learn More
+
+* To learn more about custom visualizations, you can read through an [intro to the topic](https://developer.newrelic.com/explore-docs/custom-viz/) or you can start on some of our [building on New Relic guides](https://developer.newrelic.com/build-apps/).
+* To learn more about these visualizations, you can visit our repo [`nr1-victory-visualizations`](https://github.com/newrelic/nr1-victory-visualizations). 
+* To learn more about the attributes and events available in NRQL, visit the [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/) on docs.newrelic.com. 
