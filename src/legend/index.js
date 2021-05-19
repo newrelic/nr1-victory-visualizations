@@ -34,7 +34,9 @@ const LegendItem = ({ color, label }) => {
           className="LegendItem-dot"
           style={{ backgroundColor: color }}
         ></div>
-        <div className="LegendItem-label">{label}</div>
+        <div className="LegendItem-label" title={label}>
+          {label}
+        </div>
       </div>
     </GridItem>
   );
