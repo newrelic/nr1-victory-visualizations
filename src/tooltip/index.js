@@ -42,8 +42,6 @@ class Tooltip extends React.Component {
       ? scale.y(setY(datum)) + TOOLTIP_PADDING/2
       : datum.y
 
-    console.log(defaultProps)
-
     return (
       <VictoryTooltip
         {...defaultProps}
