@@ -10,6 +10,7 @@
     "uuid": "e630feed-fe4d-44b6-87bc-5075303ae47f"
   },
   "dependencies": {
+    "classnames": "^2.3.1",
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
@@ -24,4 +25,3 @@
     "prettier": "^2.2.1"
   }
 }
-

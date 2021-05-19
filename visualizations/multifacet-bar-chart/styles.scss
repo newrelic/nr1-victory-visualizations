@@ -1,4 +1,9 @@
 @import '../../src/styles.scss';
+@import '../../src/legend/styles.scss';
+
+.MultiFacetBarChartVisualization {
+  overflow: hidden;
+}
 
 .EmptyState,
 .ErrorState {

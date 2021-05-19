@@ -1,8 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VictoryBar, VictoryChart, VictoryStack } from 'victory';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryContainer,
+  VictoryStack,
+} from 'victory';
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
+import Legend from '../../src/legend';
 
 import {
   Card,
@@ -42,7 +48,7 @@ const getNumBuckets = (data) => {
   }, new Set()).size;
 };
 
-export default class VictoryBarChartVisualization extends React.Component {
+export default class MultiFacetBarChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -128,6 +134,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
         label: [`${segmentLabel}`, `${value.toLocaleString()}`],
+        segmentLabel,
         x: barLabel,
         y: value,
         color: colorsBySegmentLabel.get(segmentLabel),
@@ -149,7 +156,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer>
+      <AutoSizer className="MultiFacetBarChartVisualization">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
@@ -177,49 +184,70 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+              const legendItems = transformedData.reduce((acc, curr) => {
+                curr.forEach(({ color, segmentLabel }) => {
+                  if (!acc.some(({ label }) => label === segmentLabel)) {
+                    acc.push({ label: segmentLabel, color });
+                  }
+                });
+                return acc;
+              }, []);
 
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
+              const legendHeight = 50;
+              const spaceBelowLegend = 16;
 
               const numBarStacks = getNumBuckets(transformedData);
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
               const barAndPaddingWidth = xDomainWidth / numBarStacks;
 
               return (
-                <VictoryChart
-                  width={width}
-                  height={height}
-                  padding={{
-                    top: 20,
-                    bottom: 40,
-                    left: chartLeftPadding,
-                    right: chartRightPadding,
-                  }}
-                  domainPadding={{
-                    x: barAndPaddingWidth / 2,
-                  }}
-                >
-                  <VictoryStack>
-                    {transformedData.map((series) => (
-                      <VictoryBar
-                        labelComponent={
-                          <Tooltip
-                            horizontal
-                            setY={(datum) =>
-                              Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
-                            }
-                          />
-                        }
-                        data={series}
-                        style={{
-                          data: {
-                            fill: ({ datum }) => datum.color,
-                          },
-                        }}
-                      />
-                    ))}
-                  </VictoryStack>
-                </VictoryChart>
+                <>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight - spaceBelowLegend}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
+                    }}
+                    domainPadding={{
+                      x: barAndPaddingWidth / 2,
+                    }}
+                  >
+                    <VictoryStack>
+                      {transformedData.map((series) => (
+                        <VictoryBar
+                          labelComponent={
+                            <Tooltip
+                              horizontal
+                              setY={(datum) =>
+                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              }
+                            />
+                          }
+                          data={series}
+                          style={{
+                            data: {
+                              fill: ({ datum }) => datum.color,
+                            },
+                          }}
+                        />
+                      ))}
+                    </VictoryStack>
+                  </VictoryChart>
+                  <Legend
+                    style={{
+                      height: legendHeight,
+                      marginLeft: chartLeftPadding,
+                      marginRight: chartRightPadding,
+                    }}
+                    items={legendItems}
+                  />
+                </>
               );
             }}
           </NrqlQuery>
