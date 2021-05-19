@@ -8,7 +8,7 @@ import {
 } from 'victory';
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
-import Legend from '../../common/legend';
+import Legend from '../../src/legend';
 
 import {
   Card,
