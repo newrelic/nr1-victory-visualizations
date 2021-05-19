@@ -48,7 +48,7 @@ const getNumBuckets = (data) => {
   }, new Set()).size;
 };
 
-export default class VictoryBarChartVisualization extends React.Component {
+export default class MultiFacetBarChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -156,7 +156,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer className="VictoryBarChartVisualization">
+      <AutoSizer className="MultiFacetBarChartVisualization">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
