@@ -5,9 +5,9 @@ import {
   VictoryChart,
   VictoryContainer,
   VictoryStack,
-  VictoryTooltip,
 } from 'victory';
-import ErrorState from '../../common/error-state';
+import ErrorState from '../../src/error-state';
+import Tooltip from '../../src/tooltip';
 import Legend from '../../common/legend';
 
 import {
@@ -133,7 +133,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: `${segmentLabel}: ${value.toLocaleString()}`,
+        label: [`${segmentLabel}`, `${value.toLocaleString()}`],
         segmentLabel,
         x: barLabel,
         y: value,
@@ -221,7 +221,12 @@ export default class VictoryBarChartVisualization extends React.Component {
                       {transformedData.map((series) => (
                         <VictoryBar
                           labelComponent={
-                            <VictoryTooltip constrainToVisibleArea />
+                            <Tooltip
+                              horizontal
+                              setY={(datum) =>
+                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              }
+                            />
                           }
                           data={series}
                           style={{

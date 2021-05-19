@@ -16,7 +16,7 @@ import {
   VictoryTooltip,
 } from 'victory';
 
-import ErrorState from '../../common/error-state';
+import ErrorState from '../../src/error-state';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
