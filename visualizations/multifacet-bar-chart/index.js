@@ -127,7 +127,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: [`${segmentLabel}`, `${value.y.toLocaleString()}`],
+        label: [`${segmentLabel}`, `${value.y?.toLocaleString()}`],
         x: barLabel,
         y: value,
         color: colorsBySegmentLabel.get(segmentLabel),

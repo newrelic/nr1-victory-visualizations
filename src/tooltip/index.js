@@ -3,32 +3,6 @@ import { VictoryTooltip } from 'victory';
 
 const TOOLTIP_PADDING = 16;
 
-/*
-** TO DO **
-  1. replace with CSS vars for `flyoutStyle`: 
-  {
-    stroke: datum?.color ? 'var(--nr1--colors--background--surface)', 
-    strokeWidth: 2, 
-    fill: 'var(--nr1--colors--background--surface)',
-    filter: 'drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))'
-  }
-
-  and for `style`:
-  [
-    {
-      color: 'var(--nr1--typography--heading--5--color)',
-      fontSize: 'var(--nr1--typography--heading--5--font-size)',
-      fontFamily: 'var(--nr1--typography--heading--5--font-family)',
-    },
-    {
-      color: 'var(--nr1--colors--text--secondary)',
-      fontSize: 'var(--nr1--typography--body--1--font-size)',
-      fontFamily: 'var(--nr1--typography--body--1--font-family)',
-      baselineShift: 'sub',
-    },
-  ]
-*/
-
 class Tooltip extends React.Component {
   static defaultEvents = VictoryTooltip.defaultEvents;
 
@@ -47,24 +21,24 @@ class Tooltip extends React.Component {
         {...defaultProps}
         constrainToVisibleArea
         flyoutStyle={{
-          strokeWidth: 2,
-          stroke: datum?.color ?? `#fff`,
-          fill: `#fff`,
-          filter: `drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))`,
+          stroke: datum?.color ?? 'var(--nr1--colors--background--surface)', 
+          strokeWidth: 2, 
+          fill: 'var(--nr1--colors--background--surface)',
+          filter: 'drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))'
         }}
         y={scaledY}
         flyoutPadding={TOOLTIP_PADDING}
         style={[
           {
-            color: '#223030',
+            color: 'var(--nr1--typography--heading--6--color)',
             fontSize: '12px',
-            fontWeight: 600,
-            fontFamily: `Open Sans,"Segoe UI","Tahoma",sans-serif`,
+            fontFamily: 'var(--nr1--typography--heading--6--font-family)',
+            fontWeight: 'var(--nr1--typography--heading--6--font-weight)'
           },
           {
-            color: '#223030',
+            color: 'var(--nr1--colors--text--secondary)',
             fontSize: '12px',
-            fontFamily: `Open Sans,"Segoe UI","Tahoma",sans-serif`,
+            fontFamily: 'var(--nr1--typography--body--1--font-family)',
             baselineShift: 'sub',
           },
         ]}
