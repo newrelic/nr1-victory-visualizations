@@ -5,13 +5,13 @@
   "whatsNew": "A range chart, stacked bar chart, and progress bar ready to be used with NRQL input.",
   "support": {
     "email": {
-      "address": ""
+      "address": "devexperience@newrelic.com"
     },
     "issues": {
-      "url": ""
+      "url": "https://github.com/newrelic/nr1-victory-visualizations/issues"
     },
     "community": {
-      "url": ""
+      "url": "https://discuss.newrelic.com/t/victory-charts-visualizations-nerdpack"
     }
   }
 }
