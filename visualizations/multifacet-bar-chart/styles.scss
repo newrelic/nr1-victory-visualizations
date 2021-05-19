@@ -1,5 +1,9 @@
 @import '../../common/legend/styles.scss';
 
+.VictoryBarChartVisualization {
+  overflow: hidden;
+}
+
 .EmptyState,
 .ErrorState {
   height: 100%;

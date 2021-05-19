@@ -156,7 +156,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer>
+      <AutoSizer className="VictoryBarChartVisualization">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
@@ -233,13 +233,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                       ))}
                     </VictoryStack>
                   </VictoryChart>
-                  <Legend
-                    style={{
-                      marginLeft: chartLeftPadding,
-                      marginRight: chartRightPadding,
-                    }}
-                    items={legendItems}
-                  />
+                  <Legend height={`${legendHeight}px`} items={legendItems} />
                 </>
               );
             }}

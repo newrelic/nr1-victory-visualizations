@@ -1,10 +1,11 @@
 import React from 'react';
 import { Grid, GridItem } from 'nr1';
+import cx from 'classnames';
 
 const LegendItem = ({ color, label }) => {
   return (
-    <GridItem columnSpan={3}>
-      <div className="LegendItem">
+    <GridItem columnSpan={3} className="LegendItem">
+      <div className="LegendItem-content">
         <div
           className="LegendItem-dot"
           style={{ backgroundColor: color }}
@@ -15,15 +16,17 @@ const LegendItem = ({ color, label }) => {
   );
 };
 
-const Legend = ({ items, style, className }) => {
+const Legend = ({ items, height, style, className }) => {
   return (
-    <div className={className} style={style}>
-      <Grid spacingType={Grid.SPACING_TYPE.NONE} gapType={Grid.GAP_TYPE.SMALL}>
-        {items.map((item) => (
-          <LegendItem {...item} />
-        ))}
-      </Grid>
-    </div>
+    <Grid
+      className={cx('Legend', className)}
+      style={{ ...style, height }}
+      gapType={Grid.GAP_TYPE.SMALL}
+    >
+      {items.map((item) => (
+        <LegendItem {...item} />
+      ))}
+    </Grid>
   );
 };
 
