@@ -81,25 +81,25 @@ in New Relic.
 # Support
 
 New Relic has open-sourced this project. This project is provided AS-IS WITHOUT
-WARRANTY OR DEDICATED SUPPORT. That said, we welcome feedback, contributions and feature requests! There are 2 main areas to request support:
+WARRANTY OR DEDICATED SUPPORT. That said, we welcome feedback, contributions and feature requests!
 
-### 1. Help for this repo
+There are 2 main areas to request support:
+
+### Help with this repo
 
 **GitHub Issues**: Issues and contributions should be reported to the project here on GitHub. You can find our [issue tracker here](https://github.com/newrelic/nr1-victory-visualizations/issues).
 
 **Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
 Hub](https://discuss.newrelic.com) where our community members collaborate on
-solutions and new ideas.
-
-New Relic hosts and moderates an online forum where customers can interact with
+solutions and new ideas. New Relic hosts and moderates an online forum where customers can interact with
 New Relic employees as well as other customers to get help and share best
 practices. Like all official New Relic open source projects, there's a related
 Community topic in the New Relic Explorers Hub. You can find this project's
 topic/threads here: https://discuss.newrelic.com/tag/victoryvisualizations
 
-### 2. Help for the Victory charting library
+### Help with the Victory charting library
 
-Support related to Victory charts can be found at: https://spectrum.chat/victory?tab=posts
+Support related to Victory can be found at: https://spectrum.chat/victory?tab=posts
 
 ## Victory charts
 
