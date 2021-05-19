@@ -195,7 +195,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                     right: chartRightPadding,
                   }}
                   domainPadding={{
-                    x: barWidth,
+                    x: barWidth / 2,
                   }}
                 >
                   <VictoryStack>
