@@ -87,7 +87,8 @@ There are 2 main areas to request support:
 
 ### Help with this repo
 
-**GitHub Issues**: Issues and contributions should be reported to the project here on GitHub. You can find our [issue tracker here](https://github.com/newrelic/nr1-victory-visualizations/issues).
+**GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [Issues tab of this repository](../../issues). Please search for and review the existing open issues
+before submitting a new issue.
 
 **Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
 Hub](https://discuss.newrelic.com) where our community members collaborate on
@@ -100,14 +101,6 @@ topic/threads here: https://discuss.newrelic.com/tag/victoryvisualizations
 ### Help with the Victory charting library
 
 Support related to Victory can be found at: https://spectrum.chat/victory?tab=posts
-
-## Victory charts
-
-## Issues / enhancement requests
-
-Issues and enhancement requests can be submitted in the [Issues tab of this
-repository](../../issues). Please search for and review the existing open issues
-before submitting a new issue.
 
 # Contributing
 
