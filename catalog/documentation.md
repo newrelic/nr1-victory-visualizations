@@ -8,8 +8,6 @@ For example, the query `SELECT average(duration) FROM Transaction FACET appName,
 
 ### Props Config
 These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
-* `nrqlQuery` 
-* `accountId`
 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
