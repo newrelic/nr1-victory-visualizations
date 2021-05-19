@@ -1,15 +1,29 @@
 import React from 'react';
-import { VictoryLegend, Point } from 'victory';
+import { Grid, GridItem } from 'nr1';
 
-const Legend = ({ ...props }) => {
+const LegendItem = ({ color, label }) => {
   return (
-    <VictoryLegend
-      dataComponent={<Point size={5} />}
-      gutter={20}
-      orientation="horizontal"
-      symbolSpacer={5}
-      {...props}
-    />
+    <GridItem columnSpan={3}>
+      <div className="LegendItem">
+        <div
+          className="LegendItem-dot"
+          style={{ backgroundColor: color }}
+        ></div>
+        <div className="LegendItem-label">{label}</div>
+      </div>
+    </GridItem>
+  );
+};
+
+const Legend = ({ items, style, className }) => {
+  return (
+    <div className={className} style={style}>
+      <Grid spacingType={Grid.SPACING_TYPE.NONE} gapType={Grid.GAP_TYPE.SMALL}>
+        {items.map((item) => (
+          <LegendItem {...item} />
+        ))}
+      </Grid>
+    </div>
   );
 };
 

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {
   VictoryBar,
   VictoryChart,
+  VictoryContainer,
   VictoryStack,
   VictoryTooltip,
 } from 'victory';
@@ -183,10 +184,10 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
-              const legendData = transformedData.reduce((acc, curr) => {
+              const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
-                  if (!acc.some(({ name }) => name === segmentLabel)) {
-                    acc.push({ name: segmentLabel, symbol: { fill: color } });
+                  if (!acc.some(({ label }) => label === segmentLabel)) {
+                    acc.push({ label: segmentLabel, color });
                   }
                 });
                 return acc;
@@ -201,40 +202,45 @@ export default class VictoryBarChartVisualization extends React.Component {
               const barAndPaddingWidth = xDomainWidth / numBarStacks;
 
               return (
-                <VictoryChart
-                  width={width}
-                  height={height}
-                  padding={{
-                    top: 20,
-                    bottom: 40 + legendHeight,
-                    left: chartLeftPadding,
-                    right: chartRightPadding,
-                  }}
-                  domainPadding={{
-                    x: barAndPaddingWidth / 2,
-                  }}
-                >
-                  <VictoryStack>
-                    {transformedData.map((series) => (
-                      <VictoryBar
-                        labelComponent={
-                          <VictoryTooltip constrainToVisibleArea />
-                        }
-                        data={series}
-                        style={{
-                          data: {
-                            fill: ({ datum }) => datum.color,
-                          },
-                        }}
-                      />
-                    ))}
-                  </VictoryStack>
+                <>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight}
+                    padding={{
+                      top: 20,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
+                    }}
+                    domainPadding={{
+                      x: barAndPaddingWidth / 2,
+                    }}
+                  >
+                    <VictoryStack>
+                      {transformedData.map((series) => (
+                        <VictoryBar
+                          labelComponent={
+                            <VictoryTooltip constrainToVisibleArea />
+                          }
+                          data={series}
+                          style={{
+                            data: {
+                              fill: ({ datum }) => datum.color,
+                            },
+                          }}
+                        />
+                      ))}
+                    </VictoryStack>
+                  </VictoryChart>
                   <Legend
-                    data={legendData}
-                    y={height - legendHeight}
-                    x={chartLeftPadding}
+                    style={{
+                      marginLeft: chartLeftPadding,
+                      marginRight: chartRightPadding,
+                    }}
+                    items={legendItems}
                   />
-                </VictoryChart>
+                </>
               );
             }}
           </NrqlQuery>
