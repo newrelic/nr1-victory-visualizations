@@ -34,20 +34,21 @@ class Tooltip extends React.Component {
 
   render() {
     // `defaultProps` are the props that are supplied by assigning the Tooltip to the `labelComponent`
-    const { isStackedBarChart, ...defaultProps } = this.props;
-    const { scale, datum } = defaultProps;
+    const { setY, ...defaultProps } = this.props;
+    const { scale, datum, horizontal } = defaultProps;
 
-    // this sets the position of the tooltip to the middle of the bar for a stacked bar chart
-    const scaledY = isStackedBarChart
-      ? scale.y(Math.abs(datum._y1 - datum._y0) / 2 + datum._y0) +
-      TOOLTIP_PADDING/2
-      : datum.y;
+    // this sets the y position of the tooltip 
+    const scaledY = setY 
+      ? scale.y(setY(datum)) + TOOLTIP_PADDING/2
+      : datum.y
+
+    console.log(defaultProps)
 
     return (
       <VictoryTooltip
         {...defaultProps}
-        constrainToVisibleArea={}
-        horizontal
+        constrainToVisibleArea
+        horizontal={horizontal ?? true}
         flyoutStyle={{
           strokeWidth: 2,
           stroke: datum?.color ?? `#fff`,

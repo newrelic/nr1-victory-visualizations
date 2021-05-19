@@ -200,7 +200,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
-                        labelComponent={<Tooltip isStackedBarChart/>}
+                        labelComponent={<Tooltip setY={datum => Math.abs(datum._y1 - datum._y0) / 2 + datum._y0}/>}
                         data={series}
                         style={{
                           data: {
