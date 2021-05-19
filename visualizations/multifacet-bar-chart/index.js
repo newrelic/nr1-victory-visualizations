@@ -240,7 +240,7 @@ export default class VictoryBarChartVisualization extends React.Component {
                   </VictoryChart>
                   <Legend
                     style={{
-                      height: `${legendHeight}px`,
+                      height: legendHeight,
                       marginLeft: chartLeftPadding,
                       marginRight: chartRightPadding,
                     }}
