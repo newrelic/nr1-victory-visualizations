@@ -10,6 +10,7 @@ import {
 } from 'nr1';
 import {
   VictoryChart,
+  VictoryContainer,
   VictoryTheme,
   VictoryBar,
   VictoryAxis,
@@ -17,6 +18,7 @@ import {
 } from 'victory';
 
 import ErrorState from '../../src/error-state';
+import Legend from '../../src/legend';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -128,25 +130,57 @@ export default class RangeChartVisualization extends React.Component {
 
               try {
                 const { rangeData, tickValues } = this.transformData(data);
+                const legendItems = rangeData.map(
+                  ({ color, facetGroupName }) => ({
+                    color,
+                    label: facetGroupName,
+                  })
+                );
+                console.log({ rangeData, tickValues, legendItems });
+
+                const chartLeftPadding = 40;
+                const chartRightPadding = 25;
+                const legendHeight = 50;
+                const spaceBelowLegend = 16;
+
                 return (
-                  <VictoryChart
-                    domainPadding={15}
-                    theme={VictoryTheme.material}
-                    height={height}
-                    width={width}
-                  >
-                    <VictoryAxis tickValues={tickValues} />
-                    <VictoryAxis dependentAxis />
-                    <VictoryBar
-                      labelComponent={<VictoryTooltip />}
-                      style={{
-                        data: {
-                          fill: ({ datum }) => datum.color,
-                        },
+                  <>
+                    <VictoryChart
+                      containerComponent={
+                        <VictoryContainer responsive={false} />
+                      }
+                      padding={{
+                        top: 16,
+                        bottom: 40,
+                        left: chartLeftPadding,
+                        right: chartRightPadding,
                       }}
-                      data={rangeData}
+                      domainPadding={15}
+                      theme={VictoryTheme.material}
+                      height={height - legendHeight - spaceBelowLegend}
+                      width={width}
+                    >
+                      <VictoryAxis tickValues={tickValues} />
+                      <VictoryAxis dependentAxis />
+                      <VictoryBar
+                        labelComponent={<VictoryTooltip />}
+                        style={{
+                          data: {
+                            fill: ({ datum }) => datum.color,
+                          },
+                        }}
+                        data={rangeData}
+                      />
+                    </VictoryChart>
+                    <Legend
+                      style={{
+                        height: legendHeight,
+                        marginLeft: chartLeftPadding,
+                        marginRight: chartRightPadding,
+                      }}
+                      items={legendItems}
                     />
-                  </VictoryChart>
+                  </>
                 );
               } catch (e) {
                 return <ErrorState />;
@@ -189,5 +223,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
-
