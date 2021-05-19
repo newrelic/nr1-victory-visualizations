@@ -31,6 +31,7 @@ const TOOLTIP_PADDING = 16;
 
 class Tooltip extends React.Component {
   static defaultEvents = VictoryTooltip.defaultEvents;
+
   render() {
     // `defaultProps` are the props that are supplied by assigning the Tooltip to the `labelComponent`
     const { isStackedBarChart, ...defaultProps } = this.props;
@@ -45,7 +46,7 @@ class Tooltip extends React.Component {
     return (
       <VictoryTooltip
         {...defaultProps}
-        constrainToVisibleArea
+        constrainToVisibleArea={}
         horizontal
         flyoutStyle={{
           strokeWidth: 2,
