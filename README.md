@@ -87,7 +87,7 @@ There are 2 main areas to request support:
 
 ### Help with this repo
 
-**GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [Issues tab of this repository](../../issues). Please search for and review the existing open issues
+**GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [issues tab of this repository](https://github.com/newrelic/nr1-victory-visualizations/issues). Please search for and review the existing open issues
 before submitting a new issue.
 
 **Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
