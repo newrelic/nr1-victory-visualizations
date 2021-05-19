@@ -22,9 +22,9 @@
 
 .LegendItem-dot {
   flex-shrink: 0;
-  width: 8px;
-  height: 8px;
-  margin-right: 4px;
+  width: var(--nr1--spacing--medium);
+  height: var(--nr1--spacing--medium);
+  margin-right: var(--nr1--spacing--small);
   border-radius: 50%;
 }
 
@@ -33,5 +33,5 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: rgb(142, 148, 148);
+  color: var(--nr1--colors--text--muted);
 }
