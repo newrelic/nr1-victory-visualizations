@@ -1,0 +1,37 @@
+.Legend {
+  overflow-y: scroll;
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.Legend::-webkit-scrollbar {
+  display: none;
+}
+
+.LegendItem {
+  overflow: visible;
+}
+
+.LegendItem-content {
+  display: flex;
+  align-items: center;
+}
+
+.LegendItem-dot {
+  flex-shrink: 0;
+  width: var(--nr1--spacing--medium);
+  height: var(--nr1--spacing--medium);
+  margin-right: var(--nr1--spacing--small);
+  border-radius: 50%;
+}
+
+.LegendItem-label {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--nr1--colors--text--muted);
+}

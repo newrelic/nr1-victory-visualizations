@@ -3,10 +3,12 @@ import PropTypes from 'prop-types';
 import {
   VictoryBar,
   VictoryChart,
+  VictoryContainer,
   VictoryStack,
-  VictoryTooltip,
 } from 'victory';
-import ErrorState from '../../common/error-state';
+import ErrorState from '../../src/error-state';
+import Tooltip from '../../src/tooltip';
+import Legend from '../../src/legend';
 
 import {
   Card,
@@ -46,7 +48,7 @@ const getBarCount = (data) => {
   }, new Set()).size;
 };
 
-export default class VictoryBarChartVisualization extends React.Component {
+export default class MultiFacetBarChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -105,16 +107,22 @@ export default class VictoryBarChartVisualization extends React.Component {
    * @returns {{x: string, y: number, color: string, segmentLabel: string}[][]}
    */
   transformData = (rawData) => {
+    const colorsBySegmentLabel = new Map();
+
     // Gather values for each bar data series.
     const facetBreakdown = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
       const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
 
+      if (!colorsBySegmentLabel.has(segmentLabel)) {
+        colorsBySegmentLabel.set(segmentLabel, metadata?.color);
+      }
+
       if (acc[segmentLabel]) {
-        acc[segmentLabel][barLabel] = { y: data[0].y, color: metadata?.color };
+        acc[segmentLabel][barLabel] = data[0].y;
       } else {
         acc[segmentLabel] = {
-          [barLabel]: { y: data[0].y, color: metadata?.color },
+          [barLabel]: data[0].y,
         };
       }
 
@@ -125,10 +133,11 @@ export default class VictoryBarChartVisualization extends React.Component {
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: `${segmentLabel}: ${value.y.toLocaleString()}`,
+        label: [`${segmentLabel}`, `${value.toLocaleString()}`],
+        segmentLabel,
         x: barLabel,
-        y: value.y,
-        color: value.color,
+        y: value,
+        color: colorsBySegmentLabel.get(segmentLabel),
       }));
     });
   };
@@ -147,7 +156,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer>
+      <AutoSizer className="MultiFacetBarChartVisualization">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
@@ -175,9 +184,19 @@ export default class VictoryBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+              const legendItems = transformedData.reduce((acc, curr) => {
+                curr.forEach(({ color, segmentLabel }) => {
+                  if (!acc.some(({ label }) => label === segmentLabel)) {
+                    acc.push({ label: segmentLabel, color });
+                  }
+                });
+                return acc;
+              }, []);
 
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
+              const legendHeight = 50;
+              const spaceBelowLegend = 16;
 
               const barCount = getBarCount(transformedData);
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
@@ -185,36 +204,51 @@ export default class VictoryBarChartVisualization extends React.Component {
               const barWidth = (xDomainWidth * 0.6) / barCount;
 
               return (
-                <VictoryChart
-                  width={width}
-                  height={height}
-                  padding={{
-                    top: 20,
-                    bottom: 40,
-                    left: chartLeftPadding,
-                    right: chartRightPadding,
-                  }}
-                  domainPadding={{
-                    x: barWidth / 2,
-                  }}
-                >
-                  <VictoryStack>
-                    {transformedData.map((series) => (
-                      <VictoryBar
-                        labelComponent={
-                          <VictoryTooltip constrainToVisibleArea />
-                        }
-                        barWidth={barWidth}
-                        data={series}
-                        style={{
-                          data: {
-                            fill: ({ datum }) => datum.color,
-                          },
-                        }}
-                      />
-                    ))}
-                  </VictoryStack>
-                </VictoryChart>
+                <>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight - spaceBelowLegend}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
+                    }}
+                    domainPadding={{
+                      x: barWidth / 2,
+                    }}
+                  >
+                    <VictoryStack>
+                      {transformedData.map((series) => (
+                        <VictoryBar
+                          labelComponent={
+                            <Tooltip
+                              horizontal
+                              setY={(datum) =>
+                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              }
+                            />
+                          }
+                          data={series}
+                          style={{
+                            data: {
+                              fill: ({ datum }) => datum.color,
+                            },
+                          }}
+                        />
+                      ))}
+                    </VictoryStack>
+                  </VictoryChart>
+                  <Legend
+                    style={{
+                      height: legendHeight,
+                      marginLeft: chartLeftPadding,
+                      marginRight: chartRightPadding,
+                    }}
+                    items={legendItems}
+                  />
+                </>
               );
             }}
           </NrqlQuery>
