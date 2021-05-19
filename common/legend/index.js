@@ -1,6 +1,7 @@
 import React from 'react';
-import { Grid, GridItem } from 'nr1';
+import PropTypes from 'prop-types';
 import cx from 'classnames';
+import { Grid, GridItem } from 'nr1';
 
 const Legend = ({ items, style, className }) => {
   return (
@@ -12,6 +13,17 @@ const Legend = ({ items, style, className }) => {
       </Grid>
     </div>
   );
+};
+
+Legend.propTypes = {
+  items: PropTypes.arrayOf(
+    PropTypes.shape({
+      color: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })
+  ),
+  style: PropTypes.object,
+  className: PropTypes.string,
 };
 
 const LegendItem = ({ color, label }) => {
