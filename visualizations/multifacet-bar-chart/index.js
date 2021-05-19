@@ -1,10 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {
-  VictoryBar,
-  VictoryChart,
-  VictoryStack,
-} from 'victory';
+import { VictoryBar, VictoryChart, VictoryStack } from 'victory';
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
 
@@ -206,7 +202,14 @@ export default class VictoryBarChartVisualization extends React.Component {
                   <VictoryStack>
                     {transformedData.map((series) => (
                       <VictoryBar
-                        labelComponent={<Tooltip setY={datum => Math.abs(datum._y1 - datum._y0) / 2 + datum._y0}/>}
+                        labelComponent={
+                          <Tooltip
+                            horizontal
+                            setY={(datum) =>
+                              Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                            }
+                          />
+                        }
                         data={series}
                         style={{
                           data: {

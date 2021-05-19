@@ -35,7 +35,7 @@ class Tooltip extends React.Component {
   render() {
     // `defaultProps` are the props that are supplied by assigning the Tooltip to the `labelComponent`
     const { setY, ...defaultProps } = this.props;
-    const { scale, datum, horizontal } = defaultProps;
+    const { scale, datum } = defaultProps;
 
     // this sets the y position of the tooltip 
     const scaledY = setY 
@@ -48,7 +48,6 @@ class Tooltip extends React.Component {
       <VictoryTooltip
         {...defaultProps}
         constrainToVisibleArea
-        horizontal={horizontal ?? true}
         flyoutStyle={{
           strokeWidth: 2,
           stroke: datum?.color ?? `#fff`,
