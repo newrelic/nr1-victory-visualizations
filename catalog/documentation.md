@@ -1,5 +1,5 @@
 # Victory Charts Visualizations
-<!-- some intro info i'm not sure what should go here! woooh. maybe the description? -->
+[some intro info i'm not sure what should go here! woooh. maybe the description?]
 
 To learn more about the attributes and events available in NRQL, visit the [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/) on docs.newrelic.com. 
 
@@ -78,16 +78,5 @@ These are the values that are configurable by a user via the Custom Visualizatio
 
 #### Progress Bar NRQL Data Details
 
-<!-- This visualization accepts a NRQL query in the form:
-FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago
- ```
- SELECT [aggregate1, aggregate2] FROM [event] FACET [attribute]
- ``` 
- The query requires two aggregate functions to act as the top and bottom of the range for a facet. 
-
-| NRQL feature   | Usage      | Required |
-| -------------- | ----------- | ----------- |
-| First aggregate     | Top of range bar      | Required (`numeric` or aggregate)     |
-| Second aggregate   | Bottom of range bar       | Required (`numeric` or aggregate)        |
-| Facet     | X axis position or x axis label   | Required (`string` or `boolean`)       | -->
+[fill this in]
 
