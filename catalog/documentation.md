@@ -11,7 +11,7 @@ These are the values that are configurable by a user via the Custom Visualizatio
 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. see [Multifacet NRQL Data Details](#multifacet-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. See [multifacet NRQL data details](#multifacet-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Required     |
 
 
