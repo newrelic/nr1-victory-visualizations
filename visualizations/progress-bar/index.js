@@ -141,7 +141,7 @@ const EmptyState = () => (
         example:
       </HeadingText>
       <code>
-        {'FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)'}
+        {'FROM Transaction SELECT percentage(count(*), WHERE duration < 0.1)'}
       </code>
     </CardBody>
   </Card>
