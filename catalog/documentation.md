@@ -11,7 +11,12 @@ After configuring your visualization, [add it to a dashboard](https://docs.newre
 ## Multifacet Bar Chart
 This visualization allows users to plot data with multiple facets in a stacked bar chart view. 
 
-For example, the query `SELECT average(duration) FROM Transaction FACET appName, environment` allows a user to see average duration of a `Transaction` event in a stacked bar chart, where each bar represents a different `environment` (e.g. production, development, ect.) and each segment of the bar represents a different `appName`. This is ideal for visualizing related facets with respect to some numeric or aggregate attribute. 
+For example, if you query `SELECT average(duration) FROM Transaction FACET appName, environment`, you'll see the average duration of a `Transaction` event in a stacked bar chart where: 
+
+- Each **bar** represents a different `environment` (production, development, etc.) 
+- Each **segment** of the bar represents a different `appName`
+
+This is ideal for visualizing related facets with respect to some numeric or aggregate attribute. 
 
 ### Props Config
 These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
