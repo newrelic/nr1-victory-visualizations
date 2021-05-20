@@ -6,9 +6,9 @@ import {
   VictoryContainer,
   VictoryStack,
   VictoryAxis,
+  VictoryTooltip,
 } from 'victory';
 import ErrorState from '../../src/error-state';
-import Tooltip from '../../src/tooltip';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
 
@@ -230,11 +230,14 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                         <VictoryBar
                           barWidth={barWidth}
                           labelComponent={
-                            <Tooltip
+                            <VictoryTooltip
                               horizontal
-                              setY={(datum) =>
-                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              dy={({ datum, scale }) =>
+                                scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
+                                scale.y(datum.y)
                               }
+                              constrainToVisibleArea
+                              pointerLength={8}
                             />
                           }
                           data={series}
@@ -290,4 +293,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
