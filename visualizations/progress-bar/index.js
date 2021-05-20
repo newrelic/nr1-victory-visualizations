@@ -93,51 +93,49 @@ export default class ProgressBarVisualization extends React.Component {
               const { percent, label, series } = this.transformData(data);
 
               return (
-                <div>
-                  <svg
-                    viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
-                    width={width}
-                    height={height}
-                    className="ProgressBarChart"
-                  >
-                    <VictoryPie
-                      standalone={false}
-                      animate={{ duration: 1000 }}
-                      data={series}
-                      width={CHART_WIDTH}
-                      height={CHART_HEIGHT}
-                      padding={10}
-                      innerRadius={135}
-                      cornerRadius={25}
-                      labels={() => null}
-                      style={{
-                        data: {
-                          fill: ({ datum }) => datum.color,
-                        },
-                      }}
-                    />
-                    <VictoryAnimation duration={1000} data={percent}>
-                      {(percent, info) => (
-                        <VictoryLabel
-                          textAnchor="middle"
-                          verticalAnchor="middle"
-                          x={CHART_WIDTH / 2}
-                          y={CHART_HEIGHT / 2}
-                          text={`${Math.round(percent)}%`}
-                          style={{ ...baseLabelStyles, fontSize: 45 }}
-                        />
-                      )}
-                    </VictoryAnimation>
-                    <VictoryLabel
-                      text={label}
-                      lineHeight={1}
-                      x={CHART_WIDTH / 2}
-                      y={BOUNDS.Y - LABEL_SIZE}
-                      textAnchor="middle"
-                      style={{ ...baseLabelStyles, fontSize: LABEL_SIZE }}
-                    />
-                  </svg>
-                </div>
+                <svg
+                  viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
+                  width={width}
+                  height={height}
+                  className="ProgressBarChart"
+                >
+                  <VictoryPie
+                    standalone={false}
+                    animate={{ duration: 1000 }}
+                    data={series}
+                    width={CHART_WIDTH}
+                    height={CHART_HEIGHT}
+                    padding={10}
+                    innerRadius={135}
+                    cornerRadius={25}
+                    labels={() => null}
+                    style={{
+                      data: {
+                        fill: ({ datum }) => datum.color,
+                      },
+                    }}
+                  />
+                  <VictoryAnimation duration={1000} data={percent}>
+                    {(percent, info) => (
+                      <VictoryLabel
+                        textAnchor="middle"
+                        verticalAnchor="middle"
+                        x={CHART_WIDTH / 2}
+                        y={CHART_HEIGHT / 2}
+                        text={`${Math.round(percent)}%`}
+                        style={{ ...baseLabelStyles, fontSize: 45 }}
+                      />
+                    )}
+                  </VictoryAnimation>
+                  <VictoryLabel
+                    text={label}
+                    lineHeight={1}
+                    x={CHART_WIDTH / 2}
+                    y={BOUNDS.Y - LABEL_SIZE}
+                    textAnchor="middle"
+                    style={{ ...baseLabelStyles, fontSize: LABEL_SIZE }}
+                  />
+                </svg>
               );
             }}
           </NrqlQuery>
