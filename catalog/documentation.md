@@ -95,7 +95,7 @@ This visualization accepts a NRQL query in the form:
  SELECT [percentage(aggregate(attribute), WHERE...) or numeric_attribute1/numeric_attribute2 or numeric attribute] FROM [event] 
  ``` 
 
- The query requires a percentage or fractional value of two attributes. For example, `SELECT filter(count(*), WHERE duration < 1)/filter(count(*), WHERE duration < 2) FROM PageView` gives the number of `PageView` events that less than 1 second over the number of events less than 2 seconds. 
+You must supply a percentage or fractional value of two attributes. For example, `SELECT filter(count(*), WHERE duration < 1)/filter(count(*), WHERE duration < 2) FROM PageView` gives the number of `PageView` events that last less than one second over the number of events that last less than two seconds. 
 
 | NRQL feature   | Usage      | Required |
 | -------------- | ----------- | ----------- |
