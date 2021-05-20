@@ -1,5 +1,12 @@
 # Victory charts visualizations
-These are a set of [custom visualizations](https://developer.newrelic.com/explore-docs/custom-viz/) built on top of [Victory Charts](https://formidable.com/open-source/victory/) that accept [NRQL]() queries. These charts can be added to any dashboard when subscribed to the this nerdpack. 
+Visualize your New Relic data with Victory charts!
+
+1. [Add this Nerdpack to your account](https://developer.newrelic.com/build-apps/publish-deploy/subscribe/)
+2. Select one of the Nerdpack's visualizations
+3. Choose your New Relic account
+4. Enter a [NRQL query](https://docs.newrelic.com/docs/query-your-data/nrql-new-relic-query-language/get-started/introduction-nrql-new-relics-query-language/)
+
+After configuring your visualization, [add it to a dashboard](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/add-custom-visualizations-your-dashboards/) to see your data.
 
 ## Multifacet Bar Chart
 This visualization allows users to plot data with multiple facets in a stacked bar chart view. 
