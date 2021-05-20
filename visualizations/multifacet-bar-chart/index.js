@@ -21,6 +21,9 @@ import {
   AutoSizer,
 } from 'nr1';
 import theme from '../../src/theme';
+import TYPE_TO_UNITS from '../../src/utils/units';
+import numbro from 'numbro';
+import { format } from 'date-fns'
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -37,6 +40,16 @@ const validateNRQLInput = (data) => {
   return false;
 };
 
+const valueToUnits = (data) => data[0].metadata.units_data.y; 
+
+const formatTicks = ({unit, t}) => {
+  if (unit === 'TIMESTAMP') {
+    return format(new Date(t), 'MM/dd/yyyy HH:mm')
+  }
+  const tFormatted = numbro(t).format({average: true, mantissa: 1}); 
+
+  return `${tFormatted}${TYPE_TO_UNITS[unit]}`
+}
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
  * with a stack of "bar segments" being one "bar".
@@ -188,6 +201,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+              const unit = valueToUnits(data);
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
                   if (!acc.some(({ label }) => label === segmentLabel)) {
@@ -234,7 +248,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryAxis
                       dependentAxis
                       tickCount={12}
-                      tickFormat={(t) => `${Math.round(t * 10) / 10}`}
+                      tickFormat={(t) => formatTicks({unit, t})}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
