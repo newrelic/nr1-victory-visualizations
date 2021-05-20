@@ -9,7 +9,7 @@ Visualize your New Relic data with Victory charts!
 After configuring your visualization, [add it to a dashboard](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/add-custom-visualizations-your-dashboards/) to see your data.
 
 ## Multifacet Bar Chart
-This visualization allows users to plot data with multiple facets in a stacked bar chart view. 
+Plot multifaceted data in a stacked bar chart view.
 
 For example, if you query `SELECT average(duration) FROM Transaction FACET appName, environment`, you'll see the average duration of a `Transaction` event in a stacked bar chart where: 
 
