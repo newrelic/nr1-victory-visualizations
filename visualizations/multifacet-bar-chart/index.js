@@ -232,10 +232,14 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                           labelComponent={
                             <VictoryTooltip
                               horizontal
-                              dy={({ datum, scale }) =>
-                                scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
+                              dy={({ datum, scale, ...rest }) => {
+                                console.log(rest)
+                                return scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
                                 scale.y(datum._y1)
                               }
+                              }
+                              renderInPortal={true}
+                              dx={0}
                               constrainToVisibleArea
                               pointerLength={8}
                             />
