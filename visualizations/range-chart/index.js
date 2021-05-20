@@ -12,6 +12,7 @@ import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
 import theme from '../../src/theme';
+import truncateLabel from '../../src/utils/truncate-label';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -128,7 +129,11 @@ export default class RangeChartVisualization extends React.Component {
                     width={width}
                     theme={theme}
                   >
-                    <VictoryAxis />
+                    <VictoryAxis
+                      tickFormat={(label) =>
+                        truncateLabel(label, width / barCount)
+                      }
+                    />
                     <VictoryAxis dependentAxis />
                     <VictoryBar
                       barWidth={barWidth}
