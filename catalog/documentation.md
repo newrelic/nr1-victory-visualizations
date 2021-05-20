@@ -1,4 +1,4 @@
-# Victory Charts Visualizations
+# Victory charts visualizations
 These are a set of [custom visualizations](https://developer.newrelic.com/explore-docs/custom-viz/) built on top of [Victory Charts](https://formidable.com/open-source/victory/) that accept [NRQL]() queries. These charts can be added to any dashboard when subscribed to the this nerdpack. 
 
 ## Multifacet Bar Chart
