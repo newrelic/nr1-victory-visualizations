@@ -50,13 +50,18 @@ You must select an attribute that's either numeric or an aggregate function. You
 ## Range Chart
 Visualize the range of numeric attributes grouped by a facet. 
 
-For example, the query `FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago` will show the given 95th percentile of the duration as the top bar and 5th percentile of the duration as the bottom bar for each day of the last week. 
+For example, if you query `FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago` you'll see a bar for each day of the last week where:
+
+- The top segment shows the 95th percentile of the duration
+- The bottom segment shows the 5th percentile of the duration
 
 ### Props Config
-These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
+Edit these values in the Custom Visualizations Nerdlet or directly in the visualization's dashboard widget. 
+
+To use the visualization, provide the following properties: 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. see [Range Chart NRQL Data Details](#range-chart-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Range Chart NRQL Data Details](#range-chart-nrql-data-details) for more details on accepted NRQL queries.      | Required    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Required     |
 
 
@@ -68,7 +73,7 @@ This visualization accepts a NRQL query in the form:
  SELECT [aggregate1, aggregate2] FROM [event] FACET [attribute]
  ``` 
 
- The query requires two aggregate functions to act as the top and bottom of the range for a facet. 
+You must supply two aggregate functions to act as the top and bottom of the range for a facet. 
 
 | NRQL feature   | Usage      | Required |
 | -------------- | ----------- | ----------- |
@@ -78,16 +83,24 @@ This visualization accepts a NRQL query in the form:
 
 ## Progress Bar
 
-This visualization allows users to visualize a percent of a whole. It is similar to the `bullet` chart available, but provides coloring specific to the percentage of the whole, provides a circular representation of the data, and emphasizes the percentage. This visualization allows users to guage progress or see if they are meeting certain limits.
+Visualize your progress toward a limit or goal.
 
-For example, the query `FROM PageView SELECT percentage(count(*), WHERE duration < 1)` will show out of the total number of actions in the `PageView` event, what percentage were under 1 second. 
+This chart is similar to the New Relic [Bullet chart](https://docs.newrelic.com/docs/query-your-data/explore-query-data/use-charts/chart-types/#bullet-chart) but with the following differences: 
+
+- It provides specific coloring related to the completion percentage
+- It provides a circular representation of the data
+- It emphasizes the percentage
+
+For example, if you query `FROM PageView SELECT percentage(count(*), WHERE duration < 1)`, you'll see what percentage of page views were shorter than one second.
 
 ### Props Config
 
-These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
+Edit these values in the Custom Visualizations Nerdlet or directly in the visualization's dashboard widget. 
+
+To use the visualization, provide the following properties: 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts a singular NRQL query. see [Progress Bar NRQL Data Details](#range-chart-nrql-data-details) section for more details on accepted NRQL queries.      | Required    |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Progress Bar NRQL Data Details](#progress-bar-nrql-data-details) for more details on accepted NRQL queries.      | Required    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Required     |
 
 
