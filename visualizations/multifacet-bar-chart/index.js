@@ -1,8 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { VictoryBar, VictoryChart, VictoryStack } from 'victory';
+import {
+  VictoryBar,
+  VictoryChart,
+  VictoryContainer,
+  VictoryStack,
+} from 'victory';
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
+import Legend from '../../src/legend';
+import NrqlQueryError from '../../src/nrql-query-error';
 
 import {
   Card,
@@ -34,7 +41,7 @@ const validateNRQLInput = (data) => {
  * @param {{x: string, y: number, color: string, segmentLabel: string}[][]} data
  * @returns number
  */
-const getNumBuckets = (data) => {
+const getBarCount = (data) => {
   return data.reduce((acc, series) => {
     // x on barSegment is the bar label which acts as a unique key added to the Set
     series.forEach((barSegment) => acc.add(barSegment.x));
@@ -42,7 +49,7 @@ const getNumBuckets = (data) => {
   }, new Set()).size;
 };
 
-export default class VictoryBarChartVisualization extends React.Component {
+export default class MultiFacetBarChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -128,6 +135,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
         label: [`${segmentLabel}`, `${value.toLocaleString()}`],
+        segmentLabel,
         x: barLabel,
         y: value,
         color: colorsBySegmentLabel.get(segmentLabel),
@@ -149,7 +157,7 @@ export default class VictoryBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer>
+      <AutoSizer className="MultiFacetBarChartVisualization">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
@@ -169,57 +177,80 @@ export default class VictoryBarChartVisualization extends React.Component {
 
               if (!isInputValid) {
                 return (
-                  <ErrorState>
-                    NRQL Query is not valid. Please make sure to have 1
-                    aggregate function and 1-2 facets.
-                  </ErrorState>
+                  <NrqlQueryError
+                    title="Unsupported NRQL query"
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function and 1-2 facets."
+                  />
                 );
               }
 
               const transformedData = this.transformData(data);
+              const legendItems = transformedData.reduce((acc, curr) => {
+                curr.forEach(({ color, segmentLabel }) => {
+                  if (!acc.some(({ label }) => label === segmentLabel)) {
+                    acc.push({ label: segmentLabel, color });
+                  }
+                });
+                return acc;
+              }, []);
 
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
+              const legendHeight = 50;
+              const spaceBelowLegend = 16;
 
-              const numBarStacks = getNumBuckets(transformedData);
+              const barCount = getBarCount(transformedData);
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
-              const barAndPaddingWidth = xDomainWidth / numBarStacks;
+              // set the width of stacked bars so that they take up about 60% of the width
+              const barWidth = (xDomainWidth * 0.6) / barCount;
 
               return (
-                <VictoryChart
-                  width={width}
-                  height={height}
-                  padding={{
-                    top: 20,
-                    bottom: 40,
-                    left: chartLeftPadding,
-                    right: chartRightPadding,
-                  }}
-                  domainPadding={{
-                    x: barAndPaddingWidth / 2,
-                  }}
-                >
-                  <VictoryStack>
-                    {transformedData.map((series) => (
-                      <VictoryBar
-                        labelComponent={
-                          <Tooltip
-                            horizontal
-                            setY={(datum) =>
-                              Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
-                            }
-                          />
-                        }
-                        data={series}
-                        style={{
-                          data: {
-                            fill: ({ datum }) => datum.color,
-                          },
-                        }}
-                      />
-                    ))}
-                  </VictoryStack>
-                </VictoryChart>
+                <>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight - spaceBelowLegend}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
+                    }}
+                    domainPadding={{
+                      x: barWidth / 2,
+                    }}
+                  >
+                    <VictoryStack>
+                      {transformedData.map((series) => (
+                        <VictoryBar
+                          barWidth={barWidth}
+                          labelComponent={
+                            <Tooltip
+                              horizontal
+                              setY={(datum) =>
+                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              }
+                            />
+                          }
+                          data={series}
+                          style={{
+                            data: {
+                              fill: ({ datum }) => datum.color,
+                            },
+                          }}
+                        />
+                      ))}
+                    </VictoryStack>
+                  </VictoryChart>
+                  <Legend
+                    style={{
+                      height: legendHeight,
+                      marginLeft: chartLeftPadding,
+                      marginRight: chartRightPadding,
+                    }}
+                    items={legendItems}
+                  />
+                </>
               );
             }}
           </NrqlQuery>
@@ -254,3 +285,4 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
+

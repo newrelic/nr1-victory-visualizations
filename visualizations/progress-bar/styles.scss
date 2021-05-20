@@ -1,6 +1,10 @@
 @import '../../src/error-state/styles.scss';
 @import '../../src/styles.scss';
 
+.ProgressBarChart {
+  display: block;
+}
+
 .EmptyState {
   height: 100%;
   text-align: center;

@@ -10,6 +10,18 @@ import {
   AutoSizer,
 } from 'nr1';
 import ErrorState from '/src/error-state';
+import NrqlQueryError from '/src/nrql-query-error';
+import { baseLabelStyles } from '/src/theme';
+
+const BOUNDS = {
+  X: 400,
+  Y: 400,
+};
+
+const LABEL_SIZE = 24;
+const LABEL_PADDING = 10;
+const CHART_WIDTH = BOUNDS.X;
+const CHART_HEIGHT = BOUNDS.Y - LABEL_SIZE - LABEL_PADDING;
 
 export default class ProgressBarVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -31,17 +43,36 @@ export default class ProgressBarVisualization extends React.Component {
    * Restructure the data for a aggegate NRQL query with no TIMESERIES and no
    * FACET into a for our visualization works well with.
    */
-  transformData = (rawData) => {
-    const percent = rawData[0].data[0].y * 100;
-    const color = rawData[0].metadata.color;
+  transformData = (data) => {
+    const {
+      data: [series],
+      metadata: { color, name: label },
+    } = data[0];
+
+    const percent = series.y * 100;
+
     return {
       percent,
-      color,
-      pieChartData: [
-        { x: 'progress', y: percent },
-        { x: 'remainder', y: 100 - percent },
+      label,
+      series: [
+        { x: 'progress', y: percent, color },
+        { x: 'remainder', y: 100 - percent, color: 'transparent' },
       ],
     };
+  };
+
+  validateNRQLInput = (data) => {
+    const {
+      data: seriesEntries,
+      metadata: { groups },
+    } = data[0];
+
+    const numOfAggregates = groups.filter(({ type }) => type === 'function')
+      .length;
+    const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
+    const isNonTimeseries = seriesEntries.length === 1;
+
+    return numOfAggregates === 1 && numOfFacets === 0 && isNonTimeseries;
   };
 
   render() {
@@ -74,46 +105,63 @@ export default class ProgressBarVisualization extends React.Component {
                 return <ErrorState />;
               }
 
-              const transformedData = this.transformData(data);
+              const isInputValid = this.validateNRQLInput(data);
+
+              if (!isInputValid) {
+                return (
+                  <NrqlQueryError
+                    title="Unsupported NRQL query"
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
+                  />
+                );
+              }
+
+              const { percent, label, series } = this.transformData(data);
 
               return (
-                <div>
-                  <svg viewBox="0 0 400 400" width={width} height={height}>
-                    <VictoryPie
-                      standalone={false}
-                      animate={{ duration: 1000 }}
-                      width={400}
-                      height={400}
-                      data={transformedData.pieChartData}
-                      innerRadius={120}
-                      cornerRadius={25}
-                      labels={() => null}
-                      style={{
-                        data: {
-                          fill: ({ datum }) => {
-                            return datum.x === 'progress'
-                              ? transformedData.color
-                              : 'transparent';
-                          },
-                        },
-                      }}
-                    />
-                    <VictoryAnimation duration={1000} data={transformedData}>
-                      {(newProps) => {
-                        return (
-                          <VictoryLabel
-                            textAnchor="middle"
-                            verticalAnchor="middle"
-                            x={200}
-                            y={200}
-                            text={`${Math.round(newProps.percent)}%`}
-                            style={{ fontSize: 45 }}
-                          />
-                        );
-                      }}
-                    </VictoryAnimation>
-                  </svg>
-                </div>
+                <svg
+                  viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
+                  width={width}
+                  height={height}
+                  className="ProgressBarChart"
+                >
+                  <VictoryPie
+                    standalone={false}
+                    animate={{ duration: 1000 }}
+                    data={series}
+                    width={CHART_WIDTH}
+                    height={CHART_HEIGHT}
+                    padding={10}
+                    innerRadius={135}
+                    cornerRadius={25}
+                    labels={() => null}
+                    style={{
+                      data: {
+                        fill: ({ datum }) => datum.color,
+                      },
+                    }}
+                  />
+                  <VictoryAnimation duration={1000} data={percent}>
+                    {(percent) => (
+                      <VictoryLabel
+                        textAnchor="middle"
+                        verticalAnchor="middle"
+                        x={CHART_WIDTH / 2}
+                        y={CHART_HEIGHT / 2}
+                        text={`${Math.round(percent)}%`}
+                        style={{ ...baseLabelStyles, fontSize: 45 }}
+                      />
+                    )}
+                  </VictoryAnimation>
+                  <VictoryLabel
+                    text={label}
+                    lineHeight={1}
+                    x={CHART_WIDTH / 2}
+                    y={BOUNDS.Y - LABEL_SIZE}
+                    textAnchor="middle"
+                    style={{ ...baseLabelStyles, fontSize: LABEL_SIZE }}
+                  />
+                </svg>
               );
             }}
           </NrqlQuery>
@@ -141,7 +189,7 @@ const EmptyState = () => (
         example:
       </HeadingText>
       <code>
-        {'FROM EventType SELECT percentage(count(*), WHERE duration < 0.1)'}
+        {'FROM Transaction SELECT percentage(count(*), WHERE duration < 0.1)'}
       </code>
     </CardBody>
   </Card>
