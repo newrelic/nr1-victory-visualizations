@@ -25,8 +25,9 @@ import theme from '../../src/theme';
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
 
-  const numOfAggregates = groups.filter(({ type }) => type === 'function')
-    .length;
+  const numOfAggregates = groups.filter(
+    ({ type }) => type === 'function'
+  ).length;
   const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
 
   if (numOfAggregates === 1 && numOfFacets > 0) {
@@ -209,7 +210,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               return (
                 <>
                   <VictoryChart
-                    containerComponent={<VictoryContainer responsive={false} />}
+                    containerComponent={<VictoryContainer responsive={false}/>}
                     width={width}
                     height={height - legendHeight - spaceBelowLegend}
                     padding={{
@@ -232,14 +233,11 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                           labelComponent={
                             <VictoryTooltip
                               horizontal
-                              dy={({ datum, scale, ...rest }) => {
-                                console.log({...rest, datum})
-                                return scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
+                              dy={({ datum, scale }) =>
+                                scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
                                 scale.y(datum._y)
                               }
-                              }
-                              groupComponent={<VictoryContainer/>}
-                              dx={0}
+                              dx={barWidth / 2}
                               constrainToVisibleArea
                               pointerLength={8}
                             />
