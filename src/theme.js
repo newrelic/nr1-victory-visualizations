@@ -10,6 +10,7 @@ export const baseLabelStyles = {
   fontWeight: 400,
   fontSize: 12,
   padding: BASE_SPACING,
+  fill: '#8e9494'
 };
 
 const centeredLabelStyles = { textAnchor: 'middle', ...baseLabelStyles };
@@ -38,7 +39,7 @@ export default {
       grid: {
         fill: 'none',
         stroke: colors.base.gray4,
-        strokeDasharray: '10, 5',
+        strokeDasharray: '2px, 4px',
         strokeLinecap,
         strokeLinejoin,
         pointerEvents: 'painted',
@@ -58,7 +59,7 @@ export default {
     style: {
       fontFamily: baseFontFamily,
       fontSize: 12,
-      color: typography.heading6.color,
+      fill: typography.heading6.color,
     },
     flyoutStyle: {
       strokeWidth: 0,
