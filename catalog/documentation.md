@@ -36,7 +36,9 @@ This visualization accepts a NRQL query in the form:
  ```
  SELECT [numeric attribute or aggregate of attribute] FROM [event] FACET [attribute1, attribute2, ...]
  ``` 
- The query requires the selected attribute to be either numeric or an aggregate function. The query also requires atleast 1 facet. The presence of 1 facet will give a standard bar chart view.
+You must select an attribute that's either numeric or an aggregate function. You must also specify at least one facet. 
+
+> **Note:** If you only specify one facet in your query, you'll have a standard bar chart.
 
 | NRQL feature   | Usage      | Required |
 | -------------- | ----------- | ----------- |
