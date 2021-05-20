@@ -12,7 +12,6 @@ import {
   VictoryChart,
   VictoryTheme,
   VictoryBar,
-  VictoryAxis,
   VictoryTooltip,
 } from 'victory';
 
@@ -62,38 +61,31 @@ export default class RangeChartVisualization extends React.Component {
    * @returns {{rangeData: {facetGroupName: string, y: number, y0: number, color: string}[], tickValues: string[]}}
    */
   transformData = (rawData) => {
-    const { facetGroupData, tickValues } = rawData.reduce(
-      (acc, { data, metadata }) => {
-        const facetGroupName = this.getFacetGroupName(metadata?.groups);
-        const dataValue = data?.[0]?.y;
+    const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
+      const facetGroupName = this.getFacetGroupName(metadata?.groups);
+      const dataValue = data?.[0]?.y;
 
-        acc.tickValues.add(facetGroupName);
+      acc[facetGroupName]
+        ? (acc[facetGroupName] = {
+            ...acc[facetGroupName],
+            y: dataValue,
+            x: facetGroupName,
+            label: `${facetGroupName} ${acc[facetGroupName].y0} - ${dataValue}`,
+          })
+        : (acc[facetGroupName] = {
+            color: metadata?.color,
+            y0: dataValue,
+          });
 
-        const isSecondSelectValue = Boolean(acc.facetGroupData[facetGroupName]);
-        isSecondSelectValue
-          ? (acc.facetGroupData[facetGroupName] = {
-              ...acc.facetGroupData[facetGroupName],
-              y: dataValue,
-              label: `${facetGroupName} ${acc.facetGroupData[facetGroupName].y0} - ${dataValue}`,
-            })
-          : (acc.facetGroupData[facetGroupName] = {
-              color: metadata?.color,
-              y0: dataValue,
-            });
+      return acc;
+    }, {});
 
-        return acc;
-      },
-      { facetGroupData: {}, tickValues: new Set() }
-    );
-
-    const rangeData = Object.entries(facetGroupData).map(
+    return Object.entries(facetGroupData).map(
       ([facetGroupName, facetGroupData]) => ({
         facetGroupName,
         ...facetGroupData,
       })
     );
-
-    return { rangeData, tickValues: Array.from(tickValues) };
   };
 
   render() {
@@ -127,7 +119,7 @@ export default class RangeChartVisualization extends React.Component {
               }
 
               try {
-                const { rangeData, tickValues } = this.transformData(data);
+                const rangeData = this.transformData(data);
                 const barCount = rangeData.length;
                 const barWidth = (width * 0.6) / barCount;
                 return (
@@ -139,8 +131,6 @@ export default class RangeChartVisualization extends React.Component {
                     height={height}
                     width={width}
                   >
-                    <VictoryAxis tickValues={tickValues} />
-                    <VictoryAxis dependentAxis />
                     <VictoryBar
                       barWidth={barWidth}
                       labelComponent={<VictoryTooltip />}
