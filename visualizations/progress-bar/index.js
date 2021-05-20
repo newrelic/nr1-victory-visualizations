@@ -10,6 +10,7 @@ import {
   AutoSizer,
 } from 'nr1';
 import ErrorState from '/src/error-state';
+import NrqlQueryError from '/src/nrql-query-error';
 import { baseLabelStyles } from '/src/theme';
 
 const BOUNDS = {
@@ -60,6 +61,20 @@ export default class ProgressBarVisualization extends React.Component {
     };
   };
 
+  validateNRQLInput = (data) => {
+    const {
+      data: seriesEntries,
+      metadata: { groups },
+    } = data[0];
+
+    const numOfAggregates = groups.filter(({ type }) => type === 'function')
+      .length;
+    const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
+    const isNonTimeseries = seriesEntries.length === 1;
+
+    return numOfAggregates === 1 && numOfFacets === 0 && isNonTimeseries;
+  };
+
   render() {
     const { nrqlQueries } = this.props;
 
@@ -88,6 +103,17 @@ export default class ProgressBarVisualization extends React.Component {
 
               if (error) {
                 return <ErrorState />;
+              }
+
+              const isInputValid = this.validateNRQLInput(data);
+
+              if (!isInputValid) {
+                return (
+                  <NrqlQueryError
+                    title="Unsupported NRQL query"
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
+                  />
+                );
               }
 
               const { percent, label, series } = this.transformData(data);
