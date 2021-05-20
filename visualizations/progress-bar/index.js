@@ -116,7 +116,7 @@ export default class ProgressBarVisualization extends React.Component {
                     }}
                   />
                   <VictoryAnimation duration={1000} data={percent}>
-                    {(percent, info) => (
+                    {(percent) => (
                       <VictoryLabel
                         textAnchor="middle"
                         verticalAnchor="middle"
