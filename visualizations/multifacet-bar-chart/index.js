@@ -10,6 +10,7 @@ import {
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
 import Legend from '../../src/legend';
+import NrqlQueryError from '../../src/nrql-query-error';
 
 import {
   Card,
@@ -42,7 +43,7 @@ const validateNRQLInput = (data) => {
  * @param {{x: string, y: number, color: string, segmentLabel: string}[][]} data
  * @returns number
  */
-const getNumBuckets = (data) => {
+const getBarCount = (data) => {
   return data.reduce((acc, series) => {
     // x on barSegment is the bar label which acts as a unique key added to the Set
     series.forEach((barSegment) => acc.add(barSegment.x));
@@ -178,10 +179,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
 
               if (!isInputValid) {
                 return (
-                  <ErrorState>
-                    NRQL Query is not valid. Please make sure to have 1
-                    aggregate function and 1-2 facets.
-                  </ErrorState>
+                  <NrqlQueryError
+                    title="Invalid NRQL Query"
+                    description="NRQL Query is not valid. Please make sure to have 1 aggregate function and 1-2 facets."
+                  />
                 );
               }
 
@@ -200,9 +201,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               const legendHeight = 50;
               const spaceBelowLegend = 16;
 
-              const numBarStacks = getNumBuckets(transformedData);
+              const barCount = getBarCount(transformedData);
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
-              const barAndPaddingWidth = xDomainWidth / numBarStacks;
+              // set the width of stacked bars so that they take up about 60% of the width
+              const barWidth = (xDomainWidth * 0.6) / barCount;
 
               return (
                 <>
@@ -217,7 +219,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                       right: chartRightPadding,
                     }}
                     domainPadding={{
-                      x: barAndPaddingWidth / 2,
+                      x: barWidth / 2,
                     }}
                     theme={theme}
                   >
@@ -226,6 +228,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
+                          barWidth={barWidth}
                           labelComponent={
                             <Tooltip
                               horizontal
@@ -287,3 +290,4 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
+
