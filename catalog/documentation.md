@@ -99,7 +99,7 @@ You must supply a percentage or fractional value of two attributes. For example,
 
 | NRQL feature   | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `percentage(aggregate(attribute), WHERE...)` or numeric attribute | fill of circle over 100     | Required (`numeric` less than 1, aggregate functions or mathematical operations that return less a percentage or fraction)     |
+| `percentage(aggregate(attribute), WHERE...)` or numeric attribute | Fill of circle over 100     | Required (`numeric` less than 1, aggregate functions or mathematical operations that return less a percentage or fraction)     |
 
 ## Learn More
 
