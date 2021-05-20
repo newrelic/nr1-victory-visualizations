@@ -5,6 +5,7 @@ import {
   VictoryChart,
   VictoryContainer,
   VictoryStack,
+  VictoryAxis,
 } from 'victory';
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
@@ -18,6 +19,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+import theme from '../../src/theme';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -217,7 +219,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     domainPadding={{
                       x: barAndPaddingWidth / 2,
                     }}
+                    theme={theme}
                   >
+                    <VictoryAxis />
+                    <VictoryAxis dependentAxis />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
