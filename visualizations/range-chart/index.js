@@ -128,9 +128,13 @@ export default class RangeChartVisualization extends React.Component {
 
               try {
                 const { rangeData, tickValues } = this.transformData(data);
+                const barCount = rangeData.length;
+                const barWidth = (width * 0.6) / barCount;
                 return (
                   <VictoryChart
-                    domainPadding={15}
+                    domainPadding={{
+                      x: barWidth / 2,
+                    }}
                     theme={VictoryTheme.material}
                     height={height}
                     width={width}
@@ -138,6 +142,7 @@ export default class RangeChartVisualization extends React.Component {
                     <VictoryAxis tickValues={tickValues} />
                     <VictoryAxis dependentAxis />
                     <VictoryBar
+                      barWidth={barWidth}
                       labelComponent={<VictoryTooltip />}
                       style={{
                         data: {
@@ -189,5 +194,4 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
 
