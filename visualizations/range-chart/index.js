@@ -8,7 +8,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
+import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
 import theme from '../../src/theme';
@@ -125,6 +125,8 @@ export default class RangeChartVisualization extends React.Component {
                     width={width}
                     theme={theme}
                   >
+                    <VictoryAxis />
+                    <VictoryAxis dependentAxis />
                     <VictoryBar
                       barWidth={barWidth}
                       labelComponent={<VictoryTooltip />}
