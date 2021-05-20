@@ -8,14 +8,10 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import {
-  VictoryChart,
-  VictoryTheme,
-  VictoryBar,
-  VictoryTooltip,
-} from 'victory';
+import { VictoryChart, VictoryBar, VictoryAxis, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
+import theme from '../../src/theme';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -127,9 +123,9 @@ export default class RangeChartVisualization extends React.Component {
                     domainPadding={{
                       x: barWidth / 2,
                     }}
-                    theme={VictoryTheme.material}
                     height={height}
                     width={width}
+                    theme={theme}
                   >
                     <VictoryBar
                       barWidth={barWidth}
@@ -184,4 +180,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
