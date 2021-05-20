@@ -1,7 +1,7 @@
 import React from 'react';
 import { VictoryTooltip } from 'victory';
-
-const TOOLTIP_PADDING = 16;
+import colors from '../colors';
+import theme from '../theme';
 
 class Tooltip extends React.Component {
   static defaultEvents = VictoryTooltip.defaultEvents;
@@ -13,35 +13,21 @@ class Tooltip extends React.Component {
 
     // this sets the y position of the tooltip 
     const scaledY = setY 
-      ? scale.y(setY(datum)) + TOOLTIP_PADDING/2
+      ? scale.y(setY(datum)) 
       : datum.y
 
     return (
       <VictoryTooltip
         {...defaultProps}
         constrainToVisibleArea
+        style={theme.tooltip.style}
         flyoutStyle={{
-          stroke: datum?.color ?? 'var(--nr1--colors--background--surface)', 
-          strokeWidth: 2, 
-          fill: 'var(--nr1--colors--background--surface)',
-          filter: 'drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))'
+          ...theme.tooltip.flyoutStyle,
+          stroke: datum.color ?? colors.background.surface, 
+          strokeWidth: 1,
         }}
-        y={scaledY}
-        flyoutPadding={TOOLTIP_PADDING}
-        style={[
-          {
-            color: 'var(--nr1--typography--heading--6--color)',
-            fontSize: '12px',
-            fontFamily: 'var(--nr1--typography--heading--6--font-family)',
-            fontWeight: 'var(--nr1--typography--heading--6--font-weight)'
-          },
-          {
-            color: 'var(--nr1--colors--text--secondary)',
-            fontSize: '12px',
-            fontFamily: 'var(--nr1--typography--body--1--font-family)',
-            baselineShift: 'sub',
-          },
-        ]}
+        flyoutPadding={theme.tooltip.flyoutPadding}
+        y={scaledY} 
       />
     );
   }
