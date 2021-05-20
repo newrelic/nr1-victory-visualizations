@@ -10,6 +10,7 @@ import {
   AutoSizer,
 } from 'nr1';
 import ErrorState from '/src/error-state';
+import { baseLabelStyles } from '/src/theme';
 
 const BOUNDS = {
   X: 400,
@@ -125,7 +126,7 @@ export default class ProgressBarVisualization extends React.Component {
                           x={CHART_WIDTH / 2}
                           y={CHART_HEIGHT / 2}
                           text={`${Math.round(percent)}%`}
-                          style={{ fontSize: 45 }}
+                          style={{ ...baseLabelStyles, fontSize: 45 }}
                         />
                       )}
                     </VictoryAnimation>
@@ -135,7 +136,7 @@ export default class ProgressBarVisualization extends React.Component {
                       x={CHART_WIDTH / 2}
                       y={BOUNDS.Y - LABEL_SIZE}
                       textAnchor="middle"
-                      style={{ fontSize: LABEL_SIZE }}
+                      style={{ ...baseLabelStyles, fontSize: LABEL_SIZE }}
                     />
                   </svg>
                 </div>
