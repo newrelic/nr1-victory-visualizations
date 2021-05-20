@@ -36,12 +36,10 @@ export default class RangeChartVisualization extends React.Component {
    * @return {string}
    */
   getFacetGroupName = (groups) => {
-    return groups.reduce((stringAcc, { type, value }) => {
-      if (type === 'facet') {
-        stringAcc = stringAcc === '' ? value : `${stringAcc}, ${value}`;
-      }
-      return stringAcc;
-    }, '');
+    return groups
+      .filter(({ type }) => type === 'facet')
+      .reduce((acc, { value }) => [...acc, value], [])
+      .join(', ');
   };
 
   /**
