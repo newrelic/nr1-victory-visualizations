@@ -104,5 +104,5 @@ You must supply a percentage or fractional value of two attributes. For example,
 ## Learn More
 
 * To learn more about custom visualizations, read through our [introduction to the topic](https://developer.newrelic.com/explore-docs/custom-viz/) or some of our [guides for building on New Relic](https://developer.newrelic.com/build-apps/).
-* To learn more about these visualizations, you can visit our repo [`nr1-victory-visualizations`](https://github.com/newrelic/nr1-victory-visualizations). 
+* To learn more about these visualizations, visit our [`repo`](https://github.com/newrelic/nr1-victory-visualizations).
 * To learn more about the attributes and events available in NRQL, visit the [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/) on docs.newrelic.com. 
