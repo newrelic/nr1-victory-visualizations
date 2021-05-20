@@ -36,8 +36,6 @@ const truncateLabel = (
     0
   );
 
-  console.log({ text, guessedTextWidth, allocatedWidth, approxCharWidth });
-
   return guessedTextWidth > allocatedWidth
     ? `${getTruncatedText(chars, allocatedWidth, { approxCharWidth })}...`
     : text;
