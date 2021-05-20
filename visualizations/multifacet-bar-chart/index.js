@@ -9,6 +9,7 @@ import {
 import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
 import Legend from '../../src/legend';
+import NrqlQueryError from '../../src/nrql-query-error';
 
 import {
   Card,
@@ -176,10 +177,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
 
               if (!isInputValid) {
                 return (
-                  <ErrorState>
-                    NRQL Query is not valid. Please make sure to have 1
-                    aggregate function and 1-2 facets.
-                  </ErrorState>
+                  <NrqlQueryError
+                    title="Invalid NRQL Query"
+                    description="NRQL Query is not valid. Please make sure to have 1 aggregate function and 1-2 facets."
+                  />
                 );
               }
 
