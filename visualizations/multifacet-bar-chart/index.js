@@ -210,7 +210,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               return (
                 <>
                   <VictoryChart
-                    containerComponent={<VictoryContainer responsive={false}/>}
+                    containerComponent={<VictoryContainer responsive={false} />}
                     width={width}
                     height={height - legendHeight - spaceBelowLegend}
                     padding={{
@@ -224,8 +224,18 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     }}
                     theme={theme}
                   >
-                    <VictoryAxis />
-                    <VictoryAxis dependentAxis />
+                    <VictoryAxis
+                      style={{
+                        grid: {
+                          stroke: 'none',
+                        },
+                      }}
+                    />
+                    <VictoryAxis
+                      dependentAxis
+                      tickCount={12}
+                      tickFormat={(t) => `${Math.round(t * 10) / 10}`}
+                    />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
@@ -240,6 +250,11 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                               dx={barWidth / 2}
                               constrainToVisibleArea
                               pointerLength={8}
+                              flyoutStyle={{
+                                stroke: ({ datum }) => datum.color, 
+                                strokeWidth: 2, 
+                                filter: 'none'
+                              }}
                             />
                           }
                           data={series}
