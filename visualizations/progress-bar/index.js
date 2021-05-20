@@ -11,6 +11,16 @@ import {
 } from 'nr1';
 import ErrorState from '/src/error-state';
 
+const BOUNDS = {
+  X: 400,
+  Y: 400,
+};
+
+const LABEL_SIZE = 24;
+const LABEL_PADDING = 10;
+const CHART_WIDTH = BOUNDS.X;
+const CHART_HEIGHT = BOUNDS.Y - LABEL_SIZE - LABEL_PADDING;
+
 export default class ProgressBarVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
@@ -32,14 +42,21 @@ export default class ProgressBarVisualization extends React.Component {
    * FACET into a for our visualization works well with.
    */
   transformData = (rawData) => {
-    const percent = rawData[0].data[0].y * 100;
-    const color = rawData[0].metadata.color;
+    const [series] = rawData;
+
+    const {
+      data,
+      metadata: { color, name: label },
+    } = series;
+
+    const percent = data[0].y * 100;
+
     return {
       percent,
-      color,
-      pieChartData: [
-        { x: 'progress', y: percent },
-        { x: 'remainder', y: 100 - percent },
+      label,
+      series: [
+        { x: 'progress', y: percent, color },
+        { x: 'remainder', y: 100 - percent, color: 'transparent' },
       ],
     };
   };
@@ -74,44 +91,52 @@ export default class ProgressBarVisualization extends React.Component {
                 return <ErrorState />;
               }
 
-              const transformedData = this.transformData(data);
+              const { percent, label, series } = this.transformData(data);
 
               return (
                 <div>
-                  <svg viewBox="0 0 400 400" width={width} height={height}>
+                  <svg
+                    viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
+                    width={width}
+                    height={height}
+                    className="ProgressBarChart"
+                  >
                     <VictoryPie
                       standalone={false}
                       animate={{ duration: 1000 }}
-                      width={400}
-                      height={400}
-                      data={transformedData.pieChartData}
-                      innerRadius={120}
+                      data={series}
+                      width={CHART_WIDTH}
+                      height={CHART_HEIGHT}
+                      padding={10}
+                      innerRadius={135}
                       cornerRadius={25}
                       labels={() => null}
                       style={{
                         data: {
-                          fill: ({ datum }) => {
-                            return datum.x === 'progress'
-                              ? transformedData.color
-                              : 'transparent';
-                          },
+                          fill: ({ datum }) => datum.color,
                         },
                       }}
                     />
-                    <VictoryAnimation duration={1000} data={transformedData}>
-                      {(newProps) => {
-                        return (
-                          <VictoryLabel
-                            textAnchor="middle"
-                            verticalAnchor="middle"
-                            x={200}
-                            y={200}
-                            text={`${Math.round(newProps.percent)}%`}
-                            style={{ fontSize: 45 }}
-                          />
-                        );
-                      }}
+                    <VictoryAnimation duration={1000} data={percent}>
+                      {(percent, info) => (
+                        <VictoryLabel
+                          textAnchor="middle"
+                          verticalAnchor="middle"
+                          x={CHART_WIDTH / 2}
+                          y={CHART_HEIGHT / 2}
+                          text={`${Math.round(percent)}%`}
+                          style={{ fontSize: 45 }}
+                        />
+                      )}
                     </VictoryAnimation>
+                    <VictoryLabel
+                      text={label}
+                      lineHeight={1}
+                      x={CHART_WIDTH / 2}
+                      y={BOUNDS.Y - LABEL_SIZE}
+                      textAnchor="middle"
+                      style={{ fontSize: LABEL_SIZE }}
+                    />
                   </svg>
                 </div>
               );
