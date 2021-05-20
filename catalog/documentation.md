@@ -48,7 +48,7 @@ You must select an attribute that's either numeric or an aggregate function. You
 
 
 ## Range Chart
-This visualization allows users to visualize the range of numeric attributes grouped by a facet. 
+Visualize the range of numeric attributes grouped by a facet. 
 
 For example, the query `FROM Transaction SELECT percentile(duration, 5), percentile(duration, 95)  FACET dateOf(timestamp) SINCE 7 days ago` will show the given 95th percentile of the duration as the top bar and 5th percentile of the duration as the bottom bar for each day of the last week. 
 
