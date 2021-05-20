@@ -25,8 +25,8 @@ To use the visualization, provide the following properties:
 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Multifacet NRQL Data Details](#multifacet-nrql-data-details) for more details on accepted NRQL queries.      | Required    |
-| `accountId`   | Associated account ID for the data you wish to plot. | Required     |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Multifacet NRQL Data Details](#multifacet-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
+| `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 
 
 ### Multifacet NRQL Data Details
@@ -36,15 +36,36 @@ This visualization accepts a NRQL query in the form:
  ```
  SELECT [numeric attribute or aggregate of attribute] FROM [event] FACET [attribute1, attribute2, ...]
  ``` 
+
 You must select an attribute that's either numeric or an aggregate function. You must also specify at least one facet. 
 
 > **Note:** If you only specify one facet in your query, you'll have a standard bar chart.
 
-| NRQL feature   | Usage      | Required |
+| NRQL feature   | Usage      | Type |
 | -------------- | ----------- | ----------- |
-| All but last facet attribute     | X axis label or bar on bar chart      | Required (`string` or `boolean`)     |
-| Last facet attribute   | Bar color or segment of bar on bar chart       | Required (`string` or `boolean`)       |
-| Aggregate or numeric attribute   | Y axis value or bar height       | Required (`numeric`)       |
+| All but last facet attribute     | X axis label or bar on bar chart      | `string` or `boolean`     |
+| Last facet attribute   | Bar color or segment of bar on bar chart       | `string` or `boolean`       |
+| Aggregate    | Y axis value or bar height       | aggregate function    |
+
+#### Example NRQL Queries
+
+```
+SELECT count(*) FROM PageAction WHERE actionName = 'clickSignUpButton' FACET pageUrl, deviceType 
+```
+
+In the above query, you can visualize:
+* number of times a user clicked the sign up button on your site
+* what pages those events occurred on
+* what devices people tend to click the button 
+
+```
+SELECT average(duration) FROM TransactionError FACET errorType, appName
+```
+
+In the above query, you can see: 
+* average duration for transaction errors for each `appName`
+* how the duration is broken up for each `errorType`
+
 
 
 ## Range Chart
@@ -61,8 +82,8 @@ Edit these values in the Custom Visualizations Nerdlet or directly in the visual
 To use the visualization, provide the following properties: 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Range Chart NRQL Data Details](#range-chart-nrql-data-details) for more details on accepted NRQL queries.      | Required    |
-| `accountId`   | Associated account ID for the data you wish to plot. | Required     |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Range Chart NRQL Data Details](#range-chart-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
+| `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 
 
 ### Range Chart NRQL Data Details
@@ -75,11 +96,31 @@ This visualization accepts a NRQL query in the form:
 
 You must supply two aggregate functions to act as the top and bottom of the range for a facet. 
 
-| NRQL feature   | Usage      | Required |
+| NRQL feature   | Usage      | Type |
 | -------------- | ----------- | ----------- |
-| First aggregate     | Y axis position of top of range bar      | Required (`numeric` or aggregate)     |
-| Second aggregate   | Y axis position of bottom of range bar       | Required (`numeric` or aggregate)        |
-| Facet     | X axis position or x axis label   | Required (`string` or `boolean`)       |
+| First aggregate     | Y axis position of top of range bar      | aggregate function     |
+| Second aggregate   | Y axis position of bottom of range bar       | aggregate function       |
+| Facet     | X axis position or x axis label   | `string` or `boolean`      |
+
+#### Example NRQL Queries
+
+```
+SELECT max(duration), min(duration) FROM Transaction FACET appName SINCE 1 day ago
+```
+
+In the above query, you will see: 
+* the max duration since a day ago for each appName
+* the min duration since a day ago for each appName
+* how much of a difference there is between the min and the max
+
+```
+SELECT average(duration) + stddev(duration), average(duration) - stddev(duration) FROM Transaction FACET appName SINCE 1 day ago
+```
+
+In the above query, you will see: 
+* the range of one standard deviation above the average duration
+* the range of one standard deviation below the average duration
+* how much `Transaction` events vary for each app
 
 ## Progress Bar
 
@@ -100,8 +141,8 @@ Edit these values in the Custom Visualizations Nerdlet or directly in the visual
 To use the visualization, provide the following properties: 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
-| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Progress Bar NRQL Data Details](#progress-bar-nrql-data-details) for more details on accepted NRQL queries.      | Required    |
-| `accountId`   | Associated account ID for the data you wish to plot. | Required     |
+| `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Progress Bar NRQL Data Details](#progress-bar-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
+| `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 
 
 ### Progress Bar NRQL Data Details
@@ -114,12 +155,25 @@ This visualization accepts a NRQL query in the form:
 
 You must supply a percentage or fractional value of two attributes. For example, `SELECT filter(count(*), WHERE duration < 1)/filter(count(*), WHERE duration < 2) FROM PageView` gives the number of `PageView` events that last less than one second over the number of events that last less than two seconds. 
 
-| NRQL feature   | Usage      | Required |
+| NRQL feature   | Usage      | Type |
 | -------------- | ----------- | ----------- |
-| `percentage(aggregate(attribute), WHERE...)` or numeric attribute | Fill of circle over 100     | Required (`numeric` less than 1, aggregate functions or mathematical operations that return less a percentage or fraction)     |
+| `percentage(aggregate(attribute), WHERE...)` or numeric attribute | Fill of circle over 100     | aggregate functions or mathematical operations that return a percentage or fraction value less than 1     |
+
+#### Example NRQL Queries
+
+```
+SELECT percentage(count(*), WHERE actionName = 'clickButton') FROM PageAction SINCE 2 weeks ago
+```
+In the above query, you will see what percentage of actions on your site were a user clicking a button!
+
+```
+SELECT average(StorageDataUsagePercent) FROM ContainerSamples 
+```
+In the above query, you can use the percentage value of `StorageDataUsagePercent` to visualize how much data is being used on average! 
+
 
 ## Learn More
 
 * To learn more about custom visualizations, read through our [introduction to the topic](https://developer.newrelic.com/explore-docs/custom-viz/) or some of our [guides for building on New Relic](https://developer.newrelic.com/build-apps/).
 * To learn more about these visualizations, visit our [`repo`](https://github.com/newrelic/nr1-victory-visualizations).
-* To learn more about the attributes and events available in NRQL, visit the [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/) on docs.newrelic.com. 
+* To learn more about the attributes and events available in NRQL, see our [Attribute Dictionary](https://docs.newrelic.com/attribute-dictionary/).
