@@ -19,7 +19,9 @@ For example, if you query `SELECT average(duration) FROM Transaction FACET appNa
 This is ideal for visualizing related facets with respect to some numeric or aggregate attribute. 
 
 ### Props Config
-These are the values that are configurable by a user via the Custom Visualizations Nerdlet or by editing on a dashboard. In order to use the visualization, you must provide: 
+Edit these values in the Custom Visualizations Nerdlet or directly in the visualization's dashboard widget. 
+
+To use the visualization, provide the following properties: 
 
 | Prop  | Usage      | Required |
 | -------------- | ----------- | ----------- |
