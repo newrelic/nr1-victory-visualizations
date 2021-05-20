@@ -11,4 +11,8 @@ export default {
     gray9: 'var(--nr1--base-colors--ui--gray--9)',
     gray10: 'var(--nr1--base-colors--ui--gray--10)',
   },
+  background: {
+    app: 'var(--nr1--colors--background--app)',
+    surface: 'var(--nr1--colors--background--surface)',
+  },
 };
