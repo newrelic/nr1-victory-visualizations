@@ -234,7 +234,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                               horizontal
                               dy={({ datum, scale }) =>
                                 scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
-                                scale.y(datum.y)
+                                scale.y(datum._y1)
                               }
                               constrainToVisibleArea
                               pointerLength={8}
