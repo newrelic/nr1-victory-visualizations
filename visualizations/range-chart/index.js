@@ -90,18 +90,25 @@ export default class RangeChartVisualization extends React.Component {
   };
 
   validateNRQLInput = (data) => {
-    const setOfAggregators = data.reduce((acc, curr) => {
-      curr?.metadata?.groups.forEach((group) => {
-        if (group?.type === 'function') {
-          acc.add(group?.displayName);
-        }
-      });
-      return acc;
-    }, new Set());
+    const { setOfAggregators, setOfFacets } = data.reduce(
+      (acc, curr) => {
+        curr?.metadata?.groups.forEach((group) => {
+          if (group?.type === 'function') {
+            acc.setOfAggregators.add(group?.displayName);
+          }
+          if (group?.type === 'facet') {
+            acc.setOfFacets.add(group?.displayName);
+          }
+        });
+        return acc;
+      },
+      { setOfAggregators: new Set(), setOfFacets: new Set() }
+    );
 
     const numOfAggregates = setOfAggregators.size;
+    const numOfFacets = setOfFacets.size;
 
-    return numOfAggregates === 2;
+    return numOfAggregates === 2 && numOfFacets > 0;
   };
 
   render() {
@@ -140,7 +147,7 @@ export default class RangeChartVisualization extends React.Component {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 2 aggregate functions and 1 facet."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 2 aggregate functions and at least 1 facet."
                   />
                 );
               }
@@ -211,3 +218,4 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
+
