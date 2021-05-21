@@ -5,9 +5,10 @@ import {
   VictoryChart,
   VictoryContainer,
   VictoryStack,
+  VictoryAxis,
+  VictoryTooltip,
 } from 'victory';
 import ErrorState from '../../src/error-state';
-import Tooltip from '../../src/tooltip';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
 
@@ -19,6 +20,8 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+
+import theme from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 /**
@@ -216,17 +219,39 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     domainPadding={{
                       x: barWidth / 2,
                     }}
+                    theme={theme}
                   >
+                    <VictoryAxis
+                      style={{
+                        grid: {
+                          stroke: 'none',
+                        },
+                      }}
+                    />
+                    <VictoryAxis
+                      dependentAxis
+                      tickCount={12}
+                      tickFormat={(t) => `${Math.round(t * 10) / 10}`}
+                    />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
                           barWidth={barWidth}
                           labelComponent={
-                            <Tooltip
+                            <VictoryTooltip
                               horizontal
-                              setY={(datum) =>
-                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              dy={({ datum, scale }) =>
+                                scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
+                                scale.y(datum._y)
                               }
+                              dx={barWidth / 2}
+                              constrainToVisibleArea
+                              pointerLength={8}
+                              flyoutStyle={{
+                                stroke: ({ datum }) => datum.color, 
+                                strokeWidth: 2, 
+                                filter: 'none'
+                              }}
                             />
                           }
                           data={series}
@@ -282,4 +307,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-

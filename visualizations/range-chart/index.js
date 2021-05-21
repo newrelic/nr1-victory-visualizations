@@ -8,15 +8,12 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import {
-  VictoryChart,
-  VictoryTheme,
-  VictoryBar,
-  VictoryTooltip,
-} from 'victory';
+import { VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
+
+import theme from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 export default class RangeChartVisualization extends React.Component {
@@ -150,9 +147,9 @@ export default class RangeChartVisualization extends React.Component {
                     domainPadding={{
                       x: barWidth / 2,
                     }}
-                    theme={VictoryTheme.material}
                     height={height}
                     width={width}
+                    theme={theme}
                   >
                     <VictoryBar
                       barWidth={barWidth}
@@ -207,4 +204,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
