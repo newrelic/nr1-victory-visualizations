@@ -245,9 +245,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               const domainProps = { ...minDomain, ...maxDomain };
 
               const label =
-                yAxisConfig.label ||
-                `${yAxisLabel}${typeToUnit(unitType)}` ||
-                '';
+                yAxisConfig.label || `${yAxisLabel}${typeToUnit(unitType)}`;
               const maxYAxisWidth = 50;
               const yAxisPadding = 16;
 
