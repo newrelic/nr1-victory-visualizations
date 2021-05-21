@@ -21,9 +21,7 @@ import {
   AutoSizer,
 } from 'nr1';
 import theme from '../../src/theme';
-import TYPE_TO_UNITS from '../../src/utils/units';
-import numeral from 'numeral';
-import { format } from 'date-fns';
+import { TYPES_TO_UNITS, formatTicks } from '../../src/utils/units';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -40,14 +38,6 @@ const validateNRQLInput = (data) => {
   return false;
 };
 
-const formatTicks = ({ unit, t }) => {
-  if (unit === 'TIMESTAMP') {
-    return format(new Date(t), 'MM/dd/yyyy HH:mm');
-  }
-  const tFormatted = t > 1000 ? numeral(t).format('0a') : t;
-
-  return `${tFormatted}${TYPE_TO_UNITS[unit]}`;
-};
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
  * with a stack of "bar segments" being one "bar".
@@ -145,7 +135,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
     }, {});
 
     // get the units for the measurement
-    const unit = data[0].metadata.units_data.y;
+    const unit = rawData[0].metadata.units_data.y;
 
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
@@ -153,7 +143,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       return Object.entries(entry).map(([barLabel, value]) => ({
         label: [
           `${segmentLabel}`,
-          `${value?.toLocaleString() ?? ''}${TYPE_TO_UNITS[unit]}`,
+          `${value?.toLocaleString() ?? ''}${TYPES_TO_UNITS[unit]}`,
         ],
         segmentLabel,
         x: barLabel,
