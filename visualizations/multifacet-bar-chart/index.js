@@ -281,6 +281,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
+                          key={series.segmentLabel}
                           barWidth={barWidth}
                           labelComponent={
                             <VictoryTooltip
