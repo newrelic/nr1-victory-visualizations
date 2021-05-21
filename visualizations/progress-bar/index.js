@@ -12,6 +12,7 @@ import {
 import ErrorState from '/src/error-state';
 import NrqlQueryError from '/src/nrql-query-error';
 import { baseLabelStyles } from '/src/theme';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 const BOUNDS = {
   X: 400,
@@ -62,14 +63,12 @@ export default class ProgressBarVisualization extends React.Component {
   };
 
   validateNRQLInput = (data) => {
-    const {
-      data: seriesEntries,
-      metadata: { groups },
-    } = data[0];
+    const { data: seriesEntries } = data[0];
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
 
-    const numOfAggregates = groups.filter(({ type }) => type === 'function')
-      .length;
-    const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
+    const numOfAggregates = uniqueAggregates.size;
+    const numOfFacets = uniqueFacets.size;
     const isNonTimeseries = seriesEntries.length === 1;
 
     return numOfAggregates === 1 && numOfFacets === 0 && isNonTimeseries;
@@ -194,3 +193,4 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
+
