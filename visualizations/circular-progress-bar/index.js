@@ -23,7 +23,7 @@ const LABEL_PADDING = 10;
 const CHART_WIDTH = BOUNDS.X;
 const CHART_HEIGHT = BOUNDS.Y - LABEL_SIZE - LABEL_PADDING;
 
-export default class ProgressBarVisualization extends React.Component {
+export default class CircularProgressBar extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -124,7 +124,7 @@ export default class ProgressBarVisualization extends React.Component {
                   viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
                   width={width}
                   height={height}
-                  className="ProgressBarChart"
+                  className="CircularProgressBar"
                 >
                   <VictoryPie
                     standalone={false}
@@ -186,8 +186,7 @@ const EmptyState = () => (
         type={HeadingText.TYPE.HEADING_4}
       >
         This Visualization supports NRQL queries with a single SELECT clause
-        returning a percentage value (0 to 100 rathern than 0 to 1). For
-        example:
+        returning a percentage value (0 to 100 rather than 0 to 1). For example:
       </HeadingText>
       <code>
         {'FROM Transaction SELECT percentage(count(*), WHERE duration < 0.1)'}

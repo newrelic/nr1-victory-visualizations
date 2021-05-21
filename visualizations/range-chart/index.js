@@ -8,10 +8,12 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryBar, VictoryAxis, VictoryTooltip } from 'victory';
+import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
 import theme from '../../src/theme';
+import truncateLabel from '../../src/utils/truncate-label';
+import { getFacetLabel } from '../../src/utils/facets';
 import { typeToUnit, formatTicks } from '../../src/utils/units';
 
 export default class RangeChartVisualization extends React.Component {
@@ -34,21 +36,6 @@ export default class RangeChartVisualization extends React.Component {
   };
 
   /**
-   * Builds up a unique identifier with the facet atrribute values from the FACET clause in NRQL
-   *
-   * @param {{type: string, value: string}[]} groups
-   * @return {string}
-   */
-  getFacetGroupName = (groups) => {
-    return groups.reduce((stringAcc, { type, value }) => {
-      if (type === 'facet') {
-        stringAcc = stringAcc === '' ? value : `${stringAcc}, ${value}`;
-      }
-      return stringAcc;
-    }, '');
-  };
-
-  /**
    * Transforms from NRQL data output to VictoryBar input format.
    *
    * Uses `metdata.color` for the bar fill colors.
@@ -65,7 +52,7 @@ export default class RangeChartVisualization extends React.Component {
       other: { visible },
     } = this.props;
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
-      const facetGroupName = this.getFacetGroupName(metadata?.groups);
+      const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
 
       const unitType = metadata.units_data.y;
@@ -143,7 +130,11 @@ export default class RangeChartVisualization extends React.Component {
                     width={width}
                     theme={theme}
                   >
-                    <VictoryAxis />
+                    <VictoryAxis
+                      tickFormat={(label) =>
+                        truncateLabel(label, width / barCount)
+                      }
+                    />
                     <VictoryAxis
                       dependentAxis
                       tickFormat={(t) => formatTicks({ unitType, t })}

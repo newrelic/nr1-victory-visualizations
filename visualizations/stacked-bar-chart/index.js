@@ -1,16 +1,21 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryContainer,
   VictoryStack,
-  VictoryAxis,
   VictoryTooltip,
 } from 'victory';
 import ErrorState from '../../src/error-state';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
+
+import theme from '../../src/theme';
+import truncateLabel from '../../src/utils/truncate-label';
+import { getFacetLabel } from '../../src/utils/facets';
+import { formatTicks, typeToUnit } from '../../src/utils/units';
 
 import {
   Card,
@@ -20,8 +25,6 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import theme from '../../src/theme';
-import { formatTicks, typeToUnit } from '../../src/utils/units';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -53,7 +56,7 @@ const getBarCount = (data) => {
   }, new Set()).size;
 };
 
-export default class MultiFacetBarChartVisualization extends React.Component {
+export default class StackedBarChart extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -89,18 +92,12 @@ export default class MultiFacetBarChartVisualization extends React.Component {
    * @returns {{barLabel: string, segmentLabel: string}}
    */
   getFacetLabels = (groups) => {
-    const facetEntries = groups?.filter(({ type }) => type === 'facet');
-    return facetEntries.reduce(
-      (acc, { value }, index) => {
-        if (index === facetEntries?.length - 1) {
-          acc.segmentLabel = value;
-        } else {
-          acc.barLabel = acc.barLabel ? `${acc.barLabel}, ${value}` : value;
-        }
-        return acc;
-      },
-      { barLabel: undefined, segmentLabel: undefined }
-    );
+    const facetGroups = groups.filter(({ type }) => type === 'facet');
+
+    return {
+      barLabel: getFacetLabel(facetGroups.slice(0, -1)),
+      segmentLabel: facetGroups[facetGroups.length - 1].value,
+    };
   };
 
   /**
@@ -180,7 +177,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer className="MultiFacetBarChartVisualization">
+      <AutoSizer className="StackedBarChart">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
@@ -268,6 +265,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     {...domainProps}
                   >
                     <VictoryAxis
+                      tickFormat={(label) =>
+                        truncateLabel(label, xDomainWidth / barCount)
+                      }
                       style={{
                         grid: {
                           stroke: 'none',

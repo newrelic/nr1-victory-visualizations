@@ -1,7 +1,7 @@
 {
   "schemaType": "VISUALIZATION",
   "id": "range-chart",
-  "displayName": "RangeChart",
+  "displayName": "Range chart",
   "description": "",
   "configuration": [
     {
@@ -38,4 +38,3 @@
     }
   ]
 }
-
