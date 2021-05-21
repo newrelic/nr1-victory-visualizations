@@ -46,10 +46,11 @@ export default class ProgressBarVisualization extends React.Component {
   transformData = (data) => {
     const {
       data: [series],
-      metadata: { color, name: label },
+      metadata: { color: colorFromData, name: label },
     } = data[0];
 
     const percent = series.y * 100;
+    const color = this.getColor(percent, colorFromData);
 
     return {
       percent,
@@ -59,6 +60,24 @@ export default class ProgressBarVisualization extends React.Component {
         { x: 'remainder', y: 100 - percent, color: 'transparent' },
       ],
     };
+  };
+
+  getColor = (value, colorFromData) => {
+    const {
+      thresholds: { criticalThreshold, greenIsHigh },
+    } = this.props;
+
+    const threshold = Number.parseFloat(criticalThreshold);
+
+    if (Number.isNaN(threshold)) {
+      return colorFromData;
+    }
+
+    if (greenIsHigh) {
+      return value > threshold ? 'green' : 'red';
+    }
+
+    return value < threshold ? 'green' : 'red';
   };
 
   validateNRQLInput = (data) => {
@@ -135,11 +154,7 @@ export default class ProgressBarVisualization extends React.Component {
                     innerRadius={135}
                     cornerRadius={25}
                     labels={() => null}
-                    style={{
-                      data: {
-                        fill: ({ datum }) => datum.color,
-                      },
-                    }}
+                    style={{ data: { fill: ({ datum }) => datum.color } }}
                   />
                   <VictoryAnimation duration={1000} data={percent}>
                     {(percent) => (

@@ -22,6 +22,25 @@
           "type": "nrql"
         }
       ]
+    },
+    {
+      "name": "thresholds",
+      "title": "Thresholds",
+      "type": "namespace",
+      "items": [
+        {
+          "name": "criticalThreshold",
+          "title": "Critical threshold",
+          "description": "Value at which the color switches to red",
+          "type": "number"
+        },
+        {
+          "name": "greenIsHigh",
+          "title": "Above threshold is green",
+          "description": "If checked, values above the threshold display as green and values at or below the threshold display as red",
+          "type": "boolean"
+        }
+      ]
     }
   ]
 }
