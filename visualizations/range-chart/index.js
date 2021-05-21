@@ -136,7 +136,7 @@ export default class RangeChartVisualization extends React.Component {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 2 aggregate functions and at least 1 facet."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 2 aggregate functions in the SELECT clause and at least one FACET clause."
                   />
                 );
               }
