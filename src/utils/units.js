@@ -31,7 +31,7 @@ const formatDecimals = (tick) => {
   return tick;
 };
 
-export const typeToUnit = (type) => TYPES_TO_UNITS[type];
+export const typeToUnit = (unitType) => TYPES_TO_UNITS[unitType];
 
 export const formatTicks = ({ unitType, tick }) => {
   if (unitType === 'TIMESTAMP') {
