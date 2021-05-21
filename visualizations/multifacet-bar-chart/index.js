@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  VictoryAxis,
   VictoryBar,
   VictoryChart,
   VictoryContainer,
@@ -10,6 +11,9 @@ import ErrorState from '../../src/error-state';
 import Tooltip from '../../src/tooltip';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
+
+import theme from '../../src/theme';
+import truncateLabel from '../../src/utils/truncate-label';
 
 import {
   Card,
@@ -23,8 +27,9 @@ import {
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
 
-  const numOfAggregates = groups.filter(({ type }) => type === 'function')
-    .length;
+  const numOfAggregates = groups.filter(
+    ({ type }) => type === 'function'
+  ).length;
   const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
 
   if (numOfAggregates === 1 && numOfFacets > 0) {
@@ -219,7 +224,14 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     domainPadding={{
                       x: barWidth / 2,
                     }}
+                    theme={theme}
                   >
+                    <VictoryAxis
+                      tickFormat={(label) =>
+                        truncateLabel(label, xDomainWidth / barCount)
+                      }
+                    />
+                    <VictoryAxis dependentAxis />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
@@ -285,4 +297,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
