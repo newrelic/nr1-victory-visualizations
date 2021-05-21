@@ -1,7 +1,7 @@
 {
   "schemaType": "VISUALIZATION",
-  "id": "multifacet-bar-chart",
-  "displayName": "MultifacetBarChart",
+  "id": "circular-progress-bar",
+  "displayName": "Circular progress bar",
   "description": "",
   "configuration": [
     {

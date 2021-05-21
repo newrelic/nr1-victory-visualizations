@@ -10,7 +10,7 @@ export const baseLabelStyles = {
   fontWeight: 400,
   fontSize: 12,
   padding: BASE_SPACING,
-  fill: '#8e9494'
+  fill: '#8e9494',
 };
 
 const centeredLabelStyles = { textAnchor: 'middle', ...baseLabelStyles };
@@ -30,7 +30,6 @@ export default {
         strokeLinecap,
         strokeLinejoin,
       },
-      axisLabel: baseLabelStyles,
       axisLabel: {
         ...centeredLabelStyles,
         padding: BASE_SPACING,

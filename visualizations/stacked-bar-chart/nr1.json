@@ -1,7 +1,7 @@
 {
   "schemaType": "VISUALIZATION",
-  "id": "progress-bar",
-  "displayName": "ProgressBar",
+  "id": "stacked-bar-chart",
+  "displayName": "Stacked bar chart",
   "description": "",
   "configuration": [
     {

@@ -9,10 +9,10 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '/src/error-state';
-import NrqlQueryError from '/src/nrql-query-error';
-import { baseLabelStyles } from '/src/theme';
-import colors from '/src/colors';
+import ErrorState from '../../src/error-state';
+import NrqlQueryError from '../../src/nrql-query-error';
+import { baseLabelStyles } from '../../src/theme';
+import Colors from '../src/colors';
 
 const BOUNDS = {
   X: 400,
@@ -24,7 +24,7 @@ const LABEL_PADDING = 10;
 const CHART_WIDTH = BOUNDS.X;
 const CHART_HEIGHT = BOUNDS.Y - LABEL_SIZE - LABEL_PADDING;
 
-export default class ProgressBarVisualization extends React.Component {
+export default class CircularProgressBar extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -64,7 +64,7 @@ export default class ProgressBarVisualization extends React.Component {
   };
 
   getColor = (value, colorFromData) => {
-    const { red6: red, green6: green } = colors.base;
+    const { red6: red, green6: green } = Colors.base;
     const {
       thresholds: { criticalThreshold, highValuesAreSuccess },
     } = this.props;
@@ -144,7 +144,7 @@ export default class ProgressBarVisualization extends React.Component {
                   viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
                   width={width}
                   height={height}
-                  className="ProgressBarChart"
+                  className="CircularProgressBar"
                 >
                   <VictoryPie
                     standalone={false}
