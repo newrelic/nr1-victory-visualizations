@@ -1,6 +1,6 @@
 [![Community Project header](https://github.com/newrelic/opensource-website/raw/master/src/images/categories/Community_Project.png)](https://opensource.newrelic.com/oss-category/#community-project)
 
-# Victory visualizations
+# Victory Visualizations
 
 ![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/newrelic/nr1-victory-visualizations?include_prereleases&sort=semver) [![Snyk](https://snyk.io/test/github/newrelic/nr1-victory-visualizations/badge.svg)](https://snyk.io/test/github/newrelic/nr1-victory-visualizations)
 
