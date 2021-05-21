@@ -11,7 +11,7 @@ on:
 env:
   BOT_NAME: nr-opensource-bot
   BOT_EMAIL: opensource+bot@newrelic.com
-  BOT_TOKEN: ${{ secrets.DEVEX_OPENSOURCE_BOT_TOKEN }}
+  BOT_TOKEN: ${{ secrets.OPENSOURCE_BOT_TOKEN }}
 
 jobs:
   checkout-and-build:
