@@ -9,9 +9,9 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '/src/error-state';
-import NrqlQueryError from '/src/nrql-query-error';
-import { baseLabelStyles } from '/src/theme';
+import ErrorState from '../../src/error-state';
+import NrqlQueryError from '../../src/nrql-query-error';
+import { baseLabelStyles } from '../../src/theme';
 
 const BOUNDS = {
   X: 400,
@@ -67,8 +67,9 @@ export default class ProgressBarVisualization extends React.Component {
       metadata: { groups },
     } = data[0];
 
-    const numOfAggregates = groups.filter(({ type }) => type === 'function')
-      .length;
+    const numOfAggregates = groups.filter(
+      ({ type }) => type === 'function'
+    ).length;
     const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
     const isNonTimeseries = seriesEntries.length === 1;
 
