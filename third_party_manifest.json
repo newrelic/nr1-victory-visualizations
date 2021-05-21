@@ -1,9 +1,46 @@
 {
-  "lastUpdated": "Wed May 05 2021 13:43:31 GMT-0700 (Pacific Daylight Time)",
+  "lastUpdated": "Fri May 21 2021 22:41:12 GMT+0000 (Coordinated Universal Time)",
   "projectName": "nr1-victory-visualizations",
   "projectUrl": "https://github.com/newrelic/nr1-victory-visualizations",
   "includeDev": true,
   "dependencies": {
+    "classnames@2.3.1": {
+      "name": "classnames",
+      "version": "2.3.1",
+      "range": "^2.3.1",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/JedWatson/classnames",
+      "versionedRepoUrl": "https://github.com/JedWatson/classnames/tree/v2.3.1",
+      "licenseFile": "node_modules/classnames/LICENSE",
+      "licenseUrl": "https://github.com/JedWatson/classnames/blob/v2.3.1/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "Jed Watson"
+    },
+    "date-fns@2.21.3": {
+      "name": "date-fns",
+      "version": "2.21.3",
+      "range": "^2.21.3",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/date-fns/date-fns",
+      "versionedRepoUrl": "https://github.com/date-fns/date-fns/tree/v2.21.3",
+      "licenseFile": "node_modules/date-fns/LICENSE.md",
+      "licenseUrl": "https://github.com/date-fns/date-fns/blob/v2.21.3/LICENSE.md",
+      "licenseTextSource": "file"
+    },
+    "numeral@2.0.6": {
+      "name": "numeral",
+      "version": "2.0.6",
+      "range": "^2.0.6",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/adamwdraper/Numeral-js",
+      "versionedRepoUrl": "https://github.com/adamwdraper/Numeral-js/tree/v2.0.6",
+      "licenseFile": "node_modules/numeral/LICENSE",
+      "licenseUrl": "https://github.com/adamwdraper/Numeral-js/blob/v2.0.6/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "Adam Draper",
+      "email": "adamwdraper@gmail.com",
+      "url": "http://github.com/adamwdraper"
+    },
     "prop-types@15.7.2": {
       "name": "prop-types",
       "version": "15.7.2",
@@ -37,29 +74,80 @@
       "licenseUrl": "https://github.com/facebook/react/blob/v16.14.0/LICENSE",
       "licenseTextSource": "file"
     },
-    "victory@35.6.0": {
+    "victory@35.8.0": {
       "name": "victory",
-      "version": "35.6.0",
-      "range": "^35.6.0",
+      "version": "35.8.0",
+      "range": "^35.8.0",
       "licenses": "MIT",
       "repoUrl": "https://github.com/formidablelabs/victory",
-      "versionedRepoUrl": "https://github.com/formidablelabs/victory/tree/v35.6.0",
+      "versionedRepoUrl": "https://github.com/formidablelabs/victory/tree/v35.8.0",
       "licenseFile": "node_modules/victory/README.md",
-      "licenseUrl": "https://github.com/formidablelabs/victory/blob/v35.6.0/README.md",
+      "licenseUrl": "https://github.com/formidablelabs/victory/blob/v35.8.0/README.md",
       "licenseTextSource": "spdx",
       "publisher": "Formidable"
     }
   },
   "devDependencies": {
-    "prettier@2.2.1": {
+    "@newrelic/eslint-plugin-newrelic@0.3.1": {
+      "name": "@newrelic/eslint-plugin-newrelic",
+      "version": "0.3.1",
+      "range": "^0.3.1",
+      "licenses": "Apache-2.0",
+      "repoUrl": "https://github.com/NewRelic/eslint-plugin-newrelic",
+      "versionedRepoUrl": "https://github.com/NewRelic/eslint-plugin-newrelic/tree/v0.3.1",
+      "licenseFile": "node_modules/@newrelic/eslint-plugin-newrelic/LICENSE",
+      "licenseUrl": "https://github.com/NewRelic/eslint-plugin-newrelic/blob/v0.3.1/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "New Relic"
+    },
+    "@semantic-release/changelog@5.0.1": {
+      "name": "@semantic-release/changelog",
+      "version": "5.0.1",
+      "range": "^5.0.1",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/semantic-release/changelog",
+      "versionedRepoUrl": "https://github.com/semantic-release/changelog/tree/v5.0.1",
+      "licenseFile": "node_modules/@semantic-release/changelog/LICENSE",
+      "licenseUrl": "https://github.com/semantic-release/changelog/blob/v5.0.1/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "Pierre Vanduynslager",
+      "url": "https://github.com/pvdlg"
+    },
+    "@semantic-release/git@9.0.0": {
+      "name": "@semantic-release/git",
+      "version": "9.0.0",
+      "range": "^9.0.0",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/semantic-release/git",
+      "versionedRepoUrl": "https://github.com/semantic-release/git/tree/v9.0.0",
+      "licenseFile": "node_modules/@semantic-release/git/LICENSE",
+      "licenseUrl": "https://github.com/semantic-release/git/blob/v9.0.0/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "Pierre Vanduynslager",
+      "url": "https://github.com/pvdlg"
+    },
+    "eslint@7.26.0": {
+      "name": "eslint",
+      "version": "7.26.0",
+      "range": "^7.26.0",
+      "licenses": "MIT",
+      "repoUrl": "https://github.com/eslint/eslint",
+      "versionedRepoUrl": "https://github.com/eslint/eslint/tree/v7.26.0",
+      "licenseFile": "node_modules/eslint/LICENSE",
+      "licenseUrl": "https://github.com/eslint/eslint/blob/v7.26.0/LICENSE",
+      "licenseTextSource": "file",
+      "publisher": "Nicholas C. Zakas",
+      "email": "nicholas+npm@nczconsulting.com"
+    },
+    "prettier@2.3.0": {
       "name": "prettier",
-      "version": "2.2.1",
+      "version": "2.3.0",
       "range": "^2.2.1",
       "licenses": "MIT",
       "repoUrl": "https://github.com/prettier/prettier",
-      "versionedRepoUrl": "https://github.com/prettier/prettier/tree/v2.2.1",
+      "versionedRepoUrl": "https://github.com/prettier/prettier/tree/v2.3.0",
       "licenseFile": "node_modules/prettier/LICENSE",
-      "licenseUrl": "https://github.com/prettier/prettier/blob/v2.2.1/LICENSE",
+      "licenseUrl": "https://github.com/prettier/prettier/blob/v2.3.0/LICENSE",
       "licenseTextSource": "file",
       "publisher": "James Long"
     }
