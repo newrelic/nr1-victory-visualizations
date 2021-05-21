@@ -13,6 +13,7 @@ import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
 import { baseLabelStyles } from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
+import Colors from '../../src/colors';
 
 const BOUNDS = {
   X: 400,
@@ -38,6 +39,15 @@ export default class CircularProgressBar extends React.Component {
         query: PropTypes.string,
       })
     ),
+
+    /**
+     * Configuration that determines what values to display as critical or
+     * successful.
+     */
+    thresholds: PropTypes.shape({
+      criticalThreshold: PropTypes.number,
+      highValuesAreSuccess: PropTypes.bool,
+    }),
   };
 
   /**
@@ -47,10 +57,11 @@ export default class CircularProgressBar extends React.Component {
   transformData = (data) => {
     const {
       data: [series],
-      metadata: { color, name: label },
+      metadata: { color: colorFromData, name: label },
     } = data[0];
 
     const percent = series.y * 100;
+    const color = this.getColor(percent, colorFromData);
 
     return {
       percent,
@@ -67,12 +78,30 @@ export default class CircularProgressBar extends React.Component {
     const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(
       data
     );
-
-    const numOfAggregates = uniqueAggregates.size;
-    const numOfFacets = uniqueFacets.size;
     const isNonTimeseries = seriesEntries.length === 1;
 
-    return numOfAggregates === 1 && numOfFacets === 0 && isNonTimeseries;
+    return (
+      uniqueAggregates.size === 1 && uniqueFacets.size === 0 && isNonTimeseries
+    );
+  };
+
+  getColor = (value, colorFromData) => {
+    const { red6: red, green6: green } = Colors.base;
+    const {
+      thresholds: { criticalThreshold, highValuesAreSuccess },
+    } = this.props;
+
+    const threshold = parseFloat(criticalThreshold);
+
+    if (isNaN(threshold)) {
+      return colorFromData;
+    }
+
+    if (highValuesAreSuccess) {
+      return value > threshold ? green : red;
+    }
+
+    return value < threshold ? green : red;
   };
 
   render() {
@@ -133,11 +162,7 @@ export default class CircularProgressBar extends React.Component {
                     innerRadius={135}
                     cornerRadius={25}
                     labels={() => null}
-                    style={{
-                      data: {
-                        fill: ({ datum }) => datum.color,
-                      },
-                    }}
+                    style={{ data: { fill: ({ datum }) => datum.color } }}
                   />
                   <VictoryAnimation duration={1000} data={percent}>
                     {(percent) => (
@@ -183,8 +208,7 @@ const EmptyState = () => (
         type={HeadingText.TYPE.HEADING_4}
       >
         This Visualization supports NRQL queries with a single SELECT clause
-        returning a percentage value (0 to 100 rathern than 0 to 1). For
-        example:
+        returning a percentage value (0 to 100 rather than 0 to 1). For example:
       </HeadingText>
       <code>
         {'FROM Transaction SELECT percentage(count(*), WHERE duration < 0.1)'}

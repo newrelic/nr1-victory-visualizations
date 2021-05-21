@@ -8,27 +8,15 @@
 
 This Nerdpack provides NRQL-based custom visualizations built on top of the
 [Victory](https://formidable.com/open-source/victory/) charting library.
+- Stacked bar chart 
+- Range chart 
+- Circular progress bar
+
+To read more about the visualizations and their configuration, visit our [documentation](/catalog/documentation.md).
 
 ## Open source license
 
 This project is distributed under the [Apache 2 license](LICENSE).
-
-## What do you need to make this work?
-
-<!--
-> List any prerequisites for using your app, and include links to other New Relic features when necessary.
-
-> For example:
-
-Required:
-
-- [New Relic Infrastructure agent(s) installed](https://docs.newrelic.com/docs/agents/manage-apm-agents/installation/install-agent#infra-install) on your cloud computing devices and the related access to [New Relic One](https://newrelic.com/platform).
-
-You'll get the best possible data out of this application if you also:
-
-- [Activate the EC2 integration](https://docs.newrelic.com/docs/integrations/amazon-integrations/get-started/connect-aws-infrastructure) to group by your cloud provider account.
-- [Install APM on your applications](https://docs.newrelic.com/docs/agents/manage-apm-agents/installation/install-agent#apm-install) to group by application.
--->
 
 ## Getting started
 
@@ -56,6 +44,7 @@ You'll get the best possible data out of this application if you also:
    ```bash
    nr1 nerdpack:clone -r https://github.com/newrelic/nr1-victory-visualizations.git
    cd nr1-victory-visualizations
+   npm install
    nr1 nerdpack:serve
    ```
 
@@ -85,20 +74,15 @@ WARRANTY OR DEDICATED SUPPORT. That said, we welcome feedback, contributions and
 
 There are 2 main areas to request support:
 
-### Contributing to this repo
-
-**GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [issues tab](https://github.com/newrelic/nr1-victory-visualizations/issues) of this repository. Please search for and review the existing open issues
+- **GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [issues tab](https://github.com/newrelic/nr1-victory-visualizations/issues) of this repository. Please search for and review the existing open issues
 before submitting a new issue.
-
-**Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
+- **Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
 Hub](https://discuss.newrelic.com/tag/victoryvisualizations), where our community members collaborate on
 solutions and new ideas. New Relic hosts and moderates this online forum where customers can interact with
 New Relic employees as well as other customers to get help and share best
 practices. Like all official New Relic open source projects, there's a related
 Community topic in the New Relic Explorers Hub. You can find this project's
 topic/threads here: https://discuss.newrelic.com/tag/victoryvisualizations
-
-### Contributing to the Victory charting library
 
 Support related to Victory can be found at: https://spectrum.chat/victory?tab=posts
 

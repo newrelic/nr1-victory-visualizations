@@ -22,6 +22,25 @@
           "type": "nrql"
         }
       ]
+    },
+    {
+      "name": "thresholds",
+      "title": "Thresholds",
+      "type": "namespace",
+      "items": [
+        {
+          "name": "criticalThreshold",
+          "title": "Critical threshold",
+          "description": "Value at which progress is displayed as critical",
+          "type": "number"
+        },
+        {
+          "name": "highValuesAreSuccess",
+          "title": "Above threshold is success",
+          "description": "If toggled on, values above the threshold display as successful. Otherwise, values at or above the threshold display as critical.",
+          "type": "boolean"
+        }
+      ]
     }
   ]
 }
