@@ -1,18 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  VictoryBar,
-  VictoryChart,
-  VictoryContainer,
-  VictoryStack,
-  VictoryAxis,
-  VictoryTooltip,
-} from 'victory';
-import ErrorState from '../../src/error-state';
-import Legend from '../../src/legend';
-import NrqlQueryError from '../../src/nrql-query-error';
-
-import {
   Card,
   CardBody,
   HeadingText,
@@ -20,8 +8,23 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+import {
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryContainer,
+  VictoryStack,
+  VictoryTooltip,
+} from 'victory';
+
+import ErrorState from '../../src/error-state';
+import Legend from '../../src/legend';
+import NrqlQueryError from '../../src/nrql-query-error';
 
 import theme from '../../src/theme';
+import truncateLabel from '../../src/utils/truncate-label';
+import { getFacetLabel } from '../../src/utils/facets';
+import { formatTicks, typeToUnit } from '../../src/utils/units';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 /**
@@ -67,20 +70,12 @@ export default class MultiFacetBarChartVisualization extends React.Component {
    * @returns {{barLabel: string, segmentLabel: string}}
    */
   getFacetLabels = (groups) => {
-    const facetEntries = groups?.filter(({ type }) => type === 'facet');
-    return facetEntries.reduce(
-      (acc, { value }, index) => {
-        if (index === facetEntries?.length - 1) {
-          acc.segmentLabel = value;
-        } else {
-          acc.barLabel = Boolean(acc.barLabel)
-            ? `${acc.barLabel}, ${value}`
-            : value;
-        }
-        return acc;
-      },
-      { barLabel: undefined, segmentLabel: undefined }
-    );
+    const facetGroups = groups.filter(({ type }) => type === 'facet');
+
+    return {
+      barLabel: getFacetLabel(facetGroups.slice(0, -1)),
+      segmentLabel: facetGroups[facetGroups.length - 1].value,
+    };
   };
 
   /**
@@ -120,11 +115,17 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       return acc;
     }, {});
 
+    // get the units for the measurement
+    const unitType = rawData[0].metadata.units_data.y;
+
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: [`${segmentLabel}`, `${value.toLocaleString()}`],
+        label: [
+          `${segmentLabel}`,
+          `${value?.toLocaleString() ?? ''}${typeToUnit(unitType)}`,
+        ],
         segmentLabel,
         x: barLabel,
         y: value,
@@ -134,8 +135,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
   };
 
   validateNRQLInput = (data) => {
-    const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(
+      data
+    );
 
     const numOfAggregates = uniqueAggregates.size;
     const numOfFacets = uniqueFacets.size;
@@ -185,6 +187,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+
+              // get the unit value for first data point
+              const unitType = data[0].metadata.units_data.y;
+
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
                   if (!acc.some(({ label }) => label === segmentLabel)) {
@@ -222,6 +228,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     theme={theme}
                   >
                     <VictoryAxis
+                      tickFormat={(label) =>
+                        truncateLabel(label, xDomainWidth / barCount)
+                      }
                       style={{
                         grid: {
                           stroke: 'none',
@@ -231,11 +240,12 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryAxis
                       dependentAxis
                       tickCount={12}
-                      tickFormat={(t) => `${Math.round(t * 10) / 10}`}
+                      tickFormat={(tick) => formatTicks({ unitType, tick })}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
+                          key={series.segmentLabel}
                           barWidth={barWidth}
                           labelComponent={
                             <VictoryTooltip
@@ -248,9 +258,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                               constrainToVisibleArea
                               pointerLength={8}
                               flyoutStyle={{
-                                stroke: ({ datum }) => datum.color, 
-                                strokeWidth: 2, 
-                                filter: 'none'
+                                stroke: ({ datum }) => datum.color,
+                                strokeWidth: 2,
+                                filter: 'none',
                               }}
                             />
                           }

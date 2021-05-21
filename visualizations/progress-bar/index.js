@@ -64,8 +64,9 @@ export default class ProgressBarVisualization extends React.Component {
 
   validateNRQLInput = (data) => {
     const { data: seriesEntries } = data[0];
-    const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(
+      data
+    );
 
     const numOfAggregates = uniqueAggregates.size;
     const numOfFacets = uniqueFacets.size;
@@ -193,4 +194,3 @@ const EmptyState = () => (
     </CardBody>
   </Card>
 );
-
