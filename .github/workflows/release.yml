@@ -205,7 +205,7 @@ jobs:
           GIT_COMMITTER_NAME: ${{ env.BOT_NAME }}
           GIT_COMMITTER_EMAIL: ${{ env.BOT_EMAIL }}
           GITHUB_TOKEN: ${{ env.BOT_TOKEN }}
-        run: npx semantic-release
+        run: npx semantic-release@15
 
       - name: Re-enable branch protection
         id: enable-branch-protection
