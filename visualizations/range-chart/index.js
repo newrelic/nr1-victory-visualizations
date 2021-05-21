@@ -11,7 +11,10 @@ import {
 import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
+import NrqlQueryError from '../../src/nrql-query-error';
+
 import theme from '../../src/theme';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
 import { typeToUnit, formatTicks } from '../../src/utils/units';
@@ -76,6 +79,12 @@ export default class RangeChartVisualization extends React.Component {
     );
   };
 
+  nrqlInputIsValid = (data) => {
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
+    return uniqueAggregates.size === 2 && uniqueFacets.size > 0;
+  };
+
   render() {
     const { nrqlQueries } = this.props;
 
@@ -104,6 +113,15 @@ export default class RangeChartVisualization extends React.Component {
 
               if (error) {
                 return <ErrorState />;
+              }
+
+              if (!this.nrqlInputIsValid(data)) {
+                return (
+                  <NrqlQueryError
+                    title="Unsupported NRQL query"
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 2 aggregate functions in the SELECT clause and at least one FACET clause."
+                  />
+                );
               }
 
               try {

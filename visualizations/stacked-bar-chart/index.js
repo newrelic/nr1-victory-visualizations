@@ -1,6 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
+  Card,
+  CardBody,
+  HeadingText,
+  NrqlQuery,
+  Spinner,
+  AutoSizer,
+} from 'nr1';
+import {
   VictoryAxis,
   VictoryBar,
   VictoryChart,
@@ -8,6 +16,7 @@ import {
   VictoryStack,
   VictoryTooltip,
 } from 'victory';
+
 import ErrorState from '../../src/error-state';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
@@ -16,30 +25,7 @@ import theme from '../../src/theme';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
 import { formatTicks, typeToUnit } from '../../src/utils/units';
-
-import {
-  Card,
-  CardBody,
-  HeadingText,
-  NrqlQuery,
-  Spinner,
-  AutoSizer,
-} from 'nr1';
-
-const validateNRQLInput = (data) => {
-  const { groups } = data[0].metadata;
-
-  const numOfAggregates = groups.filter(
-    ({ type }) => type === 'function'
-  ).length;
-  const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
-
-  if (numOfAggregates === 1 && numOfFacets > 0) {
-    return true;
-  }
-
-  return false;
-};
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
@@ -148,6 +134,12 @@ export default class StackedBarChart extends React.Component {
     });
   };
 
+  nrqlInputIsValid = (data) => {
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
+    return uniqueAggregates.size === 1 && uniqueFacets.size > 0;
+  };
+
   render() {
     const { nrqlQueries } = this.props;
 
@@ -178,13 +170,11 @@ export default class StackedBarChart extends React.Component {
                 return <ErrorState />;
               }
 
-              const isInputValid = validateNRQLInput(data);
-
-              if (!isInputValid) {
+              if (!this.nrqlInputIsValid(data)) {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function and 1-2 facets."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and at least one FACET clause."
                   />
                 );
               }
