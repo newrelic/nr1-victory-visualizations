@@ -24,39 +24,20 @@
       ]
     },
     {
-      "name": "yAxisConfig",
-      "title": "Y-axis configuration",
+      "name": "thresholds",
+      "title": "Thresholds",
       "type": "namespace",
       "items": [
         {
-          "name": "label",
-          "title": "Label",
-          "description": "Custom label for y-axis",
-          "type": "string"
-        },
-        {
-          "name": "max",
-          "title": "Max value",
-          "description": "Max domain value for y-axis",
+          "name": "criticalThreshold",
+          "title": "Critical threshold",
+          "description": "Value at which progress is displayed as critical",
           "type": "number"
         },
         {
-          "name": "min",
-          "title": "Min value",
-          "description": "Min domain value for y-axis.",
-          "type": "number"
-        }
-      ]
-    },
-    {
-      "name": "other",
-      "title": "Other groups",
-      "type": "namespace",
-      "items": [
-        {
-          "name": "visible",
-          "title": "Visible",
-          "description": "Manages the visibility of \"Other\" groups of attributes",
+          "name": "highValuesAreSuccess",
+          "title": "Above threshold is success",
+          "description": "If toggled on, values above the threshold display as successful. Otherwise, values at or above the threshold display as critical.",
           "type": "boolean"
         }
       ]
