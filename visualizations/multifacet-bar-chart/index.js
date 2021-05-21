@@ -6,7 +6,6 @@ import {
   VictoryChart,
   VictoryContainer,
   VictoryStack,
-  VictoryAxis,
   VictoryTooltip,
 } from 'victory';
 import ErrorState from '../../src/error-state';
@@ -25,7 +24,6 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import theme from '../../src/theme';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
