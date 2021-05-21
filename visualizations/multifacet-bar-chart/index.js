@@ -6,9 +6,10 @@ import {
   VictoryChart,
   VictoryContainer,
   VictoryStack,
+  VictoryAxis,
+  VictoryTooltip,
 } from 'victory';
 import ErrorState from '../../src/error-state';
-import Tooltip from '../../src/tooltip';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
 
@@ -24,6 +25,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+import theme from '../../src/theme';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -176,8 +178,8 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               if (!isInputValid) {
                 return (
                   <NrqlQueryError
-                    title="Invalid NRQL Query"
-                    description="NRQL Query is not valid. Please make sure to have 1 aggregate function and 1-2 facets."
+                    title="Unsupported NRQL query"
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function and 1-2 facets."
                   />
                 );
               }
@@ -223,18 +225,36 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                       tickFormat={(label) =>
                         truncateLabel(label, xDomainWidth / barCount)
                       }
+                      style={{
+                        grid: {
+                          stroke: 'none',
+                        },
+                      }}
                     />
-                    <VictoryAxis dependentAxis />
+                    <VictoryAxis
+                      dependentAxis
+                      tickCount={12}
+                      tickFormat={(t) => `${Math.round(t * 10) / 10}`}
+                    />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
                           barWidth={barWidth}
                           labelComponent={
-                            <Tooltip
+                            <VictoryTooltip
                               horizontal
-                              setY={(datum) =>
-                                Math.abs(datum._y1 - datum._y0) / 2 + datum._y0
+                              dy={({ datum, scale }) =>
+                                scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
+                                scale.y(datum._y)
                               }
+                              dx={barWidth / 2}
+                              constrainToVisibleArea
+                              pointerLength={8}
+                              flyoutStyle={{
+                                stroke: ({ datum }) => datum.color,
+                                strokeWidth: 2,
+                                filter: 'none',
+                              }}
                             />
                           }
                           data={series}

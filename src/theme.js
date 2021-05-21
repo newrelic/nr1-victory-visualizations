@@ -1,4 +1,5 @@
 import colors from './colors';
+import typography from './typography';
 
 const BASE_SPACING = 8;
 
@@ -9,12 +10,15 @@ export const baseLabelStyles = {
   fontWeight: 400,
   fontSize: 12,
   padding: BASE_SPACING,
+  fill: '#8e9494'
 };
 
 const centeredLabelStyles = { textAnchor: 'middle', ...baseLabelStyles };
 
 const strokeLinecap = 'round';
 const strokeLinejoin = 'round';
+
+const shadow1 = 'drop-shadow(0px 0px 1px rgba(0, 0, 0, 0.32))';
 
 export default {
   axis: {
@@ -35,7 +39,7 @@ export default {
       grid: {
         fill: 'none',
         stroke: colors.base.gray4,
-        strokeDasharray: '10, 5',
+        strokeDasharray: '2px, 4px',
         strokeLinecap,
         strokeLinejoin,
         pointerEvents: 'painted',
@@ -49,6 +53,24 @@ export default {
         strokeLinejoin,
       },
       tickLabels: baseLabelStyles,
+    },
+  },
+  tooltip: {
+    style: {
+      fontFamily: baseFontFamily,
+      fontSize: 12,
+      fill: typography.heading6.color,
+    },
+    flyoutStyle: {
+      strokeWidth: 0,
+      fill: colors.background.surface,
+      filter: shadow1,
+    },
+    flyoutPadding: {
+      top: BASE_SPACING,
+      bottom: BASE_SPACING,
+      left: BASE_SPACING * 2,
+      right: BASE_SPACING * 2,
     },
   },
 };
