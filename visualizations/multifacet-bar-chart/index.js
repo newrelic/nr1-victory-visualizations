@@ -14,6 +14,7 @@ import NrqlQueryError from '../../src/nrql-query-error';
 
 import theme from '../../src/theme';
 import truncateLabel from '../../src/utils/truncate-label';
+import { getFacetLabel } from '../../src/utils/facets';
 
 import {
   Card,
@@ -82,20 +83,12 @@ export default class MultiFacetBarChartVisualization extends React.Component {
    * @returns {{barLabel: string, segmentLabel: string}}
    */
   getFacetLabels = (groups) => {
-    const facetEntries = groups?.filter(({ type }) => type === 'facet');
-    return facetEntries.reduce(
-      (acc, { value }, index) => {
-        if (index === facetEntries?.length - 1) {
-          acc.segmentLabel = value;
-        } else {
-          acc.barLabel = Boolean(acc.barLabel)
-            ? `${acc.barLabel}, ${value}`
-            : value;
-        }
-        return acc;
-      },
-      { barLabel: undefined, segmentLabel: undefined }
-    );
+    const facetGroups = groups.filter(({ type }) => type === 'facet');
+
+    return {
+      barLabel: getFacetLabel(facetGroups.slice(0, -1)),
+      segmentLabel: facetGroups[facetGroups.length - 1].value,
+    };
   };
 
   /**
