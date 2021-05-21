@@ -12,7 +12,7 @@ import {
 import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
 import { baseLabelStyles } from '../../src/theme';
-import Colors from '../src/colors';
+import Colors from '../../src/colors';
 
 const BOUNDS = {
   X: 400,
