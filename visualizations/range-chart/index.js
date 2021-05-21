@@ -79,7 +79,7 @@ export default class RangeChartVisualization extends React.Component {
     );
   };
 
-  validateNRQLInput = (data) => {
+  nrqlInputIsValid = (data) => {
     const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(
       data
     );
@@ -117,9 +117,7 @@ export default class RangeChartVisualization extends React.Component {
                 return <ErrorState />;
               }
 
-              const isInputValid = this.validateNRQLInput(data);
-
-              if (!isInputValid) {
+              if (!this.nrqlInputIsValid(data)) {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"

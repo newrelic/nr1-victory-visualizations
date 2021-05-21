@@ -62,7 +62,7 @@ export default class CircularProgressBar extends React.Component {
     };
   };
 
-  validateNRQLInput = (data) => {
+  nrqlInputIsValid = (data) => {
     const { data: seriesEntries } = data[0];
     const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(
       data
@@ -105,9 +105,7 @@ export default class CircularProgressBar extends React.Component {
                 return <ErrorState />;
               }
 
-              const isInputValid = this.validateNRQLInput(data);
-
-              if (!isInputValid) {
+              if (!this.nrqlInputIsValid(data)) {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
