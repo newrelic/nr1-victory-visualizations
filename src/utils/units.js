@@ -24,11 +24,11 @@ const formatDecimals = (tick) => {
   if (tick >= 1000) {
     return numeral(tick).format('0a');
   } else if (tick < 0.01) {
-    return numeral(t).format('0.000');
+    return numeral(tick).format('0.000');
   } else if (tick < 1) {
-    return numeral(t).format('0.0');
+    return numeral(tick).format('0.0');
   }
-  return tick;
+  return numeral(tick).format('0.00');
 };
 
 export const typeToUnit = (unitType) => TYPES_TO_UNITS[unitType];

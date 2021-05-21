@@ -7,6 +7,7 @@ import {
   VictoryStack,
   VictoryAxis,
   VictoryTooltip,
+  VictoryLabel,
 } from 'victory';
 import ErrorState from '../../src/error-state';
 import Legend from '../../src/legend';
@@ -67,6 +68,11 @@ export default class MultiFacetBarChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+    yAxisConfig: PropTypes.shape({
+      label: PropTypes.string,
+      min: PropTypes.number,
+      max: PropTypes.number,
+    }),
   };
 
   /**
@@ -87,9 +93,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
         if (index === facetEntries?.length - 1) {
           acc.segmentLabel = value;
         } else {
-          acc.barLabel = Boolean(acc.barLabel)
-            ? `${acc.barLabel}, ${value}`
-            : value;
+          acc.barLabel = acc.barLabel ? `${acc.barLabel}, ${value}` : value;
         }
         return acc;
       },
@@ -154,7 +158,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
   };
 
   render() {
-    const { nrqlQueries } = this.props;
+    const { nrqlQueries, yAxisConfig } = this.props;
+
+    console.log(this.props);
 
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
@@ -198,6 +204,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
 
               // get the unit value for first data point
               const unitType = data[0].metadata.units_data.y;
+              const { displayName: yAxisLabel } = data[0].metadata.groups.find(
+                ({ type }) => type === 'function'
+              );
 
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
@@ -218,6 +227,23 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               // set the width of stacked bars so that they take up about 60% of the width
               const barWidth = (xDomainWidth * 0.6) / barCount;
 
+              const maxDomain = yAxisConfig.max
+                ? { maxDomain: { y: parseFloat(yAxisConfig.max) } }
+                : {};
+
+              const minDomain = yAxisConfig.min
+                ? { minDomain: { y: parseFloat(yAxisConfig.min) } }
+                : {};
+
+              const domainProps = { ...minDomain, ...maxDomain };
+
+              const label =
+                yAxisConfig.label ||
+                `${yAxisLabel}${typeToUnit(unitType)}` ||
+                '';
+              const maxYAxisWidth = 50;
+              const yAxisPadding = 16;
+
               return (
                 <>
                   <VictoryChart
@@ -234,6 +260,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                       x: barWidth / 2,
                     }}
                     theme={theme}
+                    {...domainProps}
                   >
                     <VictoryAxis
                       style={{
@@ -246,6 +273,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                       dependentAxis
                       tickCount={12}
                       tickFormat={(tick) => formatTicks({ unitType, tick })}
+                      label={label}
+                      style={{
+                        axisLabel: { padding: maxYAxisWidth + yAxisPadding },
+                      }}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
