@@ -7,7 +7,6 @@ import {
   VictoryStack,
   VictoryAxis,
   VictoryTooltip,
-  VictoryLabel,
 } from 'victory';
 import ErrorState from '../../src/error-state';
 import Legend from '../../src/legend';
@@ -159,8 +158,6 @@ export default class MultiFacetBarChartVisualization extends React.Component {
 
   render() {
     const { nrqlQueries, yAxisConfig } = this.props;
-
-    console.log(this.props);
 
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
