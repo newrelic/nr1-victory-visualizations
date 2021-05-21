@@ -12,6 +12,7 @@ import {
 import ErrorState from '/src/error-state';
 import NrqlQueryError from '/src/nrql-query-error';
 import { baseLabelStyles } from '/src/theme';
+import colors from '/src/colors';
 
 const BOUNDS = {
   X: 400,
@@ -63,6 +64,7 @@ export default class ProgressBarVisualization extends React.Component {
   };
 
   getColor = (value, colorFromData) => {
+    const { red6: red, green6: green } = colors.base;
     const {
       thresholds: { criticalThreshold, greenIsHigh },
     } = this.props;
@@ -72,9 +74,6 @@ export default class ProgressBarVisualization extends React.Component {
     if (isNaN(threshold)) {
       return colorFromData;
     }
-
-    const green = 'var(--nr1--base-colors--ui--green--6)';
-    const red = 'var(--nr1--base-colors--ui--red--6)';
 
     if (greenIsHigh) {
       return value > threshold ? green : red;
