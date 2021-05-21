@@ -140,6 +140,7 @@ jobs:
               repo: context.repo.repo,
               branch: 'main',
               required_status_checks: {
+                strict: false,
                 contexts: ['ESLint', 'Build Nerdpack']
               },
               restrictions: null,
@@ -220,6 +221,7 @@ jobs:
               repo: context.repo.repo,
               branch: 'main',
               required_status_checks: {
+                strict: false,
                 contexts: ['ESLint', 'Build Nerdpack']
               },
               restrictions: null,
