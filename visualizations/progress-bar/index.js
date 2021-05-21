@@ -40,7 +40,7 @@ export default class ProgressBarVisualization extends React.Component {
   };
 
   /**
-   * Restructure the data for a aggegate NRQL query with no TIMESERIES and no
+   * Restructure the data for a aggregate NRQL query with no TIMESERIES and no
    * FACET into a for our visualization works well with.
    */
   transformData = (data) => {
