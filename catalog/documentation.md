@@ -27,7 +27,7 @@ To use the visualization, provide the following properties:
 | -------------- | ----------- | ----------- |
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Multifacet NRQL Data Details](#multifacet-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
-| `visible`   | A toggle that controls the display of "other" groups of attributes | No     |
+| `other.visible`   | A toggle that controls the display of "other" groups of attributes | No     |
 | `yAxisConfig.max`   | A number to set the maximum value of the y-axis | No     |
 | `yAxisConfig.min`   | A number to set the minimum value of the y-axis | No     |
 | `yAxisConfig.label`   | A custom label to describe the y-axis | No     |
@@ -88,7 +88,7 @@ To use the visualization, provide the following properties:
 | -------------- | ----------- | ----------- |
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Range Chart NRQL Data Details](#range-chart-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
-| `visible`   | A toggle that controls the display of "other" groups of attributes | No     |
+| `other.visible`   | A toggle that controls the display of "other" groups of attributes | No     |
 
 
 ### Range Chart NRQL Data Details
@@ -148,7 +148,8 @@ To use the visualization, provide the following properties:
 | -------------- | ----------- | ----------- |
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Progress Bar NRQL Data Details](#progress-bar-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
-| `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
+| `criticalThreshold`   | Value at which progress is displayed as critical | No     |
+| `highValuesAreSuccess`   | If toggled on, values above the threshold display as successful. Otherwise, values at or above the threshold display as critical. | No     |
 
 
 ### Circular progress bar NRQL Data Details
