@@ -9,9 +9,9 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '/src/error-state';
-import NrqlQueryError from '/src/nrql-query-error';
-import { baseLabelStyles } from '/src/theme';
+import ErrorState from '../../src/error-state';
+import NrqlQueryError from '../../src/nrql-query-error';
+import { baseLabelStyles } from '../../src/theme';
 
 const BOUNDS = {
   X: 400,
@@ -23,7 +23,7 @@ const LABEL_PADDING = 10;
 const CHART_WIDTH = BOUNDS.X;
 const CHART_HEIGHT = BOUNDS.Y - LABEL_SIZE - LABEL_PADDING;
 
-export default class ProgressBarVisualization extends React.Component {
+export default class CircularProgressBar extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -67,8 +67,9 @@ export default class ProgressBarVisualization extends React.Component {
       metadata: { groups },
     } = data[0];
 
-    const numOfAggregates = groups.filter(({ type }) => type === 'function')
-      .length;
+    const numOfAggregates = groups.filter(
+      ({ type }) => type === 'function'
+    ).length;
     const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
     const isNonTimeseries = seriesEntries.length === 1;
 
@@ -123,7 +124,7 @@ export default class ProgressBarVisualization extends React.Component {
                   viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
                   width={width}
                   height={height}
-                  className="ProgressBarChart"
+                  className="CircularProgressBar"
                 >
                   <VictoryPie
                     standalone={false}
