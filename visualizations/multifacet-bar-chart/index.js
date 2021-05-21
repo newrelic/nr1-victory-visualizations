@@ -87,9 +87,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
         if (index === facetEntries?.length - 1) {
           acc.segmentLabel = value;
         } else {
-          acc.barLabel = Boolean(acc.barLabel)
-            ? `${acc.barLabel}, ${value}`
-            : value;
+          acc.barLabel = acc.barLabel ? `${acc.barLabel}, ${value}` : value;
         }
         return acc;
       },
@@ -250,6 +248,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
+                          key={series.segmentLabel}
                           barWidth={barWidth}
                           labelComponent={
                             <VictoryTooltip

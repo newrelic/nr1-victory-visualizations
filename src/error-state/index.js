@@ -1,7 +1,8 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Card, CardBody, HeadingText } from 'nr1';
 
-const ErrorState = ({children}) => (
+const ErrorState = ({ children }) => (
   <Card className="ErrorState">
     <CardBody className="ErrorState-cardBody">
       <HeadingText
@@ -14,5 +15,9 @@ const ErrorState = ({children}) => (
     </CardBody>
   </Card>
 );
+
+ErrorState.propTypes = {
+  children: PropTypes.node,
+};
 
 export default ErrorState;

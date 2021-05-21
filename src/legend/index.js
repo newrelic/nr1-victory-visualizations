@@ -7,8 +7,8 @@ const Legend = ({ items, style, className }) => {
   return (
     <div className={cx('Legend', className)} style={{ ...style }}>
       <Grid gapType={Grid.GAP_TYPE.SMALL}>
-        {items.map((item) => (
-          <LegendItem {...item} />
+        {items.map((item, index) => (
+          <LegendItem {...item} key={index} />
         ))}
       </Grid>
     </div>
@@ -30,16 +30,18 @@ const LegendItem = ({ color, label }) => {
   return (
     <GridItem columnSpan={3} className="LegendItem">
       <div className="LegendItem-content">
-        <div
-          className="LegendItem-dot"
-          style={{ backgroundColor: color }}
-        ></div>
+        <div className="LegendItem-dot" style={{ backgroundColor: color }} />
         <div className="LegendItem-label" title={label}>
           {label}
         </div>
       </div>
     </GridItem>
   );
+};
+
+LegendItem.propTypes = {
+  color: PropTypes.string,
+  label: PropTypes.string,
 };
 
 export default Legend;
