@@ -111,7 +111,7 @@ export default class ProgressBarVisualization extends React.Component {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
                   />
                 );
               }

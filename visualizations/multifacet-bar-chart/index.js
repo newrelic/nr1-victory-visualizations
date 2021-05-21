@@ -178,7 +178,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function in the SELECT clause and at least one FACET clause."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and at least one FACET clause."
                   />
                 );
               }
