@@ -31,7 +31,7 @@
         {
           "name": "criticalThreshold",
           "title": "Critical threshold",
-          "description": "Value at which the color switches to red",
+          "description": "Value at which progress is displayed as critical",
           "type": "number"
         },
         {
