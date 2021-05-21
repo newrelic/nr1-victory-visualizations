@@ -8,7 +8,7 @@ Visualize your New Relic data with Victory charts!
 
 After configuring your visualization, [add it to a dashboard](https://docs.newrelic.com/docs/query-your-data/explore-query-data/dashboards/add-custom-visualizations-your-dashboards/) to see your data.
 
-## Multifacet Bar Chart
+## Stacked bar chart Chart
 Plot multifaceted data in a stacked bar chart view.
 
 For example, if you query `SELECT average(duration) FROM Transaction FACET appName, environment`, you'll see the average duration of a `Transaction` event in a stacked bar chart where: 
@@ -27,9 +27,13 @@ To use the visualization, provide the following properties:
 | -------------- | ----------- | ----------- |
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Multifacet NRQL Data Details](#multifacet-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
+| `visible`   | A toggle that controls the display of "other" groups of attributes | No     |
+| `yAxisConfig.max`   | A number to set the maximum value of the y-axis | No     |
+| `yAxisConfig.min`   | A number to set the minimum value of the y-axis | No     |
+| `yAxisConfig.label`   | A custom label to describe the y-axis | No     |
 
 
-### Multifacet NRQL Data Details
+### Stacked bar chart NRQL Data Details
 
 This visualization accepts a NRQL query in the form:
 
@@ -84,6 +88,7 @@ To use the visualization, provide the following properties:
 | -------------- | ----------- | ----------- |
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Range Chart NRQL Data Details](#range-chart-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
+| `visible`   | A toggle that controls the display of "other" groups of attributes | No     |
 
 
 ### Range Chart NRQL Data Details
@@ -122,7 +127,7 @@ In the above query, you will see:
 * the range of one standard deviation below the average duration
 * how much `Transaction` events vary for each app
 
-## Progress Bar
+## Circular progress bar
 
 Visualize your progress toward a limit or goal.
 
@@ -143,9 +148,10 @@ To use the visualization, provide the following properties:
 | -------------- | ----------- | ----------- |
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Progress Bar NRQL Data Details](#progress-bar-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
+| `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 
 
-### Progress Bar NRQL Data Details
+### Circular progress bar NRQL Data Details
 
 This visualization accepts a NRQL query in the form:
 
