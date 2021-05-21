@@ -30,6 +30,10 @@ export default class RangeChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+    /**
+     * Object with a singular boolean value.
+     * Determines if "other" attributes are included in visualization.
+     */
     other: PropTypes.shape({
       visible: PropTypes.bool,
     }),
