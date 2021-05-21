@@ -139,10 +139,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       data
     );
 
-    const numOfAggregates = uniqueAggregates.size;
-    const numOfFacets = uniqueFacets.size;
-
-    return numOfAggregates === 1 && numOfFacets > 0;
+    return uniqueAggregates.size === 1 && uniqueFacets.size > 0;
   };
 
   render() {
