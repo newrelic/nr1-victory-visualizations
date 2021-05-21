@@ -7,7 +7,7 @@ const guessCharWidth = (char, { approxCharWidth }) =>
     ? approxCharWidth * APPROX_NARROW_CHAR_RATIO
     : approxCharWidth;
 
-const getTruncatedText = (chars, allocatedWidth, { approxCharWidth }) => {
+const getTruncatedText = (chars, maxWidth, { approxCharWidth }) => {
   const { text } = chars.reduce(
     ({ totalWidth, text }, char) => {
       const charWidth = guessCharWidth(char, { approxCharWidth });
@@ -15,7 +15,7 @@ const getTruncatedText = (chars, allocatedWidth, { approxCharWidth }) => {
 
       return {
         totalWidth: newWidth,
-        text: newWidth > allocatedWidth ? text : text + char,
+        text: newWidth > maxWidth ? text : text + char,
       };
     },
     { totalWidth: 0, text: '' }
@@ -26,7 +26,7 @@ const getTruncatedText = (chars, allocatedWidth, { approxCharWidth }) => {
 
 const truncateLabel = (
   text,
-  allocatedWidth,
+  maxWidth,
   { approxCharWidth = DEFAULT_APPROX_CHAR_WIDTH } = {}
 ) => {
   const chars = text.split('');
@@ -36,8 +36,8 @@ const truncateLabel = (
     0
   );
 
-  return guessedTextWidth > allocatedWidth
-    ? `${getTruncatedText(chars, allocatedWidth, { approxCharWidth })}...`
+  return guessedTextWidth > maxWidth
+    ? `${getTruncatedText(chars, maxWidth, { approxCharWidth })}...`
     : text;
 };
 
