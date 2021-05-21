@@ -67,9 +67,9 @@ export default class ProgressBarVisualization extends React.Component {
       thresholds: { criticalThreshold, greenIsHigh },
     } = this.props;
 
-    const threshold = Number.parseFloat(criticalThreshold);
+    const threshold = parseFloat(criticalThreshold);
 
-    if (Number.isNaN(threshold)) {
+    if (isNaN(threshold)) {
       return colorFromData;
     }
 
