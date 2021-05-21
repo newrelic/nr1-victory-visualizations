@@ -22,8 +22,8 @@ import {
 } from 'nr1';
 import theme from '../../src/theme';
 import TYPE_TO_UNITS from '../../src/utils/units';
-import numbro from 'numbro';
-import { format } from 'date-fns'
+import numeral from 'numeral';
+import { format } from 'date-fns';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -40,16 +40,14 @@ const validateNRQLInput = (data) => {
   return false;
 };
 
-const valueToUnits = (data) => data[0].metadata.units_data.y; 
-
-const formatTicks = ({unit, t}) => {
+const formatTicks = ({ unit, t }) => {
   if (unit === 'TIMESTAMP') {
-    return format(new Date(t), 'MM/dd/yyyy HH:mm')
+    return format(new Date(t), 'MM/dd/yyyy HH:mm');
   }
-  const tFormatted = numbro(t).format({average: true, mantissa: 1}); 
+  const tFormatted = t > 1000 ? numeral(t).format('0a') : t;
 
-  return `${tFormatted}${TYPE_TO_UNITS[unit]}`
-}
+  return `${tFormatted}${TYPE_TO_UNITS[unit]}`;
+};
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
  * with a stack of "bar segments" being one "bar".
@@ -146,11 +144,17 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       return acc;
     }, {});
 
+    // get the units for the measurement
+    const unit = data[0].metadata.units_data.y;
+
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: [`${segmentLabel}`, `${value.toLocaleString()}`],
+        label: [
+          `${segmentLabel}`,
+          `${value?.toLocaleString() ?? ''}${TYPE_TO_UNITS[unit]}`,
+        ],
         segmentLabel,
         x: barLabel,
         y: value,
@@ -201,7 +205,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
-              const unit = valueToUnits(data);
+
+              // get the unit value for first data point
+              const unit = data[0].metadata.units_data.y;
+
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
                   if (!acc.some(({ label }) => label === segmentLabel)) {
@@ -248,7 +255,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryAxis
                       dependentAxis
                       tickCount={12}
-                      tickFormat={(t) => formatTicks({unit, t})}
+                      tickFormat={(t) => formatTicks({ unit, t })}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
@@ -265,9 +272,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                               constrainToVisibleArea
                               pointerLength={8}
                               flyoutStyle={{
-                                stroke: ({ datum }) => datum.color, 
-                                strokeWidth: 2, 
-                                filter: 'none'
+                                stroke: ({ datum }) => datum.color,
+                                strokeWidth: 2,
+                                filter: 'none',
                               }}
                             />
                           }
