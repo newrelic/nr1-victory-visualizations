@@ -75,7 +75,8 @@ export default class CircularProgressBar extends React.Component {
 
   nrqlInputIsValid = (data) => {
     const { data: seriesEntries } = data[0];
-    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
     const isNonTimeseries = seriesEntries.length === 1;
 
     return (

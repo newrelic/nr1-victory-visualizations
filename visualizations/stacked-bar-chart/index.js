@@ -135,7 +135,8 @@ export default class StackedBarChart extends React.Component {
   };
 
   nrqlInputIsValid = (data) => {
-    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
     return uniqueAggregates.size === 1 && uniqueFacets.size > 0;
   };
 
