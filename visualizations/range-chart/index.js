@@ -84,10 +84,7 @@ export default class RangeChartVisualization extends React.Component {
       data
     );
 
-    const numOfAggregates = uniqueAggregates.size;
-    const numOfFacets = uniqueFacets.size;
-
-    return numOfAggregates === 2 && numOfFacets > 0;
+    return uniqueAggregates.size === 2 && uniqueFacets.size > 0;
   };
 
   render() {
