@@ -17,6 +17,7 @@ import {
 
 import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -90,23 +91,11 @@ export default class RangeChartVisualization extends React.Component {
   };
 
   validateNRQLInput = (data) => {
-    const { setOfAggregators, setOfFacets } = data.reduce(
-      (acc, curr) => {
-        curr?.metadata?.groups.forEach((group) => {
-          if (group?.type === 'function') {
-            acc.setOfAggregators.add(group?.displayName);
-          }
-          if (group?.type === 'facet') {
-            acc.setOfFacets.add(group?.displayName);
-          }
-        });
-        return acc;
-      },
-      { setOfAggregators: new Set(), setOfFacets: new Set() }
-    );
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
 
-    const numOfAggregates = setOfAggregators.size;
-    const numOfFacets = setOfFacets.size;
+    const numOfAggregates = uniqueAggregates.size;
+    const numOfFacets = uniqueFacets.size;
 
     return numOfAggregates === 2 && numOfFacets > 0;
   };
