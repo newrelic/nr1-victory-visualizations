@@ -20,20 +20,6 @@ import {
   AutoSizer,
 } from 'nr1';
 
-const validateNRQLInput = (data) => {
-  const { groups } = data[0].metadata;
-
-  const numOfAggregates = groups.filter(({ type }) => type === 'function')
-    .length;
-  const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
-
-  if (numOfAggregates === 1 && numOfFacets > 0) {
-    return true;
-  }
-
-  return false;
-};
-
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
  * with a stack of "bar segments" being one "bar".
@@ -143,6 +129,21 @@ export default class MultiFacetBarChartVisualization extends React.Component {
     });
   };
 
+  validateNRQLInput = (data) => {
+    const { groups } = data[0].metadata;
+
+    const numOfAggregates = groups.filter(
+      ({ type }) => type === 'function'
+    ).length;
+    const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
+
+    if (numOfAggregates === 1 && numOfFacets > 0) {
+      return true;
+    }
+
+    return false;
+  };
+
   render() {
     const { nrqlQueries } = this.props;
 
@@ -173,7 +174,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                 return <ErrorState />;
               }
 
-              const isInputValid = validateNRQLInput(data);
+              const isInputValid = this.validateNRQLInput(data);
 
               if (!isInputValid) {
                 return (
