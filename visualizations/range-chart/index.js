@@ -80,10 +80,7 @@ export default class RangeChartVisualization extends React.Component {
   };
 
   nrqlInputIsValid = (data) => {
-    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(
-      data
-    );
-
+    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(data);
     return uniqueAggregates.size === 2 && uniqueFacets.size > 0;
   };
 
