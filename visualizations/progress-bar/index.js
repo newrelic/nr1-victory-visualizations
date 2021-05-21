@@ -73,11 +73,14 @@ export default class ProgressBarVisualization extends React.Component {
       return colorFromData;
     }
 
+    const green = 'var(--nr1--base-colors--ui--green--6)';
+    const red = 'var(--nr1--base-colors--ui--red--6)';
+
     if (greenIsHigh) {
-      return value > threshold ? 'green' : 'red';
+      return value > threshold ? green : red;
     }
 
-    return value < threshold ? 'green' : 'red';
+    return value < threshold ? green : red;
   };
 
   validateNRQLInput = (data) => {
