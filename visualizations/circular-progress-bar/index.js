@@ -9,9 +9,9 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '/src/error-state';
-import NrqlQueryError from '/src/nrql-query-error';
-import { baseLabelStyles } from '/src/theme';
+import ErrorState from '../../src/error-state';
+import NrqlQueryError from '../../src/nrql-query-error';
+import { baseLabelStyles } from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 const BOUNDS = {

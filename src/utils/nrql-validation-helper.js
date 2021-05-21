@@ -1,5 +1,4 @@
 export const getUniqueAggregatesAndFacets = (rawData) => {
-  console.log(rawData.flatMap(({ metadata }) => metadata.groups));
   return rawData
     .flatMap(({ metadata }) => metadata.groups)
     .reduce(
