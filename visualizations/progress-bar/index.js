@@ -66,7 +66,7 @@ export default class ProgressBarVisualization extends React.Component {
   getColor = (value, colorFromData) => {
     const { red6: red, green6: green } = colors.base;
     const {
-      thresholds: { criticalThreshold, greenIsHigh },
+      thresholds: { criticalThreshold, highValuesAreSuccess },
     } = this.props;
 
     const threshold = parseFloat(criticalThreshold);
@@ -75,7 +75,7 @@ export default class ProgressBarVisualization extends React.Component {
       return colorFromData;
     }
 
-    if (greenIsHigh) {
+    if (highValuesAreSuccess) {
       return value > threshold ? green : red;
     }
 

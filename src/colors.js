@@ -10,8 +10,8 @@ export default {
     gray8: 'var(--nr1--base-colors--ui--gray--8)',
     gray9: 'var(--nr1--base-colors--ui--gray--9)',
     gray10: 'var(--nr1--base-colors--ui--gray--10)',
-    red6: 'var(--nr1--base-colors--ui--green--6)',
-    green6: 'var(--nr1--base-colors--ui--red--6)',
+    red6: 'var(--nr1--base-colors--ui--red--6)',
+    green6: 'var(--nr1--base-colors--ui--green--6)',
   },
   background: {
     app: 'var(--nr1--colors--background--app)',

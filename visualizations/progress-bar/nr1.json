@@ -35,9 +35,9 @@
           "type": "number"
         },
         {
-          "name": "greenIsHigh",
-          "title": "Above threshold is green",
-          "description": "If checked, values above the threshold display as green and values at or below the threshold display as red",
+          "name": "highValuesAreSuccess",
+          "title": "Above threshold is success",
+          "description": "If checked, values above the threshold display as successful and values at or below the threshold display as critical",
           "type": "boolean"
         }
       ]
