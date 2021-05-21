@@ -19,6 +19,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
@@ -130,18 +131,13 @@ export default class MultiFacetBarChartVisualization extends React.Component {
   };
 
   validateNRQLInput = (data) => {
-    const { groups } = data[0].metadata;
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
 
-    const numOfAggregates = groups.filter(
-      ({ type }) => type === 'function'
-    ).length;
-    const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
+    const numOfAggregates = uniqueAggregates.size;
+    const numOfFacets = uniqueFacets.size;
 
-    if (numOfAggregates === 1 && numOfFacets > 0) {
-      return true;
-    }
-
-    return false;
+    return numOfAggregates === 1 && numOfFacets > 0;
   };
 
   render() {
