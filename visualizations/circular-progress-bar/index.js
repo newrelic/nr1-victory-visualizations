@@ -186,8 +186,7 @@ const EmptyState = () => (
         type={HeadingText.TYPE.HEADING_4}
       >
         This Visualization supports NRQL queries with a single SELECT clause
-        returning a percentage value (0 to 100 rathern than 0 to 1). For
-        example:
+        returning a percentage value (0 to 100 rather than 0 to 1). For example:
       </HeadingText>
       <code>
         {'FROM Transaction SELECT percentage(count(*), WHERE duration < 0.1)'}
