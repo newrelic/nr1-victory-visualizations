@@ -13,6 +13,7 @@ import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 import ErrorState from '../../src/error-state';
 import theme from '../../src/theme';
 import truncateLabel from '../../src/utils/truncate-label';
+import { getFacetLabel } from '../../src/utils/facets';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -31,22 +32,6 @@ export default class RangeChartVisualization extends React.Component {
   };
 
   /**
-   * Builds up a unique identifier with the facet atrribute values from the FACET clause in NRQL
-   *
-   * @param {{type: string, value: string}[]} groups
-   * @return {string}
-   */
-  getFacetGroupName = (groups) => {
-    return groups
-      .filter(({ type }) => type === 'facet')
-      .reduce(
-        (acc, { value }) => [...acc, value === undefined ? 'null' : value],
-        []
-      )
-      .join(', ');
-  };
-
-  /**
    * Transforms from NRQL data output to VictoryBar input format.
    *
    * Uses `metdata.color` for the bar fill colors.
@@ -60,7 +45,7 @@ export default class RangeChartVisualization extends React.Component {
    */
   transformData = (rawData) => {
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
-      const facetGroupName = this.getFacetGroupName(metadata?.groups);
+      const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
 
       acc[facetGroupName]
