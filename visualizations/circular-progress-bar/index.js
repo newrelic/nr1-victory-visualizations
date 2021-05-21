@@ -97,8 +97,10 @@ export default class CircularProgressBar extends React.Component {
       metadata: { groups },
     } = data[0];
 
-    const numOfAggregates = groups.filter(({ type }) => type === 'function')
-      .length;
+    const numOfAggregates = groups.filter(
+      ({ type }) => type === 'function'
+    ).length;
+
     const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
     const isNonTimeseries = seriesEntries.length === 1;
 
