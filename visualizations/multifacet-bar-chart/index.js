@@ -21,7 +21,7 @@ import {
   AutoSizer,
 } from 'nr1';
 import theme from '../../src/theme';
-import { TYPES_TO_UNITS, formatTicks } from '../../src/utils/units';
+import { formatTicks, typeToUnit } from '../../src/utils/units';
 
 const validateNRQLInput = (data) => {
   const { groups } = data[0].metadata;
@@ -135,7 +135,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
     }, {});
 
     // get the units for the measurement
-    const unit = rawData[0].metadata.units_data.y;
+    const unitType = rawData[0].metadata.units_data.y;
 
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
@@ -143,7 +143,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       return Object.entries(entry).map(([barLabel, value]) => ({
         label: [
           `${segmentLabel}`,
-          `${value?.toLocaleString() ?? ''}${TYPES_TO_UNITS[unit]}`,
+          `${value?.toLocaleString() ?? ''}${typeToUnit(unitType)}`,
         ],
         segmentLabel,
         x: barLabel,
@@ -197,7 +197,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               const transformedData = this.transformData(data);
 
               // get the unit value for first data point
-              const unit = data[0].metadata.units_data.y;
+              const unitType = data[0].metadata.units_data.y;
 
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
@@ -245,7 +245,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryAxis
                       dependentAxis
                       tickCount={12}
-                      tickFormat={(t) => formatTicks({ unit, t })}
+                      tickFormat={(tick) => formatTicks({ unitType, tick })}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (

@@ -12,7 +12,7 @@ import { VictoryChart, VictoryBar, VictoryAxis, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
 import theme from '../../src/theme';
-import { TYPES_TO_UNITS, formatTicks } from '../../src/utils/units';
+import { typeToUnit, formatTicks } from '../../src/utils/units';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -62,14 +62,16 @@ export default class RangeChartVisualization extends React.Component {
       const facetGroupName = this.getFacetGroupName(metadata?.groups);
       const dataValue = data?.[0]?.y;
 
-      const unit = metadata.units_data.y;
+      const unitType = metadata.units_data.y;
 
       acc[facetGroupName]
         ? (acc[facetGroupName] = {
             ...acc[facetGroupName],
             y: dataValue,
             x: facetGroupName,
-            label: `${facetGroupName} ${acc[facetGroupName].y0} - ${dataValue} ${TYPES_TO_UNITS[unit]}`,
+            label: `${facetGroupName} ${
+              acc[facetGroupName].y0
+            } - ${dataValue} ${typeToUnit(unitType)}`,
           })
         : (acc[facetGroupName] = {
             color: metadata?.color,
@@ -119,7 +121,7 @@ export default class RangeChartVisualization extends React.Component {
 
               try {
                 const rangeData = this.transformData(data);
-                const unit = data[0].metadata.units_data.y;
+                const unitType = data[0].metadata.units_data.y;
                 const barCount = rangeData.length;
                 const barWidth = (width * 0.6) / barCount;
                 return (
@@ -134,7 +136,7 @@ export default class RangeChartVisualization extends React.Component {
                     <VictoryAxis />
                     <VictoryAxis
                       dependentAxis
-                      tickFormat={(t) => formatTicks({ unit, t })}
+                      tickFormat={(t) => formatTicks({ unitType, t })}
                     />
                     <VictoryBar
                       barWidth={barWidth}

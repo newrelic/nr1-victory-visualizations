@@ -1,7 +1,7 @@
 import numeral from 'numeral';
 import { format } from 'date-fns';
 
-export const TYPES_TO_UNITS = {
+const TYPES_TO_UNITS = {
   APDEX: '',
   BITS: 'b',
   BITS_PER_MS: 'b/ms',
@@ -20,20 +20,22 @@ export const TYPES_TO_UNITS = {
   UNKNOWN: '',
 };
 
-const formatDecimals = (t) => {
-  if (t >= 1000) {
-    return numeral(t).format('0a');
-  } else if (t < 0.01) {
+const formatDecimals = (tick) => {
+  if (tick >= 1000) {
+    return numeral(tick).format('0a');
+  } else if (tick < 0.01) {
     return numeral(t).format('0.000');
-  } else if (t < 1) {
+  } else if (tick < 1) {
     return numeral(t).format('0.0');
   }
-  return t;
+  return tick;
 };
 
-export const formatTicks = ({ unit, t }) => {
-  if (unit === 'TIMESTAMP') {
-    return format(new Date(t), 'MM/dd/yyyy HH:mm');
+export const typeToUnit = (type) => TYPES_TO_UNITS[type];
+
+export const formatTicks = ({ unitType, tick }) => {
+  if (unitType === 'TIMESTAMP') {
+    return format(new Date(tick), 'MM/dd/yyyy HH:mm');
   }
-  return `${formatDecimals(t)}${TYPES_TO_UNITS[unit]}`;
+  return `${formatDecimals(tick)}${typeToUnit(unitType)}`;
 };
