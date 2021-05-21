@@ -72,6 +72,9 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       min: PropTypes.number,
       max: PropTypes.number,
     }),
+    other: PropTypes.shape({
+      visible: PropTypes.bool,
+    }),
   };
 
   /**
@@ -121,6 +124,13 @@ export default class MultiFacetBarChartVisualization extends React.Component {
     const facetBreakdown = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
       const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
+      const {
+        other: { visible },
+      } = this.props;
+
+      if (!visible && barLabel === 'Other') {
+        return acc;
+      }
 
       if (!colorsBySegmentLabel.has(segmentLabel)) {
         colorsBySegmentLabel.set(segmentLabel, metadata?.color);

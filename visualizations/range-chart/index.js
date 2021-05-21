@@ -28,6 +28,9 @@ export default class RangeChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+    other: PropTypes.shape({
+      visible: PropTypes.bool,
+    }),
   };
 
   /**
@@ -58,11 +61,18 @@ export default class RangeChartVisualization extends React.Component {
    * @returns {{rangeData: {facetGroupName: string, y: number, y0: number, color: string}[], tickValues: string[]}}
    */
   transformData = (rawData) => {
+    const {
+      other: { visible },
+    } = this.props;
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = this.getFacetGroupName(metadata?.groups);
       const dataValue = data?.[0]?.y;
 
       const unitType = metadata.units_data.y;
+
+      if (!visible && facetGroupName === 'Other') {
+        return acc;
+      }
 
       acc[facetGroupName]
         ? (acc[facetGroupName] = {

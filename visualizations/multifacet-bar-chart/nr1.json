@@ -22,29 +22,42 @@
           "type": "nrql"
         }
       ]
-    }, 
+    },
     {
-      "name": "yAxisConfig", 
-      "title": "Y-axis configuration", 
-      "type": "namespace", 
+      "name": "yAxisConfig",
+      "title": "Y-axis configuration",
+      "type": "namespace",
       "items": [
         {
-          "name": "label", 
+          "name": "label",
           "title": "Label",
           "description": "Custom label for y-axis",
           "type": "string"
-        }, 
+        },
         {
-          "name": "max", 
+          "name": "max",
           "title": "Max value",
           "description": "Max domain value for y-axis",
           "type": "number"
-        }, 
+        },
         {
-          "name": "min", 
+          "name": "min",
           "title": "Min value",
           "description": "Min domain value for y-axis.",
           "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "other",
+      "title": "Other groups",
+      "type": "namespace",
+      "items": [
+        {
+          "name": "visible",
+          "title": "Visible",
+          "description": "Manages the visibility of \"Other\" groups of attributes",
+          "type": "boolean"
         }
       ]
     }
