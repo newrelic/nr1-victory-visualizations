@@ -1,7 +1,7 @@
 {
   "schemaType": "VISUALIZATION",
-  "id": "multifacet-bar-chart",
-  "displayName": "MultifacetBarChart",
+  "id": "stacked-bar-chart",
+  "displayName": "Stacked bar chart",
   "description": "",
   "configuration": [
     {

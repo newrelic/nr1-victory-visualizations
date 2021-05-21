@@ -56,7 +56,7 @@ const getBarCount = (data) => {
   }, new Set()).size;
 };
 
-export default class MultiFacetBarChartVisualization extends React.Component {
+export default class StackedBarChart extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
   // the nr1.json file for the visualization. See docs for more details.
   static propTypes = {
@@ -162,7 +162,7 @@ export default class MultiFacetBarChartVisualization extends React.Component {
     }
 
     return (
-      <AutoSizer className="MultiFacetBarChartVisualization">
+      <AutoSizer className="StackedBarChart">
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
