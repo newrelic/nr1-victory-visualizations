@@ -15,6 +15,7 @@ import NrqlQueryError from '../../src/nrql-query-error';
 import theme from '../../src/theme';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
+import { formatTicks, typeToUnit } from '../../src/utils/units';
 
 import {
   Card,
@@ -128,11 +129,17 @@ export default class MultiFacetBarChartVisualization extends React.Component {
       return acc;
     }, {});
 
+    // get the units for the measurement
+    const unitType = rawData[0].metadata.units_data.y;
+
     // Convert tiered object into an array of arrays for easy use in the stacked
     // VictoryBar components.
     return Object.entries(facetBreakdown).map(([segmentLabel, entry]) => {
       return Object.entries(entry).map(([barLabel, value]) => ({
-        label: [`${segmentLabel}`, `${value.toLocaleString()}`],
+        label: [
+          `${segmentLabel}`,
+          `${value?.toLocaleString() ?? ''}${typeToUnit(unitType)}`,
+        ],
         segmentLabel,
         x: barLabel,
         y: value,
@@ -183,6 +190,10 @@ export default class MultiFacetBarChartVisualization extends React.Component {
               }
 
               const transformedData = this.transformData(data);
+
+              // get the unit value for first data point
+              const unitType = data[0].metadata.units_data.y;
+
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
                   if (!acc.some(({ label }) => label === segmentLabel)) {
@@ -232,11 +243,12 @@ export default class MultiFacetBarChartVisualization extends React.Component {
                     <VictoryAxis
                       dependentAxis
                       tickCount={12}
-                      tickFormat={(t) => `${Math.round(t * 10) / 10}`}
+                      tickFormat={(tick) => formatTicks({ unitType, tick })}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
                         <VictoryBar
+                          key={series.segmentLabel}
                           barWidth={barWidth}
                           labelComponent={
                             <VictoryTooltip
