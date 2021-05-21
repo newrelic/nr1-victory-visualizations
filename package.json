@@ -3,7 +3,8 @@
   "name": "nr1-victory-visualizations",
   "version": "1.0.8",
   "scripts": {
-    "lint": "eslint src/ visualizations/",
+    "eslint-check": "eslint src/ visualizations/",
+    "eslint-fix": "eslint src/ visualizations/ --fix",
     "start": "nr1 nerdpack:serve",
     "test": "exit 0"
   },
