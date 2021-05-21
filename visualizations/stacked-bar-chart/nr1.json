@@ -5,21 +5,40 @@
   "description": "",
   "configuration": [
     {
-      "name": "nrqlQueries",
-      "title": "NRQL Queries",
-      "type": "collection",
+      "name": "yAxisConfig",
+      "title": "Y-axis configuration",
+      "type": "namespace",
       "items": [
         {
-          "name": "accountId",
-          "title": "Account ID",
-          "description": "Account ID to be associated with the query",
-          "type": "account-id"
+          "name": "label",
+          "title": "Label",
+          "description": "Custom label for y-axis",
+          "type": "string"
         },
         {
-          "name": "query",
-          "title": "Query",
-          "description": "NRQL query for visualization",
-          "type": "nrql"
+          "name": "max",
+          "title": "Max value",
+          "description": "Max domain value for y-axis",
+          "type": "number"
+        },
+        {
+          "name": "min",
+          "title": "Min value",
+          "description": "Min domain value for y-axis.",
+          "type": "number"
+        }
+      ]
+    },
+    {
+      "name": "other",
+      "title": "Other groups",
+      "type": "namespace",
+      "items": [
+        {
+          "name": "visible",
+          "title": "Visible",
+          "description": "Manages the visibility of \"Other\" groups of attributes",
+          "type": "boolean"
         }
       ]
     }
