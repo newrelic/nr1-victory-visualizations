@@ -6,7 +6,12 @@ export default {
   },
   body1: {
     color: 'var(--nr1--typography--body--1--color)',
-    fontFamily: 'var( --nr1--typography--body--2--font-family)',
+    fontFamily: 'var(--nr1--typography--body--1--font-family)',
+    fontWeight: 'var(--nr1--typography--body--1--font-weight)',
+  },
+  body2: {
+    color: 'var(--nr1--typography--body--2--color)',
+    fontFamily: 'var(--nr1--typography--body--2--font-family)',
     fontWeight: 'var(--nr1--typography--body--2--font-weight)',
   },
 };
