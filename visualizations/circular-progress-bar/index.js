@@ -38,6 +38,15 @@ export default class CircularProgressBar extends React.Component {
         query: PropTypes.string,
       })
     ),
+
+    /**
+     * Configuration that determines what values to display as critical or
+     * successful.
+     */
+    thresholds: PropTypes.shape({
+      criticalThreshold: PropTypes.number,
+      highValuesAreSuccess: PropTypes.bool,
+    }),
   };
 
   /**
