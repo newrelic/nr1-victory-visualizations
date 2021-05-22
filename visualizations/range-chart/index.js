@@ -150,7 +150,7 @@ export default class RangeChartVisualization extends React.Component {
                     />
                     <VictoryAxis
                       dependentAxis
-                      tickFormat={(t) => formatTicks({ unitType, t })}
+                      tickFormat={(tick) => formatTicks({ unitType, tick })}
                     />
                     <VictoryBar
                       barWidth={barWidth}
