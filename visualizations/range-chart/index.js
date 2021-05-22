@@ -112,7 +112,12 @@ export default class RangeChartVisualization extends React.Component {
               }
 
               if (error) {
-                return <ErrorState />;
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
               if (!this.nrqlInputIsValid(data)) {
