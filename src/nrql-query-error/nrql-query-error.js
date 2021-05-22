@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const NrqlQueryError = ({ title, description }) => (
+const NrqlQueryError = ({
+  title,
+  description = 'Something went wrong with the provided NRQL query',
+}) => (
   <div className="NrqlQueryError">
     <div className="NrqlQueryError-title">{title}</div>
     <div className="NrqlQueryError-description">{description}</div>
