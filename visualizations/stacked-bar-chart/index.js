@@ -17,7 +17,6 @@ import {
   VictoryTooltip,
 } from 'victory';
 
-import ErrorState from '../../src/error-state';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error';
 
@@ -167,7 +166,12 @@ export default class StackedBarChart extends React.Component {
               }
 
               if (error) {
-                return <ErrorState />;
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
               if (!this.nrqlInputIsValid(data)) {

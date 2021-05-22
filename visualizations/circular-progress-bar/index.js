@@ -9,7 +9,6 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
 import { baseLabelStyles } from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
@@ -130,7 +129,12 @@ export default class CircularProgressBar extends React.Component {
               }
 
               if (error) {
-                return <ErrorState />;
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
               if (!this.nrqlInputIsValid(data)) {
