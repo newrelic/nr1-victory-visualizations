@@ -72,13 +72,10 @@ export default class StackedBarChart extends React.Component {
     ),
     /**
      * Object consisting of configuration properties for y-axis.
-     * Max and min are the range of values for the y-axis.
      * Label provides text to go next to the y-axis.
      */
-    yAxisConfig: PropTypes.shape({
+    yAxis: PropTypes.shape({
       label: PropTypes.string,
-      min: PropTypes.number,
-      max: PropTypes.number,
     }),
     /**
      * Object with a singular boolean value.
@@ -173,7 +170,7 @@ export default class StackedBarChart extends React.Component {
   };
 
   render() {
-    const { nrqlQueries, yAxisConfig } = this.props;
+    const { nrqlQueries, yAxis } = this.props;
 
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
@@ -240,18 +237,13 @@ export default class StackedBarChart extends React.Component {
               // set the width of stacked bars so that they take up about 60% of the width
               const barWidth = (xDomainWidth * 0.6) / barCount;
 
-              const maxDomain = yAxisConfig.max
-                ? { maxDomain: { y: parseFloat(yAxisConfig.max) } }
-                : {};
-
-              const minDomain = yAxisConfig.min
-                ? { minDomain: { y: parseFloat(yAxisConfig.min) } }
-                : {};
-
-              const domainProps = { ...minDomain, ...maxDomain };
-
               const label =
-                yAxisConfig.label || `${yAxisLabel}${typeToUnit(unitType)}`;
+                yAxis.label || `${yAxisLabel}${typeToUnit(unitType)}`;
+
+              const yDomainValues = transformedData.map(([{ y }]) => y);
+              const tickIncrement =
+                (Math.max(...yDomainValues) - Math.min(...yDomainValues)) / 12;
+
               const maxYAxisWidth = 50;
               const yAxisPadding = 16;
 
@@ -271,7 +263,6 @@ export default class StackedBarChart extends React.Component {
                       x: barWidth / 2,
                     }}
                     theme={theme}
-                    {...domainProps}
                   >
                     <VictoryAxis
                       tickFormat={(label) =>
@@ -286,7 +277,9 @@ export default class StackedBarChart extends React.Component {
                     <VictoryAxis
                       dependentAxis
                       tickCount={12}
-                      tickFormat={(tick) => formatTicks({ unitType, tick })}
+                      tickFormat={(tick) =>
+                        formatTicks({ unitType, tick, tickIncrement })
+                      }
                       label={label}
                       style={{
                         axisLabel: { padding: maxYAxisWidth + yAxisPadding },

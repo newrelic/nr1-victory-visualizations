@@ -20,22 +20,20 @@ const TYPES_TO_UNITS = {
   UNKNOWN: '',
 };
 
-const formatDecimals = (tick) => {
-  if (tick >= 1000) {
-    return numeral(tick).format('0a');
-  } else if (tick < 0.01) {
+const formatDecimals = ({ tick, tickIncrement }) => {
+  if (tickIncrement < 0.01) {
     return numeral(tick).format('0.000');
-  } else if (tick < 1) {
-    return numeral(tick).format('0.0');
+  } else if (tickIncrement < 1) {
+    return numeral(tick).format('0.00');
   }
-  return numeral(tick).format('0.00');
+  return numeral(tick).format('0a.0');
 };
 
 export const typeToUnit = (unitType) => TYPES_TO_UNITS[unitType];
 
-export const formatTicks = ({ unitType, tick }) => {
+export const formatTicks = ({ unitType, tick, tickIncrement }) => {
   if (unitType === 'TIMESTAMP') {
     return format(new Date(tick), 'MM/dd/yyyy HH:mm');
   }
-  return `${formatDecimals(tick)}${typeToUnit(unitType)}`;
+  return `${formatDecimals({ tick, tickIncrement })}${typeToUnit(unitType)}`;
 };

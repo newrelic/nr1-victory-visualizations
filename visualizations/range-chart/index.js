@@ -125,6 +125,20 @@ export default class RangeChartVisualization extends React.Component {
                 const unitType = data[0].metadata.units_data.y;
                 const barCount = rangeData.length;
                 const barWidth = (width * 0.6) / barCount;
+
+                const tickCount = 12;
+                const [y0DomainValues, yDomainValues] = rangeData.reduce(
+                  (acc, { y0, y }) => {
+                    acc[0].push(y0);
+                    acc[1].push(y);
+                    return acc;
+                  },
+                  [[], []]
+                );
+                const tickIncrement =
+                  (Math.max(...yDomainValues) - Math.min(...y0DomainValues)) /
+                  tickCount;
+
                 return (
                   <VictoryChart
                     domainPadding={{
@@ -141,7 +155,10 @@ export default class RangeChartVisualization extends React.Component {
                     />
                     <VictoryAxis
                       dependentAxis
-                      tickFormat={(t) => formatTicks({ unitType, t })}
+                      tickCount={tickCount}
+                      tickFormat={(tick) =>
+                        formatTicks({ unitType, tick, tickIncrement })
+                      }
                     />
                     <VictoryBar
                       barWidth={barWidth}
