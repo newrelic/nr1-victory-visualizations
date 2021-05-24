@@ -239,9 +239,12 @@ export default class StackedBarChart extends React.Component {
 
               const yDomainValues = transformedData.map(([{ y }]) => y);
               const tickCount = 12;
-              const tickIncrement =
-                (Math.max(...yDomainValues) - Math.min(...yDomainValues)) /
-                tickCount;
+
+              const yMin = yAxis.min ?? 0;
+              const yMax = yAxis.max ?? Math.max(...yDomainValues);
+
+              const tickIncrement = (yMax - yMin) / tickCount;
+
               const maxDomain = yAxis.max
                 ? { maxDomain: { y: parseFloat(yAxis.max) } }
                 : {};
