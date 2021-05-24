@@ -271,6 +271,7 @@ export default class StackedBarChart extends React.Component {
                       x: barWidth / 2,
                     }}
                     theme={theme}
+                    {...domainProps}
                   >
                     <VictoryAxis
                       tickFormat={(label) =>
@@ -292,7 +293,6 @@ export default class StackedBarChart extends React.Component {
                       style={{
                         axisLabel: { padding: maxYAxisWidth + yAxisPadding },
                       }}
-                      {...domainProps}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
