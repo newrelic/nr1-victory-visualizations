@@ -20,13 +20,23 @@ const TYPES_TO_UNITS = {
   UNKNOWN: '',
 };
 
-const formatDecimals = ({ tick, tickIncrement }) => {
-  if (tickIncrement < 0.01) {
-    return numeral(tick).format('0.000');
-  } else if (tickIncrement < 1) {
-    return numeral(tick).format('0.00');
+const BASE_FORMAT = '0a.0';
+
+const getFormatString = (tickIncrement) => {
+  if (tickIncrement >= 1) {
+    return BASE_FORMAT;
   }
-  return numeral(tick).format('0a.0');
+
+  const charArray = tickIncrement.toString().split('.')[1].split('');
+  let index = 0;
+  while (charArray[index] === '0') {
+    index++;
+  }
+  return BASE_FORMAT + '0'.repeat(index);
+};
+
+const formatDecimals = ({ tick, tickIncrement }) => {
+  return numeral(tick).format(getFormatString(tickIncrement));
 };
 
 export const typeToUnit = (unitType) => TYPES_TO_UNITS[unitType];
