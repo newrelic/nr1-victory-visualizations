@@ -27,7 +27,14 @@ const getFormatString = (tickIncrement) => {
     return BASE_FORMAT;
   }
 
-  const charArray = tickIncrement.toString().split('.')[1].split('');
+  const splitByDecimal = tickIncrement.toString().split('.');
+
+  if (splitByDecimal.length === 1) {
+    return BASE_FORMAT;
+  }
+
+  const charArray = splitByDecimal[1].split('');
+
   let index = 0;
   while (charArray[index] === '0') {
     index++;
