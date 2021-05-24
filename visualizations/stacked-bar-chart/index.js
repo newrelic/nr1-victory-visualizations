@@ -239,6 +239,15 @@ export default class StackedBarChart extends React.Component {
               const tickIncrement =
                 (Math.max(...yDomainValues) - Math.min(...yDomainValues)) /
                 tickCount;
+              const maxDomain = yAxis.max
+                ? { maxDomain: { y: parseFloat(yAxis.max) } }
+                : {};
+
+              const minDomain = yAxis.min
+                ? { minDomain: { y: parseFloat(yAxis.min) } }
+                : {};
+
+              const domainProps = { ...minDomain, ...maxDomain };
 
               const maxYAxisWidth = 50;
               const yAxisPadding = 16;
@@ -280,6 +289,7 @@ export default class StackedBarChart extends React.Component {
                       style={{
                         axisLabel: { padding: maxYAxisWidth + yAxisPadding },
                       }}
+                      {...domainProps}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (
