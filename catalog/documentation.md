@@ -28,7 +28,9 @@ To use the visualization, provide the following properties:
 | `nrqlQueries`     | A collection of NRQL queries. This visualization only accepts one query. See [Multifacet NRQL Data Details](#multifacet-nrql-data-details) for more details on accepted NRQL queries.      | Yes    |
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 | `other.visible`   | A toggle that controls the display of "other" groups of attributes | No     |
-| `yAxisConfig.label`   | A custom label to describe the y-axis | No     |
+| `yAxis.label`   | A custom label to describe the y-axis | No     |
+| `yAxis.max`   | Maximum domain value for y axis | No     |
+| `yAxis.min`   | Minimum domain value for y axis | No     |
 
 
 ### Stacked bar chart NRQL Data Details
