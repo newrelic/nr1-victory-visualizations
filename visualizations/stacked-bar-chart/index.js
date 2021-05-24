@@ -235,8 +235,10 @@ export default class StackedBarChart extends React.Component {
                 yAxis.label || `${yAxisLabel}${typeToUnit(unitType)}`;
 
               const yDomainValues = transformedData.map(([{ y }]) => y);
+              const tickCount = 12;
               const tickIncrement =
-                (Math.max(...yDomainValues) - Math.min(...yDomainValues)) / 12;
+                (Math.max(...yDomainValues) - Math.min(...yDomainValues)) /
+                tickCount;
 
               const maxYAxisWidth = 50;
               const yAxisPadding = 16;
@@ -270,7 +272,7 @@ export default class StackedBarChart extends React.Component {
                     />
                     <VictoryAxis
                       dependentAxis
-                      tickCount={12}
+                      tickCount={tickCount}
                       tickFormat={(tick) =>
                         formatTicks({ unitType, tick, tickIncrement })
                       }
