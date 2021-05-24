@@ -43,7 +43,7 @@
         {
           "name": "min",
           "title": "Min value",
-          "description": "Min domain value for y axis.",
+          "description": "Min domain value for y axis",
           "type": "number"
         }
       ]
