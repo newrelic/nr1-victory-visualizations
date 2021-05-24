@@ -60,7 +60,7 @@ export default class StackedBarChart extends React.Component {
      * Max and min are the range of values for the y-axis.
      * Label provides text to go next to the y-axis.
      */
-    yAxisConfig: PropTypes.shape({
+    yAxis: PropTypes.shape({
       label: PropTypes.string,
       min: PropTypes.number,
       max: PropTypes.number,
