@@ -18,7 +18,7 @@
     "prop-types": "^15.6.2",
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
-    "victory": "^35.8.0"
+    "victory": "^35.8.1"
   },
   "browserslist": [
     "last 2 versions",
