@@ -9,9 +9,9 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
 import { baseLabelStyles } from '../../src/theme';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import Colors from '../../src/colors';
 
 const BOUNDS = {
@@ -50,7 +50,7 @@ export default class CircularProgressBar extends React.Component {
   };
 
   /**
-   * Restructure the data for a aggegate NRQL query with no TIMESERIES and no
+   * Restructure the data for a aggregate NRQL query with no TIMESERIES and no
    * FACET into a for our visualization works well with.
    */
   transformData = (data) => {
@@ -72,6 +72,17 @@ export default class CircularProgressBar extends React.Component {
     };
   };
 
+  nrqlInputIsValid = (data) => {
+    const { data: seriesEntries } = data[0];
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
+    const isNonTimeseries = seriesEntries.length === 1;
+
+    return (
+      uniqueAggregates.size === 1 && uniqueFacets.size === 0 && isNonTimeseries
+    );
+  };
+
   getColor = (value, colorFromData) => {
     const { red6: red, green6: green } = Colors.base;
     const {
@@ -89,22 +100,6 @@ export default class CircularProgressBar extends React.Component {
     }
 
     return value < threshold ? green : red;
-  };
-
-  validateNRQLInput = (data) => {
-    const {
-      data: seriesEntries,
-      metadata: { groups },
-    } = data[0];
-
-    const numOfAggregates = groups.filter(
-      ({ type }) => type === 'function'
-    ).length;
-
-    const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
-    const isNonTimeseries = seriesEntries.length === 1;
-
-    return numOfAggregates === 1 && numOfFacets === 0 && isNonTimeseries;
   };
 
   render() {
@@ -134,16 +129,19 @@ export default class CircularProgressBar extends React.Component {
               }
 
               if (error) {
-                return <ErrorState />;
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
-              const isInputValid = this.validateNRQLInput(data);
-
-              if (!isInputValid) {
+              if (!this.nrqlInputIsValid(data)) {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
                   />
                 );
               }

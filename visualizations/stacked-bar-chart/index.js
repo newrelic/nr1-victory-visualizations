@@ -1,23 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  VictoryAxis,
-  VictoryBar,
-  VictoryChart,
-  VictoryContainer,
-  VictoryStack,
-  VictoryTooltip,
-} from 'victory';
-import ErrorState from '../../src/error-state';
-import Legend from '../../src/legend';
-import NrqlQueryError from '../../src/nrql-query-error';
-
-import theme from '../../src/theme';
-import truncateLabel from '../../src/utils/truncate-label';
-import { getFacetLabel } from '../../src/utils/facets';
-import { formatTicks, typeToUnit } from '../../src/utils/units';
-
-import {
   Card,
   CardBody,
   HeadingText,
@@ -25,21 +8,23 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
+import {
+  VictoryAxis,
+  VictoryBar,
+  VictoryChart,
+  VictoryContainer,
+  VictoryStack,
+  VictoryTooltip,
+} from 'victory';
 
-const validateNRQLInput = (data) => {
-  const { groups } = data[0].metadata;
+import Legend from '../../src/legend';
+import NrqlQueryError from '../../src/nrql-query-error';
 
-  const numOfAggregates = groups.filter(
-    ({ type }) => type === 'function'
-  ).length;
-  const numOfFacets = groups.filter(({ type }) => type === 'facet').length;
-
-  if (numOfAggregates === 1 && numOfFacets > 0) {
-    return true;
-  }
-
-  return false;
-};
+import theme from '../../src/theme';
+import truncateLabel from '../../src/utils/truncate-label';
+import { getFacetLabel } from '../../src/utils/facets';
+import { formatTicks, typeToUnit } from '../../src/utils/units';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
@@ -169,6 +154,12 @@ export default class StackedBarChart extends React.Component {
     });
   };
 
+  nrqlInputIsValid = (data) => {
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
+    return uniqueAggregates.size === 1 && uniqueFacets.size > 0;
+  };
+
   render() {
     const { nrqlQueries, yAxis } = this.props;
 
@@ -196,16 +187,19 @@ export default class StackedBarChart extends React.Component {
               }
 
               if (error) {
-                return <ErrorState />;
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
-              const isInputValid = validateNRQLInput(data);
-
-              if (!isInputValid) {
+              if (!this.nrqlInputIsValid(data)) {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have 1 aggregate function and 1-2 facets."
+                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and at least one FACET clause."
                   />
                 );
               }
