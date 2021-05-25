@@ -170,6 +170,12 @@ export default class RangeChartVisualization extends React.Component {
                     height={height}
                     width={width}
                     theme={theme}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: 75,
+                      right: 25,
+                    }}
                   >
                     <VictoryAxis
                       tickFormat={(label) =>
