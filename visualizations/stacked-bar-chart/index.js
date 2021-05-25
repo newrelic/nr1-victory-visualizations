@@ -274,7 +274,11 @@ export default class StackedBarChart extends React.Component {
                       dependentAxis
                       tickCount={yAxisTickCount}
                       tickFormat={(tick) =>
-                        formatTicks({ unitType, tick, yAxisTickIncrement })
+                        formatTicks({
+                          unitType,
+                          tick,
+                          tickIncrement: yAxisTickIncrement,
+                        })
                       }
                       label={label}
                       style={{
