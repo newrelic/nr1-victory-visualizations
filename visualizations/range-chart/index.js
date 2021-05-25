@@ -149,7 +149,7 @@ export default class RangeChartVisualization extends React.Component {
                 const barCount = rangeData.length;
                 const barWidth = (width * 0.6) / barCount;
 
-                const tickCount = Math.round(height / 36);
+                const yAxisTickCount = Math.round(height / 36);
                 const [y0DomainValues, yDomainValues] = rangeData.reduce(
                   (acc, { y0, y }) => {
                     acc[0].push(y0);
@@ -160,7 +160,7 @@ export default class RangeChartVisualization extends React.Component {
                 );
                 const tickIncrement =
                   (Math.max(...yDomainValues) - Math.min(...y0DomainValues)) /
-                  tickCount;
+                  yAxisTickCount;
 
                 return (
                   <VictoryChart
@@ -178,7 +178,7 @@ export default class RangeChartVisualization extends React.Component {
                     />
                     <VictoryAxis
                       dependentAxis
-                      tickCount={tickCount}
+                      tickCount={yAxisTickCount}
                       tickFormat={(tick) =>
                         formatTicks({ unitType, tick, tickIncrement })
                       }
