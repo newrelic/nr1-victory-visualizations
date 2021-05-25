@@ -1,4 +1,4 @@
-# Victory charts visualizations
+# Victory Charts Visualizations
 Visualize your New Relic data with Victory charts!
 
 1. [Add this Nerdpack to your account](https://developer.newrelic.com/build-apps/publish-deploy/subscribe/)
