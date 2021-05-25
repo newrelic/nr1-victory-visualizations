@@ -158,7 +158,7 @@ export default class RangeChartVisualization extends React.Component {
                   },
                   [[], []]
                 );
-                const tickIncrement =
+                const yAxisTickIncrement =
                   (Math.max(...yDomainValues) - Math.min(...y0DomainValues)) /
                   yAxisTickCount;
 
@@ -186,7 +186,7 @@ export default class RangeChartVisualization extends React.Component {
                       dependentAxis
                       tickCount={yAxisTickCount}
                       tickFormat={(tick) =>
-                        formatTicks({ unitType, tick, tickIncrement })
+                        formatTicks({ unitType, tick, yAxisTickIncrement })
                       }
                     />
                     <VictoryBar
