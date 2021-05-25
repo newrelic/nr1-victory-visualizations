@@ -195,7 +195,7 @@ SOFTWARE.
 
 ### victory
 
-This product includes source derived from [victory](https://github.com/formidablelabs/victory) ([v35.8.0](https://github.com/formidablelabs/victory/tree/v35.8.0)), distributed under the [MIT License](https://github.com/formidablelabs/victory/blob/v35.8.0/README.md):
+This product includes source derived from [victory](https://github.com/formidablelabs/victory) ([v35.8.1](https://github.com/formidablelabs/victory/tree/v35.8.1)), distributed under the [MIT License](https://github.com/formidablelabs/victory/blob/v35.8.1/README.md):
 
 ```
 MIT License

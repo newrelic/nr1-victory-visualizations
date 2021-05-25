@@ -1,5 +1,5 @@
 {
-  "lastUpdated": "Fri May 21 2021 22:41:12 GMT+0000 (Coordinated Universal Time)",
+  "lastUpdated": "Tue May 25 2021 17:44:01 GMT+0000 (Coordinated Universal Time)",
   "projectName": "nr1-victory-visualizations",
   "projectUrl": "https://github.com/newrelic/nr1-victory-visualizations",
   "includeDev": true,
@@ -74,15 +74,15 @@
       "licenseUrl": "https://github.com/facebook/react/blob/v16.14.0/LICENSE",
       "licenseTextSource": "file"
     },
-    "victory@35.8.0": {
+    "victory@35.8.1": {
       "name": "victory",
-      "version": "35.8.0",
-      "range": "^35.8.0",
+      "version": "35.8.1",
+      "range": "^35.8.1",
       "licenses": "MIT",
       "repoUrl": "https://github.com/formidablelabs/victory",
-      "versionedRepoUrl": "https://github.com/formidablelabs/victory/tree/v35.8.0",
+      "versionedRepoUrl": "https://github.com/formidablelabs/victory/tree/v35.8.1",
       "licenseFile": "node_modules/victory/README.md",
-      "licenseUrl": "https://github.com/formidablelabs/victory/blob/v35.8.0/README.md",
+      "licenseUrl": "https://github.com/formidablelabs/victory/blob/v35.8.1/README.md",
       "licenseTextSource": "spdx",
       "publisher": "Formidable"
     }
