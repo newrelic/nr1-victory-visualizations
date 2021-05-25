@@ -45,7 +45,7 @@ export default class RangeChartVisualization extends React.Component {
   /**
    * Transforms from NRQL data output to VictoryBar input format.
    *
-   * Uses `metdata.color` for the bar fill colors.
+   * Uses `metadata.color` for the bar fill colors.
    *
    * Uses the `value` property on group where type === facet for the unique entry identifier.
    *
