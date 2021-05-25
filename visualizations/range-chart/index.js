@@ -149,7 +149,7 @@ export default class RangeChartVisualization extends React.Component {
                 const barCount = rangeData.length;
                 const barWidth = (width * 0.6) / barCount;
 
-                const tickCount = 12;
+                const tickCount = Math.round(height / 36);
                 const [y0DomainValues, yDomainValues] = rangeData.reduce(
                   (acc, { y0, y }) => {
                     acc[0].push(y0);
