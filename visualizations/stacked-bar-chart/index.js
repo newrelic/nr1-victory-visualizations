@@ -55,6 +55,20 @@ export default class StackedBarChart extends React.Component {
         query: PropTypes.string,
       })
     ),
+    /**
+     * Object consisting of configuration properties for y-axis.
+     * Label provides text to go next to the y-axis.
+     */
+    yAxis: PropTypes.shape({
+      label: PropTypes.string,
+    }),
+    /**
+     * Object with a singular boolean value.
+     * Determines if "other" attributes are included in visualization.
+     */
+    other: PropTypes.shape({
+      visible: PropTypes.bool,
+    }),
   };
 
   /**
@@ -98,6 +112,13 @@ export default class StackedBarChart extends React.Component {
     const facetBreakdown = rawData.reduce((acc, curr) => {
       const { metadata, data } = curr;
       const { barLabel, segmentLabel } = this.getFacetLabels(metadata?.groups);
+      const {
+        other: { visible },
+      } = this.props;
+
+      if (!visible && barLabel === 'Other') {
+        return acc;
+      }
 
       if (!colorsBySegmentLabel.has(segmentLabel)) {
         colorsBySegmentLabel.set(segmentLabel, metadata?.color);
@@ -140,7 +161,7 @@ export default class StackedBarChart extends React.Component {
   };
 
   render() {
-    const { nrqlQueries } = this.props;
+    const { nrqlQueries, yAxis } = this.props;
 
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
@@ -187,6 +208,9 @@ export default class StackedBarChart extends React.Component {
 
               // get the unit value for first data point
               const unitType = data[0].metadata.units_data.y;
+              const { displayName: yAxisLabel } = data[0].metadata.groups.find(
+                ({ type }) => type === 'function'
+              );
 
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
@@ -206,6 +230,18 @@ export default class StackedBarChart extends React.Component {
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
               // set the width of stacked bars so that they take up about 60% of the width
               const barWidth = (xDomainWidth * 0.6) / barCount;
+
+              const label =
+                yAxis.label || `${yAxisLabel}${typeToUnit(unitType)}`;
+
+              const yDomainValues = transformedData.map(([{ y }]) => y);
+              const yAxisTickCount = Math.round(height / 36);
+              const yMin = 0;
+              const yMax = Math.max(...yDomainValues);
+              const yAxisTickIncrement = (yMax - yMin) / yAxisTickCount;
+
+              const maxYAxisWidth = 50;
+              const yAxisPadding = 16;
 
               return (
                 <>
@@ -236,8 +272,18 @@ export default class StackedBarChart extends React.Component {
                     />
                     <VictoryAxis
                       dependentAxis
-                      tickCount={12}
-                      tickFormat={(tick) => formatTicks({ unitType, tick })}
+                      tickCount={yAxisTickCount}
+                      tickFormat={(tick) =>
+                        formatTicks({
+                          unitType,
+                          tick,
+                          tickIncrement: yAxisTickIncrement,
+                        })
+                      }
+                      label={label}
+                      style={{
+                        axisLabel: { padding: maxYAxisWidth + yAxisPadding },
+                      }}
                     />
                     <VictoryStack>
                       {transformedData.map((series) => (

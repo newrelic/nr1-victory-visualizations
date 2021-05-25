@@ -22,6 +22,32 @@
           "type": "nrql"
         }
       ]
+    }, 
+    {
+      "name": "yAxis",
+      "title": "Y axis configuration",
+      "type": "namespace",
+      "items": [
+        {
+          "name": "label",
+          "title": "Label",
+          "description": "Custom label for y axis",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "other",
+      "title": "Other groups",
+      "type": "namespace",
+      "items": [
+        {
+          "name": "visible",
+          "title": "Visible",
+          "description": "Manages the visibility of \"Other\" groups of attributes",
+          "type": "boolean"
+        }
+      ]
     }
   ]
 }

@@ -20,22 +20,37 @@ const TYPES_TO_UNITS = {
   UNKNOWN: '',
 };
 
-const formatDecimals = (tick) => {
-  if (tick >= 1000) {
-    return numeral(tick).format('0a');
-  } else if (tick < 0.01) {
-    return numeral(tick).format('0.000');
-  } else if (tick < 1) {
-    return numeral(tick).format('0.0');
+const BASE_FORMAT = '0a.0';
+
+const getFormatString = (tickIncrement) => {
+  if (!tickIncrement || tickIncrement >= 1) {
+    return BASE_FORMAT;
   }
-  return tick;
+
+  const splitByDecimal = tickIncrement.toString().split('.');
+
+  if (splitByDecimal.length === 1) {
+    return BASE_FORMAT;
+  }
+
+  const charArray = splitByDecimal[1].split('');
+
+  let index = 0;
+  while (charArray[index] === '0') {
+    index++;
+  }
+  return BASE_FORMAT + '0'.repeat(index);
+};
+
+const formatDecimals = ({ tick, tickIncrement }) => {
+  return numeral(tick).format(getFormatString(tickIncrement));
 };
 
 export const typeToUnit = (unitType) => TYPES_TO_UNITS[unitType];
 
-export const formatTicks = ({ unitType, tick }) => {
+export const formatTicks = ({ unitType, tick, tickIncrement }) => {
   if (unitType === 'TIMESTAMP') {
     return format(new Date(tick), 'MM/dd/yyyy HH:mm');
   }
-  return `${formatDecimals(tick)}${typeToUnit(unitType)}`;
+  return `${formatDecimals({ tick, tickIncrement })}${typeToUnit(unitType)}`;
 };

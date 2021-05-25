@@ -33,12 +33,19 @@ export default class RangeChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+    /**
+     * Object with a singular boolean value.
+     * Determines if "other" attributes are included in visualization.
+     */
+    other: PropTypes.shape({
+      visible: PropTypes.bool,
+    }),
   };
 
   /**
    * Transforms from NRQL data output to VictoryBar input format.
    *
-   * Uses `metdata.color` for the bar fill colors.
+   * Uses `metadata.color` for the bar fill colors.
    *
    * Uses the `value` property on group where type === facet for the unique entry identifier.
    *
@@ -48,11 +55,18 @@ export default class RangeChartVisualization extends React.Component {
    * @returns {{rangeData: {facetGroupName: string, y: number, y0: number, color: string}[], tickValues: string[]}}
    */
   transformData = (rawData) => {
+    const {
+      other: { visible },
+    } = this.props;
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
 
       const unitType = metadata.units_data.y;
+
+      if (!visible && facetGroupName === 'Other') {
+        return acc;
+      }
 
       acc[facetGroupName]
         ? (acc[facetGroupName] = {
@@ -134,6 +148,20 @@ export default class RangeChartVisualization extends React.Component {
                 const unitType = data[0].metadata.units_data.y;
                 const barCount = rangeData.length;
                 const barWidth = (width * 0.6) / barCount;
+
+                const yAxisTickCount = Math.round(height / 36);
+                const [y0DomainValues, yDomainValues] = rangeData.reduce(
+                  (acc, { y0, y }) => {
+                    acc[0].push(y0);
+                    acc[1].push(y);
+                    return acc;
+                  },
+                  [[], []]
+                );
+                const yAxisTickIncrement =
+                  (Math.max(...yDomainValues) - Math.min(...y0DomainValues)) /
+                  yAxisTickCount;
+
                 return (
                   <VictoryChart
                     domainPadding={{
@@ -142,6 +170,12 @@ export default class RangeChartVisualization extends React.Component {
                     height={height}
                     width={width}
                     theme={theme}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: 75,
+                      right: 25,
+                    }}
                   >
                     <VictoryAxis
                       tickFormat={(label) =>
@@ -150,7 +184,14 @@ export default class RangeChartVisualization extends React.Component {
                     />
                     <VictoryAxis
                       dependentAxis
-                      tickFormat={(tick) => formatTicks({ unitType, tick })}
+                      tickCount={yAxisTickCount}
+                      tickFormat={(tick) =>
+                        formatTicks({
+                          unitType,
+                          tick,
+                          tickIncrement: yAxisTickIncrement,
+                        })
+                      }
                     />
                     <VictoryBar
                       barWidth={barWidth}
