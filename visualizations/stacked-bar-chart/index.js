@@ -62,8 +62,6 @@ export default class StackedBarChart extends React.Component {
      */
     yAxis: PropTypes.shape({
       label: PropTypes.string,
-      min: PropTypes.number,
-      max: PropTypes.number,
     }),
     /**
      * Object with a singular boolean value.
@@ -240,20 +238,10 @@ export default class StackedBarChart extends React.Component {
               const yDomainValues = transformedData.map(([{ y }]) => y);
               const tickCount = 12;
 
-              const yMin = yAxis.min ?? 0;
-              const yMax = yAxis.max ?? Math.max(...yDomainValues);
+              const yMin = 0;
+              const yMax = Math.max(...yDomainValues);
 
               const tickIncrement = (yMax - yMin) / tickCount;
-
-              const maxDomain = yAxis.max
-                ? { maxDomain: { y: parseFloat(yAxis.max) } }
-                : {};
-
-              const minDomain = yAxis.min
-                ? { minDomain: { y: parseFloat(yAxis.min) } }
-                : {};
-
-              const domainProps = { ...minDomain, ...maxDomain };
 
               const maxYAxisWidth = 50;
               const yAxisPadding = 16;
@@ -274,7 +262,6 @@ export default class StackedBarChart extends React.Component {
                       x: barWidth / 2,
                     }}
                     theme={theme}
-                    {...domainProps}
                   >
                     <VictoryAxis
                       tickFormat={(label) =>

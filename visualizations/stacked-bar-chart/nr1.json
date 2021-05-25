@@ -33,18 +33,6 @@
           "title": "Label",
           "description": "Custom label for y axis",
           "type": "string"
-        },
-        {
-          "name": "max",
-          "title": "Max value",
-          "description": "Max domain value for y axis",
-          "type": "number"
-        },
-        {
-          "name": "min",
-          "title": "Min value",
-          "description": "Min domain value for y axis",
-          "type": "number"
         }
       ]
     },
