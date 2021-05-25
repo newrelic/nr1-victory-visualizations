@@ -29,8 +29,8 @@ To use the visualization, provide the following properties:
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 | `other.visible`   | A toggle that controls the display of "other" groups of attributes | No     |
 | `yAxis.label`   | A custom label to describe the y-axis | No     |
-| `yAxis.max`   | Maximum domain value for y axis | No     |
-| `yAxis.min`   | Minimum domain value for y axis | No     |
+| `yAxis.max`   | Maximum domain value for y-axis | No     |
+| `yAxis.min`   | Minimum domain value for y-axis | No     |
 
 
 ### Stacked bar chart NRQL Data Details
@@ -47,9 +47,9 @@ You must select an attribute that's either numeric or an aggregate function. You
 
 | NRQL feature   | Usage      | Type |
 | -------------- | ----------- | ----------- |
-| All but last facet attribute     | X axis label or bar on bar chart      | `string` or `boolean`     |
+| All but last facet attribute     | X-axis label or bar on bar chart      | `string` or `boolean`     |
 | Last facet attribute   | Bar color or segment of bar on bar chart       | `string` or `boolean`       |
-| Aggregate    | Y axis value or bar height       | aggregate function    |
+| Aggregate    | Y-axis value or bar height       | aggregate function    |
 
 #### Example NRQL Queries
 
@@ -103,9 +103,9 @@ You must supply two aggregate functions to act as the top and bottom of the rang
 
 | NRQL feature   | Usage      | Type |
 | -------------- | ----------- | ----------- |
-| First aggregate     | Y axis position of top of range bar      | aggregate function     |
-| Second aggregate   | Y axis position of bottom of range bar       | aggregate function       |
-| Facet     | X axis position or x axis label   | `string` or `boolean`      |
+| First aggregate     | Y-axis position of top of range bar      | aggregate function     |
+| Second aggregate   | Y-axis position of bottom of range bar       | aggregate function       |
+| Facet     | X-axis position or x-axis label   | `string` or `boolean`      |
 
 #### Example NRQL Queries
 

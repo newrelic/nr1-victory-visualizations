@@ -25,13 +25,13 @@
     }, 
     {
       "name": "yAxis",
-      "title": "Y axis configuration",
+      "title": "Y-axis configuration",
       "type": "namespace",
       "items": [
         {
           "name": "label",
           "title": "Label",
-          "description": "Custom label for y axis",
+          "description": "Custom label for y-axis",
           "type": "string"
         }
       ]

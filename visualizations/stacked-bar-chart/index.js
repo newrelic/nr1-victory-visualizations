@@ -95,12 +95,12 @@ export default class StackedBarChart extends React.Component {
    * Transforms NrqlQuery output to a form easy to pass to a set of VictoryBar
    * components.
    *
-   * Uses `metdata.color` for the bar fill colors.
+   * Uses `metadata.color` for the bar fill colors.
    *
-   * Builds labels for bars and bar segements using the `value` property on
+   * Builds labels for bars and bar segments using the `value` property on
    * `metadata.groups` entries where `type` === "facet".
    *
-   * Uses the `y` property on the data array entry for y axis values.
+   * Uses the `y` property on the data array entry for y-axis values.
    *
    * @param {{data: {y}[], metadata: { color: string, groups: {type: string, value: string}[]} }[]} rawData
    * @returns {{x: string, y: number, color: string, segmentLabel: string}[][]}
