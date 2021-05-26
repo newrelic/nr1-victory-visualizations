@@ -23,7 +23,7 @@ const TYPES_TO_UNITS = {
 const BASE_FORMAT = '0a.0';
 
 const getFormatString = (tickIncrement) => {
-  if (!tickIncrement || tickIncrement >= 1) {
+  if (!tickIncrement || Math.abs(tickIncrement) >= 1 || tickIncrement === 0) {
     return BASE_FORMAT;
   }
 
