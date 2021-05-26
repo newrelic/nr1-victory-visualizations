@@ -207,13 +207,6 @@ export default class StackedBarChart extends React.Component {
               const transformedData = this.transformData(data);
 
               // get the unit value for first data point
-              const unitType = data[0].metadata.units_data.y;
-              const { displayName: yAxisLabel } = data[0].metadata.groups.find(
-                ({ type }) => type === 'function'
-              );
-              const { displayName: xAxisLabel } = data[0].metadata.groups.find(
-                ({ type }) => type === 'facet'
-              );
 
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
@@ -234,8 +227,15 @@ export default class StackedBarChart extends React.Component {
               // set the width of stacked bars so that they take up about 60% of the width
               const barWidth = (xDomainWidth * 0.6) / barCount;
 
-              const label =
-                yAxis.label || `${yAxisLabel}${typeToUnit(unitType)}`;
+              // finding the y axis label by type or via prop
+              const unitType = data[0].metadata.units_data.y;
+              const yAxisLabel =
+                yAxis.label ||
+                `${
+                  data[0].metadata.groups.find(
+                    ({ type }) => type === 'function'
+                  ).displayName
+                }${typeToUnit(unitType)}`;
 
               const yDomainValues = transformedData.map(([{ y }]) => y);
               const yAxisTickCount = Math.round(height / 36);
@@ -249,13 +249,15 @@ export default class StackedBarChart extends React.Component {
               // if there is only one facet, we will only have one stacked bar with no label
               // this provides a label of the facet name in that case
               const { uniqueFacets } = getUniqueAggregatesAndFacets(data);
-              const xLabelProps =
+              const xAxisLabel =
                 uniqueFacets.size === 1
-                  ? { label: xAxisLabel, tickFormat: () => '' }
-                  : {
-                      tickFormat: (label) =>
-                        truncateLabel(label, xDomainWidth / barCount),
-                    };
+                  ? data[0].metadata.groups.find(({ type }) => type === 'facet')
+                      .displayName
+                  : '';
+              const xAxisTickFormat =
+                uniqueFacets.size === 1
+                  ? () => ''
+                  : (label) => truncateLabel(label, xDomainWidth / barCount);
 
               return (
                 <>
@@ -275,7 +277,8 @@ export default class StackedBarChart extends React.Component {
                     theme={theme}
                   >
                     <VictoryAxis
-                      {...xLabelProps}
+                      label={xAxisLabel}
+                      tickFormat={xAxisTickFormat}
                       style={{
                         grid: {
                           stroke: 'none',
@@ -293,7 +296,7 @@ export default class StackedBarChart extends React.Component {
                           tickIncrement: yAxisTickIncrement,
                         })
                       }
-                      label={label}
+                      label={yAxisLabel}
                       style={{
                         axisLabel: { padding: maxYAxisWidth + yAxisPadding },
                       }}
