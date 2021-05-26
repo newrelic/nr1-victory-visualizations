@@ -211,6 +211,9 @@ export default class StackedBarChart extends React.Component {
               const { displayName: yAxisLabel } = data[0].metadata.groups.find(
                 ({ type }) => type === 'function'
               );
+              const { displayName: xAxisLabel } = data[0].metadata.groups.find(
+                ({ type }) => type === 'facet'
+              );
 
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
@@ -243,6 +246,17 @@ export default class StackedBarChart extends React.Component {
               const maxYAxisWidth = 50;
               const yAxisPadding = 16;
 
+              // if there is only one facet, we will only have one stacked bar with no label
+              // this provides a label of the facet name in that case
+              const { uniqueFacets } = getUniqueAggregatesAndFacets(data);
+              const xLabelProps =
+                uniqueFacets.size === 1
+                  ? { label: xAxisLabel, tickFormat: () => '' }
+                  : {
+                      tickFormat: (label) =>
+                        truncateLabel(label, xDomainWidth / barCount),
+                    };
+
               return (
                 <>
                   <VictoryChart
@@ -261,13 +275,12 @@ export default class StackedBarChart extends React.Component {
                     theme={theme}
                   >
                     <VictoryAxis
-                      tickFormat={(label) =>
-                        truncateLabel(label, xDomainWidth / barCount)
-                      }
+                      {...xLabelProps}
                       style={{
                         grid: {
                           stroke: 'none',
                         },
+                        axisLabel: { padding: 16 },
                       }}
                     />
                     <VictoryAxis
