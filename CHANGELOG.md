@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.1...v1.2.2) (2021-05-27)
+
+
+### Bug Fixes
+
+* handles one facet case and provides x axis label in that case ([5710c60](https://github.com/newrelic/nr1-victory-visualizations/commit/5710c60ee68e90bbd508f5dbbe465772c7f42c74))
+
 ## [1.2.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.0...v1.2.1) (2021-05-25)
 
 # [1.2.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.1.6...v1.2.0) (2021-05-25)
