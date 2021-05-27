@@ -258,8 +258,6 @@ export default class StackedBarChart extends React.Component {
 
               const transformedData = this.transformData(data);
 
-              // get the unit value for first data point
-
               const legendItems = transformedData.reduce((acc, curr) => {
                 curr.forEach(({ color, segmentLabel }) => {
                   if (!acc.some(({ label }) => label === segmentLabel)) {
