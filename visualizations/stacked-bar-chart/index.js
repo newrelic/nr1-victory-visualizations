@@ -23,7 +23,7 @@ import NrqlQueryError from '../../src/nrql-query-error';
 import theme from '../../src/theme';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
-import { formatTicks, typeToUnit } from '../../src/utils/units';
+import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 /**
@@ -160,8 +160,60 @@ export default class StackedBarChart extends React.Component {
     return uniqueAggregates.size === 1 && uniqueFacets.size > 0;
   };
 
+  getXAxisLabelProps = ({ data, maxWidth }) => {
+    const { uniqueFacets } = getUniqueAggregatesAndFacets(data);
+
+    // in case of singular facet, use facet display name as x-axis label
+    const label =
+      uniqueFacets.size === 1
+        ? data[0].metadata.groups.find(({ type }) => type === 'facet')
+            .displayName
+        : '';
+
+    // in case of singular facet, return only empty strings for tick labels
+    const tickFormat =
+      uniqueFacets.size === 1
+        ? () => ''
+        : (label) => truncateLabel(label, maxWidth);
+
+    return { label, tickFormat };
+  };
+
+  getYAxisLabelProps = ({ data, transformedData, height }) => {
+    const { yAxis } = this.props;
+
+    // `unitType` is a value to map NRQL data with units
+    const unitType = data[0].metadata.units_data.y;
+
+    // use label given in config or use display name of aggregate for y-axis
+    const label =
+      yAxis.label ||
+      `${
+        data[0].metadata.groups.find(({ type }) => type === 'function')
+          .displayName
+      }${typeToUnit(unitType)}`;
+
+    // find the increment of ticks to determine decimal formatting
+    const yDomainValues = transformedData.map(([{ y }]) => y);
+    const tickCount = Math.round(height / 36);
+    const yMin = 0;
+    const yMax = Math.max(...yDomainValues);
+    const tickIncrement = (yMax - yMin) / tickCount;
+
+    return {
+      label,
+      tickCount,
+      tickFormat: (tick) =>
+        formatNumberTicks({
+          unitType,
+          tick,
+          tickIncrement,
+        }),
+    };
+  };
+
   render() {
-    const { nrqlQueries, yAxis } = this.props;
+    const { nrqlQueries } = this.props;
 
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
@@ -227,37 +279,20 @@ export default class StackedBarChart extends React.Component {
               // set the width of stacked bars so that they take up about 60% of the width
               const barWidth = (xDomainWidth * 0.6) / barCount;
 
-              // finding the y axis label by type or via prop
-              const unitType = data[0].metadata.units_data.y;
-              const yAxisLabel =
-                yAxis.label ||
-                `${
-                  data[0].metadata.groups.find(
-                    ({ type }) => type === 'function'
-                  ).displayName
-                }${typeToUnit(unitType)}`;
+              const xAxisLabelProps = this.getXAxisLabelProps({
+                data,
+                maxWidth: xDomainWidth / barCount,
+              });
 
-              const yDomainValues = transformedData.map(([{ y }]) => y);
-              const yAxisTickCount = Math.round(height / 36);
-              const yMin = 0;
-              const yMax = Math.max(...yDomainValues);
-              const yAxisTickIncrement = (yMax - yMin) / yAxisTickCount;
+              const yAxisLabelProps = this.getYAxisLabelProps({
+                data,
+                transformedData,
+                height,
+              });
 
-              const maxYAxisWidth = 50;
+              // `yDomainWidth` represents the maximum width of the ticks for y-axis
+              const yDomainWidth = 50;
               const yAxisPadding = 16;
-
-              // if there is only one facet, we will only have one stacked bar with no label
-              // this provides a label of the facet name in that case
-              const { uniqueFacets } = getUniqueAggregatesAndFacets(data);
-              const xAxisLabel =
-                uniqueFacets.size === 1
-                  ? data[0].metadata.groups.find(({ type }) => type === 'facet')
-                      .displayName
-                  : '';
-              const xAxisTickFormat =
-                uniqueFacets.size === 1
-                  ? () => ''
-                  : (label) => truncateLabel(label, xDomainWidth / barCount);
 
               return (
                 <>
@@ -277,8 +312,7 @@ export default class StackedBarChart extends React.Component {
                     theme={theme}
                   >
                     <VictoryAxis
-                      label={xAxisLabel}
-                      tickFormat={xAxisTickFormat}
+                      {...xAxisLabelProps}
                       style={{
                         grid: {
                           stroke: 'none',
@@ -287,18 +321,10 @@ export default class StackedBarChart extends React.Component {
                       }}
                     />
                     <VictoryAxis
+                      {...yAxisLabelProps}
                       dependentAxis
-                      tickCount={yAxisTickCount}
-                      tickFormat={(tick) =>
-                        formatTicks({
-                          unitType,
-                          tick,
-                          tickIncrement: yAxisTickIncrement,
-                        })
-                      }
-                      label={yAxisLabel}
                       style={{
-                        axisLabel: { padding: maxYAxisWidth + yAxisPadding },
+                        axisLabel: { padding: yDomainWidth + yAxisPadding },
                       }}
                     />
                     <VictoryStack>

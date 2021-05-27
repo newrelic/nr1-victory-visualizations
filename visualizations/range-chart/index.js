@@ -17,7 +17,7 @@ import theme from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
-import { typeToUnit, formatTicks } from '../../src/utils/units';
+import { typeToUnit, formatNumberTicks } from '../../src/utils/units';
 
 export default class RangeChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -186,7 +186,7 @@ export default class RangeChartVisualization extends React.Component {
                       dependentAxis
                       tickCount={yAxisTickCount}
                       tickFormat={(tick) =>
-                        formatTicks({
+                        formatNumberTicks({
                           unitType,
                           tick,
                           tickIncrement: yAxisTickIncrement,
