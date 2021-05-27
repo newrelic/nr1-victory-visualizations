@@ -29,8 +29,6 @@ To use the visualization, provide the following properties:
 | `accountId`   | Associated account ID for the data you wish to plot. | Yes     |
 | `other.visible`   | A toggle that controls the display of "other" groups of attributes | No     |
 | `yAxis.label`   | A custom label to describe the y-axis | No     |
-| `yAxis.max`   | Maximum domain value for y-axis | No     |
-| `yAxis.min`   | Minimum domain value for y-axis | No     |
 
 
 ### Stacked bar chart NRQL Data Details
