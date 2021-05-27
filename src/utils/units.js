@@ -48,7 +48,7 @@ const formatDecimals = ({ tick, tickIncrement }) => {
 
 export const typeToUnit = (unitType) => TYPES_TO_UNITS[unitType];
 
-export const formatTicks = ({ unitType, tick, tickIncrement }) => {
+export const formatNumberTicks = ({ unitType, tick, tickIncrement }) => {
   if (unitType === 'TIMESTAMP') {
     return format(new Date(tick), 'MM/dd/yyyy HH:mm');
   }
