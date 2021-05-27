@@ -106,6 +106,18 @@ export default class StackedBarChart extends React.Component {
    * @returns {{x: string, y: number, color: string, segmentLabel: string}[][]}
    */
   transformData = (rawData) => {
+    if (rawData.length === 0) {
+      return [
+        [
+          {
+            segmentLabel: 'No data',
+            x: 'null',
+            y: 0,
+          },
+        ],
+      ];
+    }
+
     const colorsBySegmentLabel = new Map();
 
     // Gather values for each bar data series.
@@ -183,15 +195,17 @@ export default class StackedBarChart extends React.Component {
     const { yAxis } = this.props;
 
     // `unitType` is a value to map NRQL data with units
-    const unitType = data[0].metadata.units_data.y;
+    const unitType = data[0]?.metadata.units_data.y;
 
     // use label given in config or use display name of aggregate for y-axis
     const label =
-      yAxis.label ||
-      `${
-        data[0].metadata.groups.find(({ type }) => type === 'function')
-          .displayName
-      }${typeToUnit(unitType)}`;
+      data.length === 0
+        ? ''
+        : yAxis.label ||
+          `${
+            data[0]?.metadata.groups.find(({ type }) => type === 'function')
+              .displayName
+          }${typeToUnit(unitType)}`;
 
     // find the increment of ticks to determine decimal formatting
     const yDomainValues = transformedData.map(([{ y }]) => y);
@@ -204,11 +218,13 @@ export default class StackedBarChart extends React.Component {
       label,
       tickCount,
       tickFormat: (tick) =>
-        formatNumberTicks({
-          unitType,
-          tick,
-          tickIncrement,
-        }),
+        data.length === 0
+          ? () => ''
+          : formatNumberTicks({
+              unitType,
+              tick,
+              tickIncrement,
+            }),
     };
   };
 
@@ -247,7 +263,7 @@ export default class StackedBarChart extends React.Component {
                 );
               }
 
-              if (!this.nrqlInputIsValid(data)) {
+              if (!this.nrqlInputIsValid(data) && data.length !== 0) {
                 return (
                   <NrqlQueryError
                     title="Unsupported NRQL query"
