@@ -1,0 +1,28 @@
+.NoDataState {
+  height: 100%;
+}
+
+.NoDataState-cardBody {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  text-align: left;
+}
+
+.NoDataState-headingText {
+  color: #999;
+}
+
+.NoDataState-bodyText {
+  color: #999;
+}
+
+.NoDataState-cardBody-background {
+  padding: 2rem;
+  max-width: 30rem;
+  box-shadow: 0 0 4px #ddd;
+}

@@ -25,6 +25,7 @@ import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
 import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
+import NoDataState from '../../src/no-data-state';
 
 /**
  * Returns the number of bars that will be shown in the stacked bar chart
@@ -245,6 +246,10 @@ export default class StackedBarChart extends React.Component {
                     description={error.message}
                   />
                 );
+              }
+
+              if (!data.length) {
+                return <NoDataState>No chart data available</NoDataState>;
               }
 
               if (!this.nrqlInputIsValid(data)) {
