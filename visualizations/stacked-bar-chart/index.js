@@ -110,8 +110,7 @@ export default class StackedBarChart extends React.Component {
       return [
         [
           {
-            segmentLabel: 'No data',
-            x: 'null',
+            x: 'No chart data available',
             y: 0,
           },
         ],
