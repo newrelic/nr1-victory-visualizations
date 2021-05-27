@@ -249,7 +249,7 @@ export default class StackedBarChart extends React.Component {
               }
 
               if (!data.length) {
-                return <NoDataState>No chart data available</NoDataState>;
+                return <NoDataState />;
               }
 
               if (!this.nrqlInputIsValid(data)) {
