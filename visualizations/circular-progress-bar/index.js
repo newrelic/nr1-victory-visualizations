@@ -10,6 +10,7 @@ import {
   AutoSizer,
 } from 'nr1';
 import NrqlQueryError from '../../src/nrql-query-error';
+import NoDataState from '../../src/no-data-state';
 import { baseLabelStyles } from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import Colors from '../../src/colors';
@@ -135,6 +136,10 @@ export default class CircularProgressBar extends React.Component {
                     description={error.message}
                   />
                 );
+              }
+
+              if (!data.length) {
+                return <NoDataState />;
               }
 
               if (!this.nrqlInputIsValid(data)) {
