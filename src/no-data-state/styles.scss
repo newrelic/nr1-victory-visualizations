@@ -14,15 +14,15 @@
 }
 
 .NoDataState-headingText {
-  color: #999;
+  color: var(--nr1--base-colors--ui--gray--6);
 }
 
 .NoDataState-bodyText {
-  color: #999;
+  color: var(--nr1--base-colors--ui--gray--6);
 }
 
 .NoDataState-cardBody-background {
   padding: 2rem;
   max-width: 30rem;
-  box-shadow: 0 0 4px #ddd;
+  box-shadow: 0 0 4px var(--nr1--base-colors--ui--gray--4);
 }
