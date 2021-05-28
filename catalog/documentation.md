@@ -11,7 +11,7 @@ After configuring your visualization, [add it to a dashboard](https://docs.newre
 ## Stacked bar chart
 Plot multifaceted data in a stacked bar chart view.
 
-For example, if you query `SELECT average(duration) FROM Transaction FACET appName, environment`, you'll see the average duration of a `Transaction` event in a stacked bar chart where: 
+For example, if you query `SELECT average(duration) FROM Transaction FACET environment, appName`, you'll see the average duration of a `Transaction` event in a stacked bar chart where: 
 
 - Each **bar** represents a different `environment` (production, development, etc.) 
 - Each **segment** of the bar represents a different `appName`
