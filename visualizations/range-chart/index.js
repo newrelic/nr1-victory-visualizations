@@ -12,6 +12,7 @@ import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
 import ErrorState from '../../src/error-state';
 import NrqlQueryError from '../../src/nrql-query-error';
+import NoDataState from '../../src/no-data-state';
 
 import theme from '../../src/theme';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
@@ -125,13 +126,17 @@ export default class RangeChartVisualization extends React.Component {
                 return <Spinner />;
               }
 
-              if (error) {
+              if (error && data === null) {
                 return (
                   <NrqlQueryError
                     title="NRQL Syntax Error"
                     description={error.message}
                   />
                 );
+              }
+
+              if (!data.length) {
+                return <NoDataState />;
               }
 
               if (!this.nrqlInputIsValid(data)) {
