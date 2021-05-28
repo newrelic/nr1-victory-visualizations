@@ -129,7 +129,7 @@ export default class CircularProgressBar extends React.Component {
                 return <Spinner />;
               }
 
-              if (error) {
+              if (error && data === null) {
                 return (
                   <NrqlQueryError
                     title="NRQL Syntax Error"

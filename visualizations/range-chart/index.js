@@ -126,7 +126,7 @@ export default class RangeChartVisualization extends React.Component {
                 return <Spinner />;
               }
 
-              if (error) {
+              if (error && data === null) {
                 return (
                   <NrqlQueryError
                     title="NRQL Syntax Error"
