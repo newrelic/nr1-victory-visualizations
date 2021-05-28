@@ -1,3 +1,5 @@
+## [1.2.5](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.4...v1.2.5) (2021-05-28)
+
 ## [1.2.4](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.3...v1.2.4) (2021-05-28)
 
 ## [1.2.3](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.2...v1.2.3) (2021-05-27)
