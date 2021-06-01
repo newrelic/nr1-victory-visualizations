@@ -7,6 +7,7 @@ import {
   NrqlQuery,
   Spinner,
   AutoSizer,
+  PlatformStateContext,
 } from 'nr1';
 import {
   VictoryAxis,
@@ -229,151 +230,160 @@ export default class StackedBarChart extends React.Component {
     return (
       <AutoSizer className="StackedBarChart">
         {({ width, height }) => (
-          <NrqlQuery
-            query={nrqlQueries[0].query}
-            accountId={parseInt(nrqlQueries[0].accountId)}
-            pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
-          >
-            {({ data, loading, error }) => {
-              if (loading) {
-                return <Spinner />;
-              }
-
-              if (error && data === null) {
-                return (
-                  <NrqlQueryError
-                    title="NRQL Syntax Error"
-                    description={error.message}
-                  />
-                );
-              }
-
-              if (!data.length) {
-                return <NoDataState />;
-              }
-
-              if (!this.nrqlInputIsValid(data)) {
-                return (
-                  <NrqlQueryError
-                    title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and at least one FACET clause."
-                  />
-                );
-              }
-
-              const transformedData = this.transformData(data);
-
-              const legendItems = transformedData.reduce((acc, curr) => {
-                curr.forEach(({ color, segmentLabel }) => {
-                  if (!acc.some(({ label }) => label === segmentLabel)) {
-                    acc.push({ label: segmentLabel, color });
+          <PlatformStateContext.Consumer>
+            {({ timeRange }) => (
+              <NrqlQuery
+                query={nrqlQueries[0].query}
+                accountId={parseInt(nrqlQueries[0].accountId)}
+                pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
+                timeRange={timeRange}
+              >
+                {({ data, loading, error }) => {
+                  if (loading) {
+                    return <Spinner />;
                   }
-                });
-                return acc;
-              }, []);
 
-              const chartLeftPadding = 100;
-              const chartRightPadding = 25;
-              const legendHeight = 50;
-              const spaceBelowLegend = 16;
+                  if (error && data === null) {
+                    return (
+                      <NrqlQueryError
+                        title="NRQL Syntax Error"
+                        description={error.message}
+                      />
+                    );
+                  }
 
-              const barCount = getBarCount(transformedData);
-              const xDomainWidth = width - chartLeftPadding - chartRightPadding;
-              // set the width of stacked bars so that they take up about 60% of the width
-              const barWidth = (xDomainWidth * 0.6) / barCount;
+                  if (!data.length) {
+                    return <NoDataState />;
+                  }
 
-              const xAxisLabelProps = this.getXAxisLabelProps({
-                data,
-                maxWidth: xDomainWidth / barCount,
-              });
+                  if (!this.nrqlInputIsValid(data)) {
+                    return (
+                      <NrqlQueryError
+                        title="Unsupported NRQL query"
+                        description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and at least one FACET clause."
+                      />
+                    );
+                  }
 
-              const yAxisLabelProps = this.getYAxisLabelProps({
-                data,
-                transformedData,
-                height,
-              });
+                  const transformedData = this.transformData(data);
 
-              // `yDomainWidth` represents the maximum width of the ticks for y-axis
-              const yDomainWidth = 50;
-              const yAxisPadding = 16;
+                  const legendItems = transformedData.reduce((acc, curr) => {
+                    curr.forEach(({ color, segmentLabel }) => {
+                      if (!acc.some(({ label }) => label === segmentLabel)) {
+                        acc.push({ label: segmentLabel, color });
+                      }
+                    });
+                    return acc;
+                  }, []);
 
-              return (
-                <>
-                  <VictoryChart
-                    containerComponent={<VictoryContainer responsive={false} />}
-                    width={width}
-                    height={height - legendHeight - spaceBelowLegend}
-                    padding={{
-                      top: 16,
-                      bottom: 40,
-                      left: chartLeftPadding,
-                      right: chartRightPadding,
-                    }}
-                    domainPadding={{
-                      x: barWidth / 2,
-                    }}
-                    theme={theme}
-                  >
-                    <VictoryAxis
-                      {...xAxisLabelProps}
-                      style={{
-                        grid: {
-                          stroke: 'none',
-                        },
-                        axisLabel: { padding: 16 },
-                      }}
-                    />
-                    <VictoryAxis
-                      {...yAxisLabelProps}
-                      dependentAxis
-                      style={{
-                        axisLabel: { padding: yDomainWidth + yAxisPadding },
-                      }}
-                    />
-                    <VictoryStack>
-                      {transformedData.map((series) => (
-                        <VictoryBar
-                          key={series.segmentLabel}
-                          barWidth={barWidth}
-                          labelComponent={
-                            <VictoryTooltip
-                              horizontal
-                              dy={({ datum, scale }) =>
-                                scale.y(Math.abs(datum._y1 - datum._y0) / 2) -
-                                scale.y(datum._y)
-                              }
-                              dx={barWidth / 2}
-                              constrainToVisibleArea
-                              pointerLength={8}
-                              flyoutStyle={{
-                                stroke: ({ datum }) => datum.color,
-                                strokeWidth: 2,
-                                filter: 'none',
-                              }}
-                            />
-                          }
-                          data={series}
+                  const chartLeftPadding = 100;
+                  const chartRightPadding = 25;
+                  const legendHeight = 50;
+                  const spaceBelowLegend = 16;
+
+                  const barCount = getBarCount(transformedData);
+                  const xDomainWidth =
+                    width - chartLeftPadding - chartRightPadding;
+                  // set the width of stacked bars so that they take up about 60% of the width
+                  const barWidth = (xDomainWidth * 0.6) / barCount;
+
+                  const xAxisLabelProps = this.getXAxisLabelProps({
+                    data,
+                    maxWidth: xDomainWidth / barCount,
+                  });
+
+                  const yAxisLabelProps = this.getYAxisLabelProps({
+                    data,
+                    transformedData,
+                    height,
+                  });
+
+                  // `yDomainWidth` represents the maximum width of the ticks for y-axis
+                  const yDomainWidth = 50;
+                  const yAxisPadding = 16;
+
+                  return (
+                    <>
+                      <VictoryChart
+                        containerComponent={
+                          <VictoryContainer responsive={false} />
+                        }
+                        width={width}
+                        height={height - legendHeight - spaceBelowLegend}
+                        padding={{
+                          top: 16,
+                          bottom: 40,
+                          left: chartLeftPadding,
+                          right: chartRightPadding,
+                        }}
+                        domainPadding={{
+                          x: barWidth / 2,
+                        }}
+                        theme={theme}
+                      >
+                        <VictoryAxis
+                          {...xAxisLabelProps}
                           style={{
-                            data: {
-                              fill: ({ datum }) => datum.color,
+                            grid: {
+                              stroke: 'none',
                             },
+                            axisLabel: { padding: 16 },
                           }}
                         />
-                      ))}
-                    </VictoryStack>
-                  </VictoryChart>
-                  <Legend
-                    style={{
-                      height: legendHeight,
-                      marginLeft: chartLeftPadding,
-                      marginRight: chartRightPadding,
-                    }}
-                    items={legendItems}
-                  />
-                </>
-              );
-            }}
-          </NrqlQuery>
+                        <VictoryAxis
+                          {...yAxisLabelProps}
+                          dependentAxis
+                          style={{
+                            axisLabel: { padding: yDomainWidth + yAxisPadding },
+                          }}
+                        />
+                        <VictoryStack>
+                          {transformedData.map((series) => (
+                            <VictoryBar
+                              key={series.segmentLabel}
+                              barWidth={barWidth}
+                              labelComponent={
+                                <VictoryTooltip
+                                  horizontal
+                                  dy={({ datum, scale }) =>
+                                    scale.y(
+                                      Math.abs(datum._y1 - datum._y0) / 2
+                                    ) - scale.y(datum._y)
+                                  }
+                                  dx={barWidth / 2}
+                                  constrainToVisibleArea
+                                  pointerLength={8}
+                                  flyoutStyle={{
+                                    stroke: ({ datum }) => datum.color,
+                                    strokeWidth: 2,
+                                    filter: 'none',
+                                  }}
+                                />
+                              }
+                              data={series}
+                              style={{
+                                data: {
+                                  fill: ({ datum }) => datum.color,
+                                },
+                              }}
+                            />
+                          ))}
+                        </VictoryStack>
+                      </VictoryChart>
+                      <Legend
+                        style={{
+                          height: legendHeight,
+                          marginLeft: chartLeftPadding,
+                          marginRight: chartRightPadding,
+                        }}
+                        items={legendItems}
+                      />
+                    </>
+                  );
+                }}
+              </NrqlQuery>
+            )}
+          </PlatformStateContext.Consumer>
         )}
       </AutoSizer>
     );

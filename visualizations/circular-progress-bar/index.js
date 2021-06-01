@@ -8,6 +8,7 @@ import {
   NrqlQuery,
   Spinner,
   AutoSizer,
+  PlatformStateContext,
 } from 'nr1';
 import NrqlQueryError from '../../src/nrql-query-error';
 import NoDataState from '../../src/no-data-state';
@@ -119,83 +120,88 @@ export default class CircularProgressBar extends React.Component {
     return (
       <AutoSizer>
         {({ width, height }) => (
-          <NrqlQuery
-            query={nrqlQueries[0].query}
-            accountId={parseInt(nrqlQueries[0].accountId)}
-            pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
-          >
-            {({ data, loading, error }) => {
-              if (loading) {
-                return <Spinner />;
-              }
+          <PlatformStateContext.Consumer>
+            {({ timeRange }) => (
+              <NrqlQuery
+                query={nrqlQueries[0].query}
+                accountId={parseInt(nrqlQueries[0].accountId)}
+                pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
+                timeRange={timeRange}
+              >
+                {({ data, loading, error }) => {
+                  if (loading) {
+                    return <Spinner />;
+                  }
 
-              if (error && data === null) {
-                return (
-                  <NrqlQueryError
-                    title="NRQL Syntax Error"
-                    description={error.message}
-                  />
-                );
-              }
-
-              if (!data.length) {
-                return <NoDataState />;
-              }
-
-              if (!this.nrqlInputIsValid(data)) {
-                return (
-                  <NrqlQueryError
-                    title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
-                  />
-                );
-              }
-
-              const { percent, label, series } = this.transformData(data);
-
-              return (
-                <svg
-                  viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
-                  width={width}
-                  height={height}
-                  className="CircularProgressBar"
-                >
-                  <VictoryPie
-                    standalone={false}
-                    animate={{ duration: 1000 }}
-                    data={series}
-                    width={CHART_WIDTH}
-                    height={CHART_HEIGHT}
-                    padding={10}
-                    innerRadius={135}
-                    cornerRadius={25}
-                    labels={() => null}
-                    style={{ data: { fill: ({ datum }) => datum.color } }}
-                  />
-                  <VictoryAnimation duration={1000} data={percent}>
-                    {(percent) => (
-                      <VictoryLabel
-                        textAnchor="middle"
-                        verticalAnchor="middle"
-                        x={CHART_WIDTH / 2}
-                        y={CHART_HEIGHT / 2}
-                        text={`${Math.round(percent)}%`}
-                        style={{ ...baseLabelStyles, fontSize: 45 }}
+                  if (error && data === null) {
+                    return (
+                      <NrqlQueryError
+                        title="NRQL Syntax Error"
+                        description={error.message}
                       />
-                    )}
-                  </VictoryAnimation>
-                  <VictoryLabel
-                    text={label}
-                    lineHeight={1}
-                    x={CHART_WIDTH / 2}
-                    y={BOUNDS.Y - LABEL_SIZE}
-                    textAnchor="middle"
-                    style={{ ...baseLabelStyles, fontSize: LABEL_SIZE }}
-                  />
-                </svg>
-              );
-            }}
-          </NrqlQuery>
+                    );
+                  }
+
+                  if (!data.length) {
+                    return <NoDataState />;
+                  }
+
+                  if (!this.nrqlInputIsValid(data)) {
+                    return (
+                      <NrqlQueryError
+                        title="Unsupported NRQL query"
+                        description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 1 aggregate function in the SELECT clause and no FACET or TIMESERIES clauses."
+                      />
+                    );
+                  }
+
+                  const { percent, label, series } = this.transformData(data);
+
+                  return (
+                    <svg
+                      viewBox={`0 0 ${BOUNDS.X} ${BOUNDS.Y}`}
+                      width={width}
+                      height={height}
+                      className="CircularProgressBar"
+                    >
+                      <VictoryPie
+                        standalone={false}
+                        animate={{ duration: 1000 }}
+                        data={series}
+                        width={CHART_WIDTH}
+                        height={CHART_HEIGHT}
+                        padding={10}
+                        innerRadius={135}
+                        cornerRadius={25}
+                        labels={() => null}
+                        style={{ data: { fill: ({ datum }) => datum.color } }}
+                      />
+                      <VictoryAnimation duration={1000} data={percent}>
+                        {(percent) => (
+                          <VictoryLabel
+                            textAnchor="middle"
+                            verticalAnchor="middle"
+                            x={CHART_WIDTH / 2}
+                            y={CHART_HEIGHT / 2}
+                            text={`${Math.round(percent)}%`}
+                            style={{ ...baseLabelStyles, fontSize: 45 }}
+                          />
+                        )}
+                      </VictoryAnimation>
+                      <VictoryLabel
+                        text={label}
+                        lineHeight={1}
+                        x={CHART_WIDTH / 2}
+                        y={BOUNDS.Y - LABEL_SIZE}
+                        textAnchor="middle"
+                        style={{ ...baseLabelStyles, fontSize: LABEL_SIZE }}
+                      />
+                    </svg>
+                  );
+                }}
+              </NrqlQuery>
+            )}
+          </PlatformStateContext.Consumer>
         )}
       </AutoSizer>
     );

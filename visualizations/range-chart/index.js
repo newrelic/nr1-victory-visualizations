@@ -7,6 +7,7 @@ import {
   NrqlQuery,
   Spinner,
   AutoSizer,
+  PlatformStateContext,
 } from 'nr1';
 import { VictoryAxis, VictoryChart, VictoryBar, VictoryTooltip } from 'victory';
 
@@ -116,107 +117,113 @@ export default class RangeChartVisualization extends React.Component {
     return (
       <AutoSizer>
         {({ width, height }) => (
-          <NrqlQuery
-            query={nrqlQueries[0].query}
-            accountId={parseInt(nrqlQueries[0].accountId)}
-            pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
-          >
-            {({ data, loading, error }) => {
-              if (loading) {
-                return <Spinner />;
-              }
+          <PlatformStateContext.Consumer>
+            {({ timeRange }) => (
+              <NrqlQuery
+                query={nrqlQueries[0].query}
+                accountId={parseInt(nrqlQueries[0].accountId)}
+                pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
+                timeRange={timeRange}
+              >
+                {({ data, loading, error }) => {
+                  if (loading) {
+                    return <Spinner />;
+                  }
 
-              if (error && data === null) {
-                return (
-                  <NrqlQueryError
-                    title="NRQL Syntax Error"
-                    description={error.message}
-                  />
-                );
-              }
+                  if (error && data === null) {
+                    return (
+                      <NrqlQueryError
+                        title="NRQL Syntax Error"
+                        description={error.message}
+                      />
+                    );
+                  }
 
-              if (!data.length) {
-                return <NoDataState />;
-              }
+                  if (!data.length) {
+                    return <NoDataState />;
+                  }
 
-              if (!this.nrqlInputIsValid(data)) {
-                return (
-                  <NrqlQueryError
-                    title="Unsupported NRQL query"
-                    description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 2 aggregate functions in the SELECT clause and at least one FACET clause."
-                  />
-                );
-              }
+                  if (!this.nrqlInputIsValid(data)) {
+                    return (
+                      <NrqlQueryError
+                        title="Unsupported NRQL query"
+                        description="The provided NRQL query is not supported by this visualization. Please make sure to have exactly 2 aggregate functions in the SELECT clause and at least one FACET clause."
+                      />
+                    );
+                  }
 
-              try {
-                const rangeData = this.transformData(data);
-                const unitType = data[0].metadata.units_data.y;
-                const barCount = rangeData.length;
-                const barWidth = (width * 0.6) / barCount;
+                  try {
+                    const rangeData = this.transformData(data);
+                    const unitType = data[0].metadata.units_data.y;
+                    const barCount = rangeData.length;
+                    const barWidth = (width * 0.6) / barCount;
 
-                const yAxisTickCount = Math.round(height / 36);
-                const [y0DomainValues, yDomainValues] = rangeData.reduce(
-                  (acc, { y0, y }) => {
-                    acc[0].push(y0);
-                    acc[1].push(y);
-                    return acc;
-                  },
-                  [[], []]
-                );
-                const yAxisTickIncrement =
-                  (Math.max(...yDomainValues) - Math.min(...y0DomainValues)) /
-                  yAxisTickCount;
+                    const yAxisTickCount = Math.round(height / 36);
+                    const [y0DomainValues, yDomainValues] = rangeData.reduce(
+                      (acc, { y0, y }) => {
+                        acc[0].push(y0);
+                        acc[1].push(y);
+                        return acc;
+                      },
+                      [[], []]
+                    );
+                    const yAxisTickIncrement =
+                      (Math.max(...yDomainValues) -
+                        Math.min(...y0DomainValues)) /
+                      yAxisTickCount;
 
-                return (
-                  <VictoryChart
-                    domainPadding={{
-                      x: barWidth / 2,
-                    }}
-                    height={height}
-                    width={width}
-                    theme={theme}
-                    padding={{
-                      top: 16,
-                      bottom: 40,
-                      left: 75,
-                      right: 25,
-                    }}
-                  >
-                    <VictoryAxis
-                      tickFormat={(label) =>
-                        truncateLabel(label, width / barCount)
-                      }
-                    />
-                    <VictoryAxis
-                      dependentAxis
-                      tickCount={yAxisTickCount}
-                      tickFormat={(tick) =>
-                        formatNumberTicks({
-                          unitType,
-                          tick,
-                          tickIncrement: yAxisTickIncrement,
-                        })
-                      }
-                    />
-                    <VictoryBar
-                      barWidth={barWidth}
-                      labelComponent={
-                        <VictoryTooltip horizontal constrainToVisibleArea />
-                      }
-                      style={{
-                        data: {
-                          fill: ({ datum }) => datum.color,
-                        },
-                      }}
-                      data={rangeData}
-                    />
-                  </VictoryChart>
-                );
-              } catch (e) {
-                return <ErrorState />;
-              }
-            }}
-          </NrqlQuery>
+                    return (
+                      <VictoryChart
+                        domainPadding={{
+                          x: barWidth / 2,
+                        }}
+                        height={height}
+                        width={width}
+                        theme={theme}
+                        padding={{
+                          top: 16,
+                          bottom: 40,
+                          left: 75,
+                          right: 25,
+                        }}
+                      >
+                        <VictoryAxis
+                          tickFormat={(label) =>
+                            truncateLabel(label, width / barCount)
+                          }
+                        />
+                        <VictoryAxis
+                          dependentAxis
+                          tickCount={yAxisTickCount}
+                          tickFormat={(tick) =>
+                            formatNumberTicks({
+                              unitType,
+                              tick,
+                              tickIncrement: yAxisTickIncrement,
+                            })
+                          }
+                        />
+                        <VictoryBar
+                          barWidth={barWidth}
+                          labelComponent={
+                            <VictoryTooltip horizontal constrainToVisibleArea />
+                          }
+                          style={{
+                            data: {
+                              fill: ({ datum }) => datum.color,
+                            },
+                          }}
+                          data={rangeData}
+                        />
+                      </VictoryChart>
+                    );
+                  } catch (e) {
+                    return <ErrorState />;
+                  }
+                }}
+              </NrqlQuery>
+            )}
+          </PlatformStateContext.Consumer>
         )}
       </AutoSizer>
     );
