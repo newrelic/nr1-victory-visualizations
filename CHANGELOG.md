@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.6...v1.3.0) (2021-06-01)
+
+
+### Features
+
+* use platform context and timepicker ([f537d47](https://github.com/newrelic/nr1-victory-visualizations/commit/f537d47c66e8eb5df26c26a723b50cace1ad323f))
+
 ## [1.2.6](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.5...v1.2.6) (2021-05-28)
 
 ## [1.2.5](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.4...v1.2.5) (2021-05-28)
