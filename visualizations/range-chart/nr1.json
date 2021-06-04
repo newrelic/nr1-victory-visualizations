@@ -21,8 +21,14 @@
           "description": "NRQL query for visualization",
           "type": "nrql"
         }
+      ],
+      "defaultValue": [
+        {
+          "accountId": 10175106,
+          "query": "FROM Transaction SELECT percentile(duration, 95), percentile(duration, 100) FACET dateOf(timestamp) SINCE 7 days ago"
+        }
       ]
-    }, 
+    },
     {
       "name": "other",
       "title": "Other groups",
@@ -32,7 +38,8 @@
           "name": "visible",
           "title": "Visible",
           "description": "Manages the visibility of \"Other\" groups of attributes",
-          "type": "boolean"
+          "type": "boolean",
+          "defaultValue": true
         }
       ]
     }

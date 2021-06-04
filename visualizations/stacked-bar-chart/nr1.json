@@ -19,10 +19,16 @@
           "name": "query",
           "title": "Query",
           "description": "NRQL query for visualization",
-          "type": "nrql"
+          "type": "nrql",
+          "defaultValue": "FROM PageView SELECT count(*) FACET countryCode, userAgentName"
+        }
+      ],
+      "defaultValue": [
+        {
+          "query": "FROM Transaction SELECT average(duration) FACET environment, appName"
         }
       ]
-    }, 
+    },
     {
       "name": "yAxis",
       "title": "Y-axis configuration",
@@ -32,7 +38,8 @@
           "name": "label",
           "title": "Label",
           "description": "Custom label for y-axis",
-          "type": "string"
+          "type": "string",
+          "defaultValue": "Avg Duration (seconds)"
         }
       ]
     },
@@ -45,7 +52,8 @@
           "name": "visible",
           "title": "Visible",
           "description": "Manages the visibility of \"Other\" groups of attributes",
-          "type": "boolean"
+          "type": "boolean",
+          "defaultValue": true
         }
       ]
     }

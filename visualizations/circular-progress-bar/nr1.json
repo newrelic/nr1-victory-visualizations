@@ -21,6 +21,24 @@
           "description": "NRQL query for visualization",
           "type": "nrql"
         }
+      ],
+      "defaultValue": [
+        {
+          "accountId": 10175106,
+          "query": "FROM Transaction SELECT percentage(count(*), WHERE duration < 0.1) as 'Response times < 100ms'"
+        }
+      ]
+    },
+    {
+      "name": "barType",
+      "title": "Bar Type",
+      "description": "Demoing enum default values.",
+      "type": "enum",
+      "defaultValue": "circular",
+      "items": [
+        { "title": "Horizontal", "value": "horizontal" },
+        { "title": "Vertical", "value": "vertical" },
+        { "title": "Circular", "value": "circular" }
       ]
     },
     {
@@ -32,13 +50,15 @@
           "name": "criticalThreshold",
           "title": "Critical threshold",
           "description": "Value at which progress is displayed as critical",
-          "type": "number"
+          "type": "number",
+          "defaultValue": 95
         },
         {
           "name": "highValuesAreSuccess",
           "title": "Above threshold is success",
           "description": "If toggled on, values above the threshold display as successful. Otherwise, values at or above the threshold display as critical.",
-          "type": "boolean"
+          "type": "boolean",
+          "defaultValue": true
         }
       ]
     }
