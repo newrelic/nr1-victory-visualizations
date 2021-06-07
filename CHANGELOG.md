@@ -1,3 +1,11 @@
+## [1.3.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.3.0...v1.3.1) (2021-06-07)
+
+
+### Bug Fixes
+
+* update nerdpack config with correct discuss-forum link ([eccec3e](https://github.com/newrelic/nr1-victory-visualizations/commit/eccec3e2f89e912415f1efd5d3afd24d03a582bf))
+* update readme with correct discuss-forum link ([006e2c5](https://github.com/newrelic/nr1-victory-visualizations/commit/006e2c5a09e82320a6f948c74cae062238bbd233))
+
 # [1.3.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.2.6...v1.3.0) (2021-06-01)
 
 
