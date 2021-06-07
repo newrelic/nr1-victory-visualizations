@@ -77,12 +77,12 @@ There are 2 main areas to request support:
 - **GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [issues tab](https://github.com/newrelic/nr1-victory-visualizations/issues) of this repository. Please search for and review the existing open issues
 before submitting a new issue.
 - **Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
-Hub](https://discuss.newrelic.com/tag/victoryvisualizations), where our community members collaborate on
+Hub](https://discuss.newrelic.com/tags/c/build-on-new-relic/nerdpacks/323/victoryvisualizations), where our community members collaborate on
 solutions and new ideas. New Relic hosts and moderates this online forum where customers can interact with
 New Relic employees as well as other customers to get help and share best
 practices. Like all official New Relic open source projects, there's a related
 Community topic in the New Relic Explorers Hub. You can find this project's
-topic/threads here: https://discuss.newrelic.com/tag/victoryvisualizations
+topic/threads here: https://discuss.newrelic.com/tags/c/build-on-new-relic/nerdpacks/323/victoryvisualizations
 
 Support related to Victory can be found at: https://spectrum.chat/victory?tab=posts
 
