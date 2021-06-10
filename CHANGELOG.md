@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.3.1...v1.4.0) (2021-06-10)
+
+
+### Features
+
+* add security policy note to readme ([0aa22c4](https://github.com/newrelic/nr1-victory-visualizations/commit/0aa22c47fd5c7801282115019afb913d0feac6a6))
+
 ## [1.3.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.3.0...v1.3.1) (2021-06-07)
 
 
