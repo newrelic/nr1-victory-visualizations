@@ -9,6 +9,7 @@ import {
     AutoSizer,
   } from 'nr1';
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
+import NoDataState from '../../src/no-data-state';
 
 export default class ScatterPlotChartVisualization extends React.Component {
     // Custom props you wish to be configurable in the UI must also be defined in
@@ -54,6 +55,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
                             if (error) {
                                 return <ErrorState />;
+                            }
+
+                            if (!data.length) {
+                              return <NoDataState />;
                             }
 
                             console.log('data', data);
