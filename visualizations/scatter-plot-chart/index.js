@@ -68,7 +68,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
 									description={error.message}
 								/>;
 							}
-							console.log('data', data);
 
 							if (!this.nrqlInputIsValid(data)) {
 								return (
