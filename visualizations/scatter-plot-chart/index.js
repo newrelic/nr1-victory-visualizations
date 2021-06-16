@@ -10,6 +10,7 @@ import {
 } from 'nr1';
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 
 export default class ScatterPlotChartVisualization extends React.Component {
 	// Custom props you wish to be configurable in the UI must also be defined in
@@ -26,6 +27,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
 			})
 		),
 	};
+
+	nrqlInputIsValid = (data) => {
+    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(data);
+
+		if (uniqueAggregates.size <= 3 && uniqueAggregates.size > 1 && uniqueFacets.size <= 1) return true;
+		else if (uniqueAggregates.size === 1) return false;
+		else return uniqueAggregates.size === 0 && uniqueFacets.size <= 1;
+  };
 
 	render() {
 		const { nrqlQueries } = this.props;
@@ -60,6 +69,15 @@ export default class ScatterPlotChartVisualization extends React.Component {
 								/>;
 							}
 							console.log('data', data);
+
+							if (!this.nrqlInputIsValid(data)) {
+								return (
+									<NrqlQueryError
+										title="Unsupported NRQL query"
+										description="The provided NRQL query is not supported by this visualization. This chart supports non-aggregate and aggregate queries with an optional FACET clause. Please make sure to have 2-3 aggregate functions in the SELECT clause if it is an aggregate query."
+									/>
+								);
+							}
 
 							return (
 								<VictoryChart
