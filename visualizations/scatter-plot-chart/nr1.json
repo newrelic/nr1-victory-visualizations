@@ -1,27 +1,27 @@
 {
-    "schemaType": "VISUALIZATION",
-    "id": "scatter-plot-chart",
-    "displayName": "ScatterPlotChart",
-    "description": "",
-    "configuration": [
+  "schemaType": "VISUALIZATION",
+  "id": "scatter-plot-chart",
+  "displayName": "Scatter plot chart",
+  "description": "",
+  "configuration": [
+    {
+      "name": "nrqlQueries",
+      "title": "NRQL Queries",
+      "type": "collection",
+      "items": [
         {
-            "name": "nrqlQueries",
-            "title": "NRQL Queries",
-            "type": "collection",
-            "items": [
-                {
-                    "name": "accountId",
-                    "title": "Account ID",
-                    "description": "Account ID to be associated with the query",
-                    "type": "account-id"
-                },
-                {
-                    "name": "query",
-                    "title": "Query",
-                    "description": "NRQL query for visualization",
-                    "type": "nrql"
-                }
-            ]
+          "name": "accountId",
+          "title": "Account ID",
+          "description": "Account ID to be associated with the query",
+          "type": "account-id"
+        },
+        {
+          "name": "query",
+          "title": "Query",
+          "description": "NRQL query for visualization",
+          "type": "nrql"
         }
-    ]
+      ]
+    }
+  ]
 }
