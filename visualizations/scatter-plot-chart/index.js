@@ -29,9 +29,15 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   nrqlInputIsValid = (data) => {
-    const { uniqueAggregates, uniqueFacets } = getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
 
-    if (uniqueAggregates.size <= 3 && uniqueAggregates.size > 1 && uniqueFacets.size <= 1) return true;
+    if (
+      uniqueAggregates.size <= 3 &&
+      uniqueAggregates.size > 1 &&
+      uniqueFacets.size <= 1
+    )
+      return true;
     else if (uniqueAggregates.size === 1) return false;
     else return uniqueAggregates.size === 0 && uniqueFacets.size <= 1;
   };
@@ -63,10 +69,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
               }
 
               if (error && data === null) {
-                return <NrqlQueryError
-                  title='NRQL Syntax Error'
-                  description={error.message}
-                />;
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
               if (!this.nrqlInputIsValid(data)) {
@@ -84,14 +92,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   domain={{ x: [0, 5], y: [0, 7] }}
                 >
                   <VictoryScatter
-                    style={{ data: { fill: "#c43a31" } }}
+                    style={{ data: { fill: '#c43a31' } }}
                     size={7}
                     data={[
                       { x: 1, y: 2 },
                       { x: 2, y: 3 },
                       { x: 3, y: 5 },
                       { x: 4, y: 4 },
-                      { x: 5, y: 7 }
+                      { x: 5, y: 7 },
                     ]}
                   />
                 </VictoryChart>
