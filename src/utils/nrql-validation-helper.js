@@ -3,7 +3,7 @@ export const getUniqueAggregatesAndFacets = (rawData) => {
     .flatMap(({ metadata }) => metadata.groups)
     .reduce(
       (acc, group) => {
-        if (group.type === 'function') {
+        if (group.type === 'function' && group.value !== 'series') {
           acc.uniqueAggregates.add(group.displayName);
         }
         if (group.type === 'facet') {
