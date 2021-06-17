@@ -10,7 +10,10 @@ import {
 } from 'nr1';
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
-import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
+import {
+  getUniqueAggregatesAndFacets,
+  getUniqueNonAggregates,
+} from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 
 export default class ScatterPlotChartVisualization extends React.Component {
@@ -32,15 +35,20 @@ export default class ScatterPlotChartVisualization extends React.Component {
   nrqlInputIsValid = (data) => {
     const { uniqueAggregates, uniqueFacets } =
       getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
 
     if (
-      uniqueAggregates.size <= 3 &&
-      uniqueAggregates.size > 1 &&
-      uniqueFacets.size <= 1
+      (uniqueAggregates.size <= 3 &&
+        uniqueAggregates.size > 1 &&
+        uniqueFacets.size <= 1 &&
+        uniqueNonAggregates.size === 0) ||
+      (uniqueNonAggregates.size <= 3 &&
+        uniqueNonAggregates.size > 1 &&
+        uniqueFacets.size <= 1 &&
+        uniqueAggregates === 0)
     )
       return true;
-    else if (uniqueAggregates.size === 1) return false;
-    else return uniqueAggregates.size === 0 && uniqueFacets.size <= 1;
+    else return false;
   };
 
   render() {
