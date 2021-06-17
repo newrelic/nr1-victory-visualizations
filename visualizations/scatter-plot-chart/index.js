@@ -11,6 +11,7 @@ import {
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
+import NoDataState from '../../src/no-data-state';
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -75,6 +76,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     description={error.message}
                   />
                 );
+              }
+
+              if (!data.length) {
+                return <NoDataState />;
               }
 
               if (!this.nrqlInputIsValid(data)) {
