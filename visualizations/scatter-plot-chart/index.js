@@ -33,22 +33,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   nrqlInputIsValid = (data) => {
-    const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
 
-    if (
-      (uniqueAggregates.size <= 3 &&
-        uniqueAggregates.size > 1 &&
-        uniqueFacets.size <= 1 &&
-        uniqueNonAggregates.size === 0) ||
-      (uniqueNonAggregates.size <= 3 &&
-        uniqueNonAggregates.size > 1 &&
-        uniqueFacets.size <= 1 &&
-        uniqueAggregates === 0)
-    )
-      return true;
-    else return false;
+    return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
   };
 
   render() {
@@ -141,7 +129,8 @@ const EmptyState = () => (
         An example NRQL query you can try is:
       </HeadingText>
       <code>
-        SELECT contentLength, duration, externalCallCount FROM EventType
+        FROM Transaction SELECT average(duration), max(totalTime),
+        max(databaseDuration) FACET appName
       </code>
     </CardBody>
   </Card>
