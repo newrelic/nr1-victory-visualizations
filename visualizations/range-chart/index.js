@@ -16,7 +16,7 @@ import NrqlQueryError from '../../src/nrql-query-error';
 import NoDataState from '../../src/no-data-state';
 
 import theme from '../../src/theme';
-import { getUniqueAggregatesFacetsAttributes } from '../../src/utils/nrql-validation-helper';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
 import { typeToUnit, formatNumberTicks } from '../../src/utils/units';
@@ -97,7 +97,7 @@ export default class RangeChartVisualization extends React.Component {
 
   nrqlInputIsValid = (data) => {
     const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesFacetsAttributes(data);
+      getUniqueAggregatesAndFacets(data);
     return uniqueAggregates.size === 2 && uniqueFacets.size > 0;
   };
 

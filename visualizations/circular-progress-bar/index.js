@@ -13,7 +13,7 @@ import {
 import NrqlQueryError from '../../src/nrql-query-error';
 import NoDataState from '../../src/no-data-state';
 import { baseLabelStyles } from '../../src/theme';
-import { getUniqueAggregatesFacetsAttributes } from '../../src/utils/nrql-validation-helper';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import Colors from '../../src/colors';
 
 const BOUNDS = {
@@ -77,7 +77,7 @@ export default class CircularProgressBar extends React.Component {
   nrqlInputIsValid = (data) => {
     const { data: seriesEntries } = data[0];
     const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesFacetsAttributes(data);
+      getUniqueAggregatesAndFacets(data);
     const isNonTimeseries = seriesEntries.length === 1;
 
     return (

@@ -9,7 +9,6 @@ import {
   AutoSizer,
 } from 'nr1';
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
-import { getUniqueAggregatesFacetsAttributes } from '../../src/utils/nrql-validation-helper';
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -25,10 +24,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
-  };
-
-  nrqlInputIsValid = (data) => {
-    console.log(getUniqueAggregatesFacetsAttributes(data));
   };
 
   render() {
@@ -60,8 +55,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
               if (error) {
                 return <ErrorState />;
               }
-
-              this.nrqlInputIsValid(data);
 
               // console.log('data', data);
 

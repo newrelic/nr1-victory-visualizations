@@ -25,7 +25,7 @@ import theme from '../../src/theme';
 import truncateLabel from '../../src/utils/truncate-label';
 import { getFacetLabel } from '../../src/utils/facets';
 import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
-import { getUniqueAggregatesFacetsAttributes } from '../../src/utils/nrql-validation-helper';
+import { getUniqueAggregatesAndFacets } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 
 /**
@@ -158,12 +158,12 @@ export default class StackedBarChart extends React.Component {
 
   nrqlInputIsValid = (data) => {
     const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesFacetsAttributes(data);
+      getUniqueAggregatesAndFacets(data);
     return uniqueAggregates.size === 1 && uniqueFacets.size > 0;
   };
 
   getXAxisLabelProps = ({ data, maxWidth }) => {
-    const { uniqueFacets } = getUniqueAggregatesFacetsAttributes(data);
+    const { uniqueFacets } = getUniqueAggregatesAndFacets(data);
 
     // in case of singular facet, use facet display name as x-axis label
     const label =
