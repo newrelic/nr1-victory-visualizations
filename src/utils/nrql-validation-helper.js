@@ -1,5 +1,5 @@
 export const getUniqueAggregatesAndFacets = (rawData) => {
-  return rawData
+  const aggregatesAndFacets = rawData
     .flatMap(({ metadata }) => metadata.groups)
     .reduce(
       (acc, group) => {
@@ -14,4 +14,18 @@ export const getUniqueAggregatesAndFacets = (rawData) => {
       },
       { uniqueAggregates: new Set(), uniqueFacets: new Set() }
     );
+
+  const injectedKeys = ['begin_time', 'end_time', 'x', 'y', 'timestamp'];
+  const nonInjectedKeys = Object.keys(rawData[0].metadata.units_data).filter(
+    (key) => !injectedKeys.includes(key)
+  );
+  const aggregateValues = rawData[0].metadata.groups.map(({ value }) => value);
+  const nonAggregateValues = nonInjectedKeys.filter((key) => {
+    return !aggregateValues.includes(key);
+  });
+
+  return {
+    ...aggregatesAndFacets,
+    uniqueNonAggregates: new Set(nonAggregateValues),
+  };
 };
