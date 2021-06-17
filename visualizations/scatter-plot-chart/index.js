@@ -9,6 +9,11 @@ import {
   AutoSizer,
 } from 'nr1';
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
+import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
+import {
+  getUniqueAggregatesAndFacets,
+  getUniqueNonAggregates,
+} from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 
 export default class ScatterPlotChartVisualization extends React.Component {
@@ -25,6 +30,13 @@ export default class ScatterPlotChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+  };
+
+  nrqlInputIsValid = (data) => {
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+
+    return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
   };
 
   render() {
@@ -53,15 +65,27 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 return <Spinner />;
               }
 
-              if (error) {
-                return <ErrorState />;
+              if (error && data === null) {
+                return (
+                  <NrqlQueryError
+                    title="NRQL Syntax Error"
+                    description={error.message}
+                  />
+                );
               }
 
               if (!data.length) {
                 return <NoDataState />;
               }
 
-              console.log('data', data);
+              if (!this.nrqlInputIsValid(data)) {
+                return (
+                  <NrqlQueryError
+                    title="Unsupported NRQL query"
+                    description="The provided NRQL query is not supported by this visualization. This chart supports non-aggregate and aggregate queries with an optional FACET clause. Please make sure to have 2-3 aggregate functions or 2-3 attributes in the SELECT clause."
+                  />
+                );
+              }
 
               return (
                 <VictoryChart
@@ -104,7 +128,10 @@ const EmptyState = () => (
       >
         An example NRQL query you can try is:
       </HeadingText>
-      <code>FROM NrUsage SELECT sum(usage) FACET metric SINCE 1 week ago</code>
+      <code>
+        FROM Transaction SELECT average(duration), max(totalTime),
+        max(databaseDuration) FACET appName
+      </code>
     </CardBody>
   </Card>
 );
