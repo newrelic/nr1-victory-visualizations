@@ -1,4 +1,4 @@
-export const getUniqueAggregatesAndFacets = (rawData) => {
+export const getUniqueAggregatesFacetsAttributes = (rawData) => {
   const aggregatesAndFacets = rawData
     .flatMap(({ metadata }) => metadata.groups)
     .reduce(
