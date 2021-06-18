@@ -32,6 +32,20 @@ export default class ScatterPlotChartVisualization extends React.Component {
     ),
   };
 
+  transformData = (data) => {
+    // const {
+    //   data: [series],
+    //   metadata: { color: colorFromData, name: label },
+    // } = data[0];
+    return { series: data[0] };
+    return {
+      series: [
+        { x: 'progress', y: percent, color },
+        { x: 'remainder', y: 100 - percent, color: 'transparent' },
+      ],
+    };
+  };
+
   nrqlInputIsValid = (data) => {
     const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
@@ -86,6 +100,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   />
                 );
               }
+
+              const { series } = this.transformData(data);
+              console.log('series', series);
 
               return (
                 <VictoryChart
