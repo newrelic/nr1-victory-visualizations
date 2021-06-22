@@ -15,6 +15,7 @@ import {
   getUniqueNonAggregates,
 } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
+import { getFacetLabel } from '../../src/utils/facets';
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -30,6 +31,37 @@ export default class ScatterPlotChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+  };
+
+  getAggregatesData = (rawData, facets) => {
+    console.log('raw data: ', rawData, 'facets', facets);
+    const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
+      const facetGroupName = getFacetLabel(metadata?.groups);
+      const dataValue = data?.[0]?.y;
+
+      const unitType = metadata.units_data.y;
+
+      acc[facetGroupName] ? acc[facetGroupName].y ? acc[facetGroupName] = {
+        ...acc[facetGroupName],
+        size: dataValue * 10
+      } : (acc[facetGroupName] = {
+            ...acc[facetGroupName],
+            y: dataValue,
+          })
+        : (acc[facetGroupName] = {
+            color: metadata?.color,
+            x: dataValue,
+          });  
+
+      return acc;
+    }, {});
+
+    return Object.entries(facetGroupData).map(
+      ([facetGroupName, facetGroupData]) => ({
+        facetGroupName,
+        ...facetGroupData,
+      })
+    );
   };
 
   getNonAggregatesData = (data, color) => {
@@ -60,7 +92,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
       : data[0].metadata.color;
 
     if (uniqueNonAggregates.size > 1) {
+      console.log('got to uniqueNonAggregates');
       series = this.getNonAggregatesData(data, color);
+    } else if (uniqueAggregates.size > 1) {
+      console.log('got to uniqueAggregates');
+      series = this.getAggregatesData(data, uniqueFacets, uniqueAggregates);
     }
 
     return { series };
@@ -121,11 +157,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 );
               }
               const { series } = this.transformData(data);
-              console.log('series', series);
+              console.dir(series);
               return (
-                <VictoryChart
-                  theme={VictoryTheme.material}
-                >
+                <VictoryChart theme={VictoryTheme.material}>
                   <VictoryScatter
                     size={7}
                     data={series}
