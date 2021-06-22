@@ -32,18 +32,38 @@ export default class ScatterPlotChartVisualization extends React.Component {
     ),
   };
 
+  getNonAggregatesData = (data, color) => {
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    const nonAggregates = {};
+
+    Array.from(uniqueNonAggregates).map((datapoint, i) => {
+      return (nonAggregates[i] = datapoint);
+    });
+
+    const series = data[0].data.map((point) => {
+      return {
+        x: point[nonAggregates[0]],
+        y: point[nonAggregates[1]],
+        color,
+      };
+    });
+    return series;
+  };
+
   transformData = (data) => {
-    // const {
-    //   data: [series],
-    //   metadata: { color: colorFromData, name: label },
-    // } = data[0];
-    return { series: data[0] };
-    return {
-      series: [
-        { x: 'progress', y: percent, color },
-        { x: 'remainder', y: 100 - percent, color: 'transparent' },
-      ],
-    };
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    let series;
+    const color = uniqueFacets.values().next()
+      ? uniqueFacets.values().next()
+      : data[0].metadata.color;
+
+    if (uniqueNonAggregates.size > 1) {
+      series = this.getNonAggregatesData(data, color);
+    }
+
+    return { series };
   };
 
   nrqlInputIsValid = (data) => {
@@ -100,25 +120,22 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   />
                 );
               }
-
               const { series } = this.transformData(data);
               console.log('series', series);
-
               return (
                 <VictoryChart
                   theme={VictoryTheme.material}
-                  domain={{ x: [0, 5], y: [0, 7] }}
                 >
                   <VictoryScatter
-                    style={{ data: { fill: '#c43a31' } }}
                     size={7}
-                    data={[
-                      { x: 1, y: 2 },
-                      { x: 2, y: 3 },
-                      { x: 3, y: 5 },
-                      { x: 4, y: 4 },
-                      { x: 5, y: 7 },
-                    ]}
+                    data={series}
+                    style={{
+                      data: {
+                        fill: ({ datum }) => datum.color,
+                        fillOpacity: 0.7,
+                        strokeWidth: 3,
+                      },
+                    }}
                   />
                 </VictoryChart>
               );
