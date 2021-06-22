@@ -33,25 +33,26 @@ export default class ScatterPlotChartVisualization extends React.Component {
     ),
   };
 
-  getAggregatesData = (rawData, facets) => {
-    console.log('raw data: ', rawData, 'facets', facets);
+  getAggregatesData = (rawData) => {
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
-
       const unitType = metadata.units_data.y;
 
-      acc[facetGroupName] ? acc[facetGroupName].y ? acc[facetGroupName] = {
-        ...acc[facetGroupName],
-        size: dataValue * 10
-      } : (acc[facetGroupName] = {
-            ...acc[facetGroupName],
-            y: dataValue,
-          })
+      acc[facetGroupName]
+        ? acc[facetGroupName].y
+          ? (acc[facetGroupName] = {
+              ...acc[facetGroupName],
+              size: dataValue,
+            })
+          : (acc[facetGroupName] = {
+              ...acc[facetGroupName],
+              y: dataValue,
+            })
         : (acc[facetGroupName] = {
             color: metadata?.color,
             x: dataValue,
-          });  
+          });
 
       return acc;
     }, {});
@@ -64,20 +65,23 @@ export default class ScatterPlotChartVisualization extends React.Component {
     );
   };
 
-  getNonAggregatesData = (data, color) => {
-    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+  getNonAggregatesData = (rawData) => {
+    const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
     const nonAggregates = {};
 
     Array.from(uniqueNonAggregates).map((datapoint, i) => {
       return (nonAggregates[i] = datapoint);
     });
 
-    const series = data[0].data.map((point) => {
-      return {
+    const series = rawData[0].data.map((point) => {
+      const datapoint = {
         x: point[nonAggregates[0]],
         y: point[nonAggregates[1]],
-        color,
+        color: rawData[0].metadata.color,
       };
+      if (point[nonAggregates[2]]) datapoint.size = point[nonAggregates[2]];
+
+      return datapoint;
     });
     return series;
   };
@@ -87,16 +91,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
       getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
     let series;
-    const color = uniqueFacets.values().next()
-      ? uniqueFacets.values().next()
-      : data[0].metadata.color;
 
     if (uniqueNonAggregates.size > 1) {
-      console.log('got to uniqueNonAggregates');
-      series = this.getNonAggregatesData(data, color);
+      series = this.getNonAggregatesData(data);
     } else if (uniqueAggregates.size > 1) {
-      console.log('got to uniqueAggregates');
-      series = this.getAggregatesData(data, uniqueFacets, uniqueAggregates);
+      series = this.getAggregatesData(data);
     }
 
     return { series };
@@ -157,7 +156,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 );
               }
               const { series } = this.transformData(data);
-              console.dir(series);
               return (
                 <VictoryChart theme={VictoryTheme.material}>
                   <VictoryScatter
