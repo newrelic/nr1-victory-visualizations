@@ -9,6 +9,7 @@ import {
   AutoSizer,
 } from 'nr1';
 import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
+import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import {
   getUniqueAggregatesAndFacets,
@@ -87,8 +88,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   transformData = (data) => {
-    const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
     let series;
 
@@ -97,8 +97,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     } else if (uniqueAggregates.size > 1) {
       series = this.getAggregatesData(data);
     }
-
-    return { series };
+    return series;
   };
 
   nrqlInputIsValid = (data) => {
@@ -155,21 +154,40 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   />
                 );
               }
-              const { series } = this.transformData(data);
+              const series = this.transformData(data);
+              const legendItems = series.reduce((acc, curr) => {
+                if (!acc.some(({ label }) => label === curr.facetGroupName)) {
+                  acc.push({ label: curr.facetGroupName, color: curr.color });
+                }
+                return acc;
+              }, []);
+              const chartLeftPadding = 100;
+              const chartRightPadding = 25;
+              const legendHeight = 50;
               return (
-                <VictoryChart theme={VictoryTheme.material}>
-                  <VictoryScatter
-                    size={7}
-                    data={series}
+                <>
+                  <VictoryChart theme={VictoryTheme.material}>
+                    <VictoryScatter
+                      size={7}
+                      data={series}
+                      style={{
+                        data: {
+                          fill: ({ datum }) => datum.color,
+                          fillOpacity: 0.7,
+                          strokeWidth: 3,
+                        },
+                      }}
+                    />
+                  </VictoryChart>
+                  <Legend
                     style={{
-                      data: {
-                        fill: ({ datum }) => datum.color,
-                        fillOpacity: 0.7,
-                        strokeWidth: 3,
-                      },
+                      height: legendHeight,
+                      marginLeft: chartLeftPadding,
+                      marginRight: chartRightPadding,
                     }}
+                    items={legendItems}
                   />
-                </VictoryChart>
+                </>
               );
             }}
           </NrqlQuery>
