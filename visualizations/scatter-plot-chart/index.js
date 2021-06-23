@@ -67,19 +67,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
   getNonAggregatesData = (rawData) => {
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
-    const nonAggregates = {};
-
-    Array.from(uniqueNonAggregates).map((datapoint, i) => {
-      return (nonAggregates[i] = datapoint);
-    });
-
+    const attributeNames = Array.from(uniqueNonAggregates);
     const series = rawData[0].data.map((point) => {
       const datapoint = {
-        x: point[nonAggregates[0]],
-        y: point[nonAggregates[1]],
+        x: point[attributeNames[0]],
+        y: point[attributeNames[1]],
         color: rawData[0].metadata.color,
       };
-      if (point[nonAggregates[2]]) datapoint.size = point[nonAggregates[2]];
+      if (point[attributeNames[2]]) datapoint.size = point[attributeNames[2]];
 
       return datapoint;
     });
