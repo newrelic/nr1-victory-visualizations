@@ -8,7 +8,12 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
+import {
+  VictoryChart,
+  VictoryScatter,
+  VictoryTheme,
+  VictoryAxis,
+} from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import {
@@ -17,6 +22,8 @@ import {
 } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 import { getFacetLabel } from '../../src/utils/facets';
+import truncateLabel from '../../src/utils/truncate-label';
+import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -107,6 +114,82 @@ export default class ScatterPlotChartVisualization extends React.Component {
     return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
   };
 
+  getXAxisLabelProps = (data, transformedData, height) => {
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
+    const uniqueAggregatesNames = Array.from(uniqueAggregates);
+    // `unitType` is a value to map NRQL data with units
+    const unitType = data[0].metadata.units_data.y;
+    let label;
+    let xDomainValues;
+
+    if (uniqueAggregates.size > 1) {
+      label = `${uniqueAggregatesNames[0]}${typeToUnit(unitType)}`;
+
+      xDomainValues = data[0].metadata.groups
+        .filter(
+          (name) =>
+            data[0].metadata.groups.displayName === uniqueAggregatesNames[0]
+        )
+        .map(({ x }) => x);
+    }
+
+    const tickCount = Math.round(height / 36);
+    const xMin = 0;
+    const xMax = Math.max(...xDomainValues);
+    const tickIncrement = (xMax - xMin) / tickCount;
+
+    return {
+      label,
+      tickCount,
+      tickFormat: (tick) =>
+        formatNumberTicks({
+          unitType,
+          tick,
+          tickIncrement,
+        }),
+    };
+  };
+
+  getYAxisLabelProps = (data, transformedData, height) => {
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
+    const uniqueAggregatesNames = Array.from(uniqueAggregates);
+    // `unitType` is a value to map NRQL data with units
+    const unitType = data[0].metadata.units_data.y;
+    let label;
+    let yDomainValues;
+    if (uniqueAggregates.size > 1) {
+      label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
+
+      yDomainValues = data[0].metadata.groups
+        .filter(
+          (name) =>
+            data[0].metadata.groups.displayName === uniqueAggregatesNames[1]
+        )
+        .map(({ y }) => y);
+    }
+
+    // find the increment of ticks to determine decimal formatting
+    const tickCount = Math.round(height / 36);
+    const yMin = 0;
+    const yMax = Math.max(...yDomainValues);
+    const tickIncrement = (yMax - yMin) / tickCount;
+
+    return {
+      label,
+      tickCount,
+      tickFormat: (tick) =>
+        formatNumberTicks({
+          unitType,
+          tick,
+          tickIncrement,
+        }),
+    };
+  };
+
   render() {
     const { nrqlQueries } = this.props;
     const nrqlQueryPropsAvailable =
@@ -155,6 +238,25 @@ export default class ScatterPlotChartVisualization extends React.Component {
               }
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
               const series = this.transformData(data);
+
+              const chartLeftPadding = 100;
+              const chartRightPadding = 25;
+              const legendHeight = 50;
+              // `xDomainWidth` represents the maximum width of the ticks for x-axis
+              const xDomainWidth = width - chartLeftPadding - chartRightPadding;
+              // `yDomainWidth` represents the maximum width of the ticks for y-axis
+              const yDomainWidth = 50;
+              const yAxisPadding = 16;
+              const xAxisLabelProps = this.getXAxisLabelProps(
+                data,
+                series,
+                height
+              );
+              const yAxisLabelProps = this.getYAxisLabelProps(
+                data,
+                series,
+                height
+              );
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
                   acc.push({ label: curr.facetGroupName, color: curr.color });
@@ -162,13 +264,22 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 return acc;
               }, []);
 
-              const chartLeftPadding = 100;
-              const chartRightPadding = 25;
-              const legendHeight = 50;
-
               return (
                 <>
                   <VictoryChart theme={VictoryTheme.material}>
+                    <VictoryAxis
+                      {...xAxisLabelProps}
+                      style={{
+                        axisLabel: { padding: 30 },
+                      }}
+                    />
+                    <VictoryAxis
+                      {...yAxisLabelProps}
+                      dependentAxis
+                      style={{
+                        axisLabel: { padding: yDomainWidth + yAxisPadding },
+                      }}
+                    />
                     <VictoryScatter
                       size={7}
                       data={series}
