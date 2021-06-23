@@ -116,6 +116,8 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return <EmptyState />;
     }
 
+    const defaultPlotSize = 1;
+
     return (
       <AutoSizer>
         {({ width, height }) => (
@@ -154,6 +156,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
               return (
                 <VictoryChart theme={VictoryTheme.material}>
                   <VictoryScatter
+                    size={defaultPlotSize}
                     data={series}
                     style={{
                       data: {
