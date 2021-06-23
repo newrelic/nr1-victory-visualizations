@@ -109,7 +109,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
   render() {
     const { nrqlQueries } = this.props;
-
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
       nrqlQueries[0] &&
@@ -154,6 +153,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   />
                 );
               }
+              const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
               const series = this.transformData(data);
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
@@ -161,9 +161,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 }
                 return acc;
               }, []);
+
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
               const legendHeight = 50;
+
               return (
                 <>
                   <VictoryChart theme={VictoryTheme.material}>
@@ -179,14 +181,16 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       }}
                     />
                   </VictoryChart>
-                  <Legend
-                    style={{
-                      height: legendHeight,
-                      marginLeft: chartLeftPadding,
-                      marginRight: chartRightPadding,
-                    }}
-                    items={legendItems}
-                  />
+                  {uniqueAggregates.size > 1 && (
+                    <Legend
+                      style={{
+                        height: legendHeight,
+                        marginLeft: chartLeftPadding,
+                        marginRight: chartRightPadding,
+                      }}
+                      items={legendItems}
+                    />
+                  )}
                 </>
               );
             }}
