@@ -154,13 +154,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
               return (
                 <VictoryChart theme={VictoryTheme.material}>
                   <VictoryScatter
-                    size={7}
                     data={series}
                     style={{
                       data: {
                         fill: ({ datum }) => datum.color,
                         fillOpacity: 0.7,
-                        strokeWidth: 3,
                       },
                     }}
                   />
