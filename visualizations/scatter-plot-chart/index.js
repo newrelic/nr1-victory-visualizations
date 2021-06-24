@@ -8,14 +8,10 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import {
-  VictoryChart,
-  VictoryScatter,
-  VictoryContainer,
-  VictoryTheme,
-} from 'victory';
+import { VictoryChart, VictoryScatter, VictoryContainer } from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
+import theme from '../../src/theme';
 import {
   getUniqueAggregatesAndFacets,
   getUniqueNonAggregates,
@@ -181,7 +177,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       left: chartLeftPadding,
                       right: chartRightPadding,
                     }}
-                    theme={VictoryTheme.material}
+                    theme={theme}
                   >
                     <VictoryScatter
                       size={defaultPlotSize}
