@@ -8,7 +8,12 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryScatter, VictoryTheme } from 'victory';
+import {
+  VictoryChart,
+  VictoryScatter,
+  VictoryContainer,
+  VictoryTheme,
+} from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import {
@@ -165,10 +170,22 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
               const legendHeight = 50;
+              const spaceBelowLegend = 16;
 
               return (
                 <>
-                  <VictoryChart theme={VictoryTheme.material}>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight - spaceBelowLegend}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
+                    }}
+                    theme={VictoryTheme.material}
+                  >
                     <VictoryScatter
                       size={7}
                       data={series}
@@ -176,7 +193,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
                         data: {
                           fill: ({ datum }) => datum.color,
                           fillOpacity: 0.7,
-                          strokeWidth: 3,
                         },
                       }}
                     />
