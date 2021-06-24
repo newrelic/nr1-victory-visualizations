@@ -15,6 +15,7 @@ import {
   getUniqueNonAggregates,
 } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
+import { getFacetLabel } from '../../src/utils/facets';
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -30,6 +31,69 @@ export default class ScatterPlotChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+  };
+
+  getAggregatesData = (rawData) => {
+    const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
+      const facetGroupName = getFacetLabel(metadata?.groups);
+      const dataValue = data?.[0]?.y;
+      const unitType = metadata.units_data.y;
+
+      acc[facetGroupName]
+        ? acc[facetGroupName].y
+          ? (acc[facetGroupName] = {
+              ...acc[facetGroupName],
+              size: dataValue,
+            })
+          : (acc[facetGroupName] = {
+              ...acc[facetGroupName],
+              y: dataValue,
+            })
+        : (acc[facetGroupName] = {
+            color: metadata?.color,
+            x: dataValue,
+          });
+
+      return acc;
+    }, {});
+
+    return Object.entries(facetGroupData).map(
+      ([facetGroupName, facetGroupData]) => ({
+        facetGroupName,
+        ...facetGroupData,
+      })
+    );
+  };
+
+  getNonAggregatesData = (rawData) => {
+    const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
+    const attributeNames = Array.from(uniqueNonAggregates);
+    const series = rawData[0].data.map((point) => {
+      const datapoint = {
+        x: point[attributeNames[0]],
+        y: point[attributeNames[1]],
+        color: rawData[0].metadata.color,
+      };
+      if (point[attributeNames[2]]) datapoint.size = point[attributeNames[2]];
+
+      return datapoint;
+    });
+    return series;
+  };
+
+  transformData = (data) => {
+    const { uniqueAggregates, uniqueFacets } =
+      getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    let series;
+
+    if (uniqueNonAggregates.size > 1) {
+      series = this.getNonAggregatesData(data);
+    } else if (uniqueAggregates.size > 1) {
+      series = this.getAggregatesData(data);
+    }
+
+    return { series };
   };
 
   nrqlInputIsValid = (data) => {
@@ -51,6 +115,8 @@ export default class ScatterPlotChartVisualization extends React.Component {
     if (!nrqlQueryPropsAvailable) {
       return <EmptyState />;
     }
+
+    const defaultPlotSize = 1;
 
     return (
       <AutoSizer>
@@ -86,22 +152,18 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   />
                 );
               }
-
+              const { series } = this.transformData(data);
               return (
-                <VictoryChart
-                  theme={VictoryTheme.material}
-                  domain={{ x: [0, 5], y: [0, 7] }}
-                >
+                <VictoryChart theme={VictoryTheme.material}>
                   <VictoryScatter
-                    style={{ data: { fill: '#c43a31' } }}
-                    size={7}
-                    data={[
-                      { x: 1, y: 2 },
-                      { x: 2, y: 3 },
-                      { x: 3, y: 5 },
-                      { x: 4, y: 4 },
-                      { x: 5, y: 7 },
-                    ]}
+                    size={defaultPlotSize}
+                    data={series}
+                    style={{
+                      data: {
+                        fill: ({ datum }) => datum.color,
+                        fillOpacity: 0.7,
+                      },
+                    }}
                   />
                 </VictoryChart>
               );
