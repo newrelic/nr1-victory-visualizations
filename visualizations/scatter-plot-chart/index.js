@@ -8,7 +8,8 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryScatter } from 'victory';
+import { VictoryChart, VictoryScatter, VictoryContainer } from 'victory';
+import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import theme from '../../src/theme';
 import {
@@ -83,8 +84,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   transformData = (data) => {
-    const { uniqueAggregates, uniqueFacets } =
-      getUniqueAggregatesAndFacets(data);
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
     let series;
 
@@ -93,8 +93,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     } else if (uniqueAggregates.size > 1) {
       series = this.getAggregatesData(data);
     }
-
-    return { series };
+    return series;
   };
 
   nrqlInputIsValid = (data) => {
@@ -106,7 +105,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
   render() {
     const { nrqlQueries } = this.props;
-
     const nrqlQueryPropsAvailable =
       nrqlQueries &&
       nrqlQueries[0] &&
@@ -153,20 +151,56 @@ export default class ScatterPlotChartVisualization extends React.Component {
                   />
                 );
               }
-              const { series } = this.transformData(data);
+              const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+              const series = this.transformData(data);
+              const legendItems = series.reduce((acc, curr) => {
+                if (!acc.some(({ label }) => label === curr.facetGroupName)) {
+                  acc.push({ label: curr.facetGroupName, color: curr.color });
+                }
+                return acc;
+              }, []);
+
+              const chartLeftPadding = 100;
+              const chartRightPadding = 25;
+              const legendHeight = 50;
+              const spaceBelowLegend = 16;
+
               return (
-                <VictoryChart theme={theme}>
-                  <VictoryScatter
-                    size={defaultPlotSize}
-                    data={series}
-                    style={{
-                      data: {
-                        fill: ({ datum }) => datum.color,
-                        fillOpacity: 0.7,
-                      },
+                <>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight - spaceBelowLegend}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
                     }}
-                  />
-                </VictoryChart>
+                    theme={theme}
+                  >
+                    <VictoryScatter
+                      size={defaultPlotSize}
+                      data={series}
+                      style={{
+                        data: {
+                          fill: ({ datum }) => datum.color,
+                          fillOpacity: 0.7,
+                        },
+                      }}
+                    />
+                  </VictoryChart>
+                  {uniqueAggregates.size > 1 && (
+                    <Legend
+                      style={{
+                        height: legendHeight,
+                        marginLeft: chartLeftPadding,
+                        marginRight: chartRightPadding,
+                      }}
+                      items={legendItems}
+                    />
+                  )}
+                </>
               );
             }}
           </NrqlQuery>
