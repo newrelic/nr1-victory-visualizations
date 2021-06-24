@@ -119,7 +119,8 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
     const uniqueAttributeNames = Array.from(uniqueNonAggregates);
     const uniqueAggregatesNames = Array.from(uniqueAggregates);
-    // `unitType` is a value to map NRQL data with units
+
+    // `unitType` is a value to map NRQL data with units -- only works with Aggregate Queries
     const unitType = data[0].metadata.units_data.y;
     let label;
     let xDomainValues;
@@ -135,7 +136,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
         .map(({ x }) => x);
     }
 
-    const tickCount = Math.round(height / 36);
+    const tickCount = Math.round((height - 50) / 70);
     const xMin = 0;
     const xMax = Math.max(...xDomainValues);
     const tickIncrement = (xMax - xMin) / tickCount;
@@ -161,6 +162,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const unitType = data[0].metadata.units_data.y;
     let label;
     let yDomainValues;
+
     if (uniqueAggregates.size > 1) {
       label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
 
@@ -173,7 +175,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     }
 
     // find the increment of ticks to determine decimal formatting
-    const tickCount = Math.round(height / 36);
+    const tickCount = Math.round((height - 50) / 70);
     const yMin = 0;
     const yMax = Math.max(...yDomainValues);
     const tickIncrement = (yMax - yMin) / tickCount;
@@ -239,30 +241,39 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
               const series = this.transformData(data);
 
-              const chartLeftPadding = 100;
-              const chartRightPadding = 25;
-              const legendHeight = 50;
-              // `xDomainWidth` represents the maximum width of the ticks for x-axis
-              const xDomainWidth = width - chartLeftPadding - chartRightPadding;
-              // `yDomainWidth` represents the maximum width of the ticks for y-axis
-              const yDomainWidth = 50;
-              const yAxisPadding = 16;
-              const xAxisLabelProps = this.getXAxisLabelProps(
-                data,
-                series,
-                height
-              );
-              const yAxisLabelProps = this.getYAxisLabelProps(
-                data,
-                series,
-                height
-              );
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
                   acc.push({ label: curr.facetGroupName, color: curr.color });
                 }
                 return acc;
               }, []);
+
+              const chartLeftPadding = 100;
+              const chartRightPadding = 25;
+              const legendHeight = 50;
+              const spaceBelowLegend = 16;
+
+              const plotCount = series.length;
+              // `xDomainWidth` represents the maximum width of the ticks for x-axis
+              const xDomainWidth = width - chartLeftPadding - chartRightPadding;
+              const plotWidth = (xDomainWidth * 0.6) / plotCount;
+
+               const xAxisLabelProps = this.getXAxisLabelProps(
+                data,
+                series,
+                height
+              );
+
+              // `yDomainWidth` represents the maximum width of the ticks for y-axis
+              const yDomainWidth = 50;
+              const yAxisPadding = 16;
+             
+              const yAxisLabelProps = this.getYAxisLabelProps(
+                data,
+                series,
+                height
+              );
+              
 
               return (
                 <>
