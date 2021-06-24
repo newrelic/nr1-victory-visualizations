@@ -124,10 +124,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       label = `${uniqueAggregatesNames[0]}${typeToUnit(unitType)}`;
 
       xDomainValues = data[0].metadata.groups
-        .filter(
-          (name) =>
-            data[0].metadata.groups.displayName === uniqueAggregatesNames[0]
-        )
+        .filter((group) => group.displayName === uniqueAggregatesNames[0])
         .map(({ x }) => x);
     }
 
@@ -162,10 +159,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
 
       yDomainValues = data[0].metadata.groups
-        .filter(
-          (name) =>
-            data[0].metadata.groups.displayName === uniqueAggregatesNames[1]
-        )
+        .filter((group) => group.displayName === uniqueAggregatesNames[1])
         .map(({ y }) => y);
     }
 
