@@ -75,19 +75,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
   getNonAggregatesData = (rawData) => {
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
-    const nonAggregates = {};
-
-    Array.from(uniqueNonAggregates).map((datapoint, i) => {
-      return (nonAggregates[i] = datapoint);
-    });
-
+    const attributeNames = Array.from(uniqueNonAggregates);
     const series = rawData[0].data.map((point) => {
       const datapoint = {
-        x: point[nonAggregates[0]],
-        y: point[nonAggregates[1]],
+        x: point[attributeNames[0]],
+        y: point[attributeNames[1]],
         color: rawData[0].metadata.color,
       };
-      if (point[nonAggregates[2]]) datapoint.size = point[nonAggregates[2]];
+      if (point[attributeNames[2]]) datapoint.size = point[attributeNames[2]];
 
       return datapoint;
     });
@@ -204,6 +199,8 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return <EmptyState />;
     }
 
+    const defaultPlotSize = 1;
+
     return (
       <AutoSizer>
         {({ width, height }) => (
@@ -258,7 +255,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const xDomainWidth = width - chartLeftPadding - chartRightPadding;
               const plotWidth = (xDomainWidth * 0.6) / plotCount;
 
-               const xAxisLabelProps = this.getXAxisLabelProps(
+              const xAxisLabelProps = this.getXAxisLabelProps(
                 data,
                 series,
                 height
@@ -267,13 +264,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
               // `yDomainWidth` represents the maximum width of the ticks for y-axis
               const yDomainWidth = 50;
               const yAxisPadding = 16;
-             
+
               const yAxisLabelProps = this.getYAxisLabelProps(
                 data,
                 series,
                 height
               );
-              
 
               return (
                 <>
