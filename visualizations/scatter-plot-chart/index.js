@@ -45,7 +45,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
-      const unitType = metadata.units_data.y;
 
       acc[facetGroupName]
         ? acc[facetGroupName].y
@@ -56,10 +55,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
           : (acc[facetGroupName] = {
               ...acc[facetGroupName],
               y: dataValue,
+              yDisplayName: metadata.groups[0].displayName,
             })
         : (acc[facetGroupName] = {
             color: metadata?.color,
             x: dataValue,
+            xDisplayName: metadata.groups[0].displayName,
           });
 
       return acc;
@@ -123,13 +124,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
     if (uniqueAggregates.size > 1) {
       label = `${uniqueAggregatesNames[0]}${typeToUnit(unitType)}`;
 
-      xDomainValues = data[0].metadata.groups
-        .filter((group) => group.displayName === uniqueAggregatesNames[0])
+      xDomainValues = transformedData
+        .filter((datapoint) => {
+          return datapoint.xDisplayName === uniqueAggregatesNames[0];
+        })
         .map(({ x }) => x);
     }
-
     const tickCount = Math.round((height - 50) / 70);
-    const xMin = 0;
+    const xMin = Math.min(...xDomainValues);
     const xMax = Math.max(...xDomainValues);
     const tickIncrement = (xMax - xMin) / tickCount;
 
@@ -158,14 +160,16 @@ export default class ScatterPlotChartVisualization extends React.Component {
     if (uniqueAggregates.size > 1) {
       label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
 
-      yDomainValues = data[0].metadata.groups
-        .filter((group) => group.displayName === uniqueAggregatesNames[1])
+      yDomainValues = transformedData
+        .filter((datapoint) => {
+          return datapoint.yDisplayName === uniqueAggregatesNames[1];
+        })
         .map(({ y }) => y);
     }
 
     // find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
-    const yMin = 0;
+    const yMin = Math.min(...yDomainValues);
     const yMax = Math.max(...yDomainValues);
     const tickIncrement = (yMax - yMin) / tickCount;
 
@@ -242,12 +246,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
               const legendHeight = 50;
-              const spaceBelowLegend = 16;
-
-              const plotCount = series.length;
-              // `xDomainWidth` represents the maximum width of the ticks for x-axis
-              const xDomainWidth = width - chartLeftPadding - chartRightPadding;
-              const plotWidth = (xDomainWidth * 0.6) / plotCount;
 
               const xAxisLabelProps = this.getXAxisLabelProps(
                 data,
