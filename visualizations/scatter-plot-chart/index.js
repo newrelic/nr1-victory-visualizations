@@ -117,7 +117,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const uniqueAggregatesNames = Array.from(uniqueAggregates);
 
     // `unitType` is a value to map NRQL data with units -- only works with Aggregate Queries
-    const unitType = data[0].metadata.units_data.y;
+    const unitType = data[0].metadata.units_data.y
+      ? data[0].metadata.units_data.y
+      : 'UNKNOWN';
+
     let label;
     let xDomainValues;
 
@@ -129,7 +132,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
           return datapoint.xDisplayName === uniqueAggregatesNames[0];
         })
         .map(({ x }) => x);
+    } else if (uniqueNonAggregates.size > 1) {
+      label = `${uniqueAttributeNames[0]
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (str) => str.toUpperCase())}${typeToUnit(unitType)}`;
+      xDomainValues = transformedData.map((point) => point.x);
     }
+
+    // find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
     const xMin = Math.min(...xDomainValues);
     const xMax = Math.max(...xDomainValues);
@@ -153,7 +163,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const uniqueAttributeNames = Array.from(uniqueNonAggregates);
     const uniqueAggregatesNames = Array.from(uniqueAggregates);
     // `unitType` is a value to map NRQL data with units
-    const unitType = data[0].metadata.units_data.y;
+    const unitType = data[0].metadata.units_data.y
+      ? data[0].metadata.units_data.y
+      : 'UNKNOWN';
     let label;
     let yDomainValues;
 
@@ -165,6 +177,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
           return datapoint.yDisplayName === uniqueAggregatesNames[1];
         })
         .map(({ y }) => y);
+    } else if (uniqueNonAggregates.size > 1) {
+      label = `${uniqueAttributeNames[1]
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/^./, (str) => str.toUpperCase())}${typeToUnit(unitType)}`;
+      yDomainValues = transformedData.map((point) => point.y);
     }
 
     // find the increment of ticks to determine decimal formatting
