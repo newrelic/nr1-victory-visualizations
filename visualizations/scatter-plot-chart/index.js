@@ -184,7 +184,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     theme={VictoryTheme.material}
                   >
                     <VictoryScatter
-                      size={7}
+                      size={defaultPlotSize}
                       data={series}
                       style={{
                         data: {
