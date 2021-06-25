@@ -8,7 +8,7 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryScatter, VictoryContainer } from 'victory';
+import { VictoryChart, VictoryScatter, VictoryContainer, VictoryAxis } from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import theme from '../../src/theme';
@@ -18,6 +18,8 @@ import {
 } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 import { getFacetLabel } from '../../src/utils/facets';
+import truncateLabel from '../../src/utils/truncate-label';
+import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -39,7 +41,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
-      const unitType = metadata.units_data.y;
 
       acc[facetGroupName]
         ? acc[facetGroupName].y
@@ -50,10 +51,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
           : (acc[facetGroupName] = {
               ...acc[facetGroupName],
               y: dataValue,
+              yDisplayName: metadata.groups[0].displayName,
             })
         : (acc[facetGroupName] = {
             color: metadata?.color,
             x: dataValue,
+            xDisplayName: metadata.groups[0].displayName,
           });
 
       return acc;
@@ -101,6 +104,94 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
 
     return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
+  };
+
+  getXAxisLabelProps = (data, transformedData, height) => {
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
+    const uniqueAggregatesNames = Array.from(uniqueAggregates);
+
+    // `unitType` is a value to map NRQL data with units -- only works with Aggregate Queries
+    const unitType = data[0].metadata.units_data.y
+      ? data[0].metadata.units_data.y
+      : 'UNKNOWN';
+
+    let label;
+    let xDomainValues;
+
+    if (uniqueAggregates.size > 1) {
+      label = `${uniqueAggregatesNames[0]}${typeToUnit(unitType)}`;
+
+      xDomainValues = transformedData
+        .filter((datapoint) => {
+          return datapoint.xDisplayName === uniqueAggregatesNames[0];
+        })
+        .map(({ x }) => x);
+    } else if (uniqueNonAggregates.size > 1) {
+      label = `${uniqueAttributeNames[0]}${typeToUnit(unitType)}`;
+      xDomainValues = transformedData.map((point) => point.x);
+    }
+
+    // find the increment of ticks to determine decimal formatting
+    const tickCount = Math.round((height - 50) / 70);
+    const xMin = Math.min(...xDomainValues);
+    const xMax = Math.max(...xDomainValues);
+    const tickIncrement = (xMax - xMin) / tickCount;
+
+    return {
+      label,
+      tickCount,
+      tickFormat: (tick) =>
+        formatNumberTicks({
+          unitType,
+          tick,
+          tickIncrement,
+        }),
+    };
+  };
+
+  getYAxisLabelProps = (data, transformedData, height) => {
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
+    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
+    const uniqueAggregatesNames = Array.from(uniqueAggregates);
+    // `unitType` is a value to map NRQL data with units
+    const unitType = data[0].metadata.units_data.y
+      ? data[0].metadata.units_data.y
+      : 'UNKNOWN';
+    let label;
+    let yDomainValues;
+
+    if (uniqueAggregates.size > 1) {
+      label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
+
+      yDomainValues = transformedData
+        .filter((datapoint) => {
+          return datapoint.yDisplayName === uniqueAggregatesNames[1];
+        })
+        .map(({ y }) => y);
+    } else if (uniqueNonAggregates.size > 1) {
+      label = `${uniqueAttributeNames[1]}${typeToUnit(unitType)}`;
+      yDomainValues = transformedData.map((point) => point.y);
+    }
+
+    // find the increment of ticks to determine decimal formatting
+    const tickCount = Math.round((height - 50) / 70);
+    const yMin = Math.min(...yDomainValues);
+    const yMax = Math.max(...yDomainValues);
+    const tickIncrement = (yMax - yMin) / tickCount;
+
+    return {
+      label,
+      tickCount,
+      tickFormat: (tick) =>
+        formatNumberTicks({
+          unitType,
+          tick,
+          tickIncrement,
+        }),
+    };
   };
 
   render() {
@@ -153,6 +244,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
               }
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
               const series = this.transformData(data);
+
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
                   acc.push({ label: curr.facetGroupName, color: curr.color });
@@ -165,6 +257,22 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const legendHeight = 50;
               const spaceBelowLegend = 16;
 
+              const xAxisLabelProps = this.getXAxisLabelProps(
+                data,
+                series,
+                height
+              );
+
+              // `yDomainWidth` represents the maximum width of the ticks for y-axis
+              const yDomainWidth = 50;
+              const yAxisPadding = 16;
+
+              const yAxisLabelProps = this.getYAxisLabelProps(
+                data,
+                series,
+                height
+              );
+
               return (
                 <>
                   <VictoryChart
@@ -173,12 +281,25 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     height={height - legendHeight - spaceBelowLegend}
                     padding={{
                       top: 16,
-                      bottom: 40,
+                      bottom: 60,
                       left: chartLeftPadding,
                       right: chartRightPadding,
                     }}
                     theme={theme}
                   >
+                    <VictoryAxis
+                      {...xAxisLabelProps}
+                      style={{
+                        axisLabel: { padding: 35 },
+                      }}
+                    />
+                    <VictoryAxis
+                      {...yAxisLabelProps}
+                      dependentAxis
+                      style={{
+                        axisLabel: { padding: yDomainWidth + yAxisPadding },
+                      }}
+                    />
                     <VictoryScatter
                       size={defaultPlotSize}
                       data={series}
