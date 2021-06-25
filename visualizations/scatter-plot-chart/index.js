@@ -8,14 +8,10 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import {
-  VictoryChart,
-  VictoryScatter,
-  VictoryTheme,
-  VictoryAxis,
-} from 'victory';
+import { VictoryChart, VictoryScatter, VictoryContainer, VictoryAxis } from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
+import theme from '../../src/theme';
 import {
   getUniqueAggregatesAndFacets,
   getUniqueNonAggregates,
@@ -263,6 +259,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const chartLeftPadding = 100;
               const chartRightPadding = 25;
               const legendHeight = 50;
+              const spaceBelowLegend = 16;
 
               const xAxisLabelProps = this.getXAxisLabelProps(
                 data,
@@ -282,7 +279,18 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
               return (
                 <>
-                  <VictoryChart theme={VictoryTheme.material}>
+                  <VictoryChart
+                    containerComponent={<VictoryContainer responsive={false} />}
+                    width={width}
+                    height={height - legendHeight - spaceBelowLegend}
+                    padding={{
+                      top: 16,
+                      bottom: 40,
+                      left: chartLeftPadding,
+                      right: chartRightPadding,
+                    }}
+                    theme={theme}
+                  >
                     <VictoryAxis
                       {...xAxisLabelProps}
                       style={{
@@ -297,13 +305,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       }}
                     />
                     <VictoryScatter
-                      size={7}
+                      size={defaultPlotSize}
                       data={series}
                       style={{
                         data: {
                           fill: ({ datum }) => datum.color,
                           fillOpacity: 0.7,
-                          strokeWidth: 3,
                         },
                       }}
                     />
