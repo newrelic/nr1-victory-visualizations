@@ -129,9 +129,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
         })
         .map(({ x }) => x);
     } else if (uniqueNonAggregates.size > 1) {
-      label = `${uniqueAttributeNames[0]
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, (str) => str.toUpperCase())}${typeToUnit(unitType)}`;
+      label = `${uniqueAttributeNames[0]}${typeToUnit(unitType)}`;
       xDomainValues = transformedData.map((point) => point.x);
     }
 
@@ -174,9 +172,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
         })
         .map(({ y }) => y);
     } else if (uniqueNonAggregates.size > 1) {
-      label = `${uniqueAttributeNames[1]
-        .replace(/([A-Z])/g, ' $1')
-        .replace(/^./, (str) => str.toUpperCase())}${typeToUnit(unitType)}`;
+      label = `${uniqueAttributeNames[1]}${typeToUnit(unitType)}`;
       yDomainValues = transformedData.map((point) => point.y);
     }
 
