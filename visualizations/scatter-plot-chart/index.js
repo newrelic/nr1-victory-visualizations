@@ -281,7 +281,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     height={height - legendHeight - spaceBelowLegend}
                     padding={{
                       top: 16,
-                      bottom: 40,
+                      bottom: 60,
                       left: chartLeftPadding,
                       right: chartRightPadding,
                     }}
@@ -290,7 +290,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     <VictoryAxis
                       {...xAxisLabelProps}
                       style={{
-                        axisLabel: { padding: 30 },
+                        axisLabel: { padding: 35 },
                       }}
                     />
                     <VictoryAxis
