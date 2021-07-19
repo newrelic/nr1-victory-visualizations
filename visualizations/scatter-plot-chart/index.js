@@ -8,7 +8,12 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryScatter, VictoryContainer, VictoryAxis } from 'victory';
+import {
+  VictoryChart,
+  VictoryScatter,
+  VictoryContainer,
+  VictoryAxis,
+} from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import theme from '../../src/theme';
@@ -37,27 +42,38 @@ export default class ScatterPlotChartVisualization extends React.Component {
     ),
   };
 
-  getAggregatesData = (rawData) => {
+  getAggregatesData = (rawData, aggregateFunctionDisplayNames) => {
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
+      const aggregateFunction = metadata?.groups.filter(
+        (group) => group.type === 'function'
+      )[0];
+      const functionDisplayName = aggregateFunction?.displayName;
+      const functionPosition =
+        aggregateFunctionDisplayNames.indexOf(functionDisplayName);
 
-      acc[facetGroupName]
-        ? acc[facetGroupName].y
-          ? (acc[facetGroupName] = {
-              ...acc[facetGroupName],
-              size: dataValue,
-            })
-          : (acc[facetGroupName] = {
-              ...acc[facetGroupName],
-              y: dataValue,
-              yDisplayName: metadata.groups[0].displayName,
-            })
-        : (acc[facetGroupName] = {
-            color: metadata?.color,
-            x: dataValue,
-            xDisplayName: metadata.groups[0].displayName,
-          });
+      if (!(facetGroupName in acc)) {
+        acc[facetGroupName] = {};
+      }
+
+      switch (functionPosition) {
+        case 0:
+          // The first aggregate function determines the x axis value
+          acc[facetGroupName].color = metadata.color;
+          acc[facetGroupName].x = dataValue;
+          acc[facetGroupName].xDisplayName = functionDisplayName;
+          break;
+        case 1:
+          // The second aggregate function determines the y axis value
+          acc[facetGroupName].y = dataValue;
+          acc[facetGroupName].yDisplayName = functionDisplayName;
+          break;
+        case 2:
+          // If present, the third aggregate function determines the size
+          acc[facetGroupName].size = dataValue;
+          break;
+      }
 
       return acc;
     }, {});
@@ -87,16 +103,17 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   transformData = (data) => {
-    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    let series;
-
     if (uniqueNonAggregates.size > 1) {
-      series = this.getNonAggregatesData(data);
-    } else if (uniqueAggregates.size > 1) {
-      series = this.getAggregatesData(data);
+      return this.getNonAggregatesData(data);
     }
-    return series;
+
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    if (uniqueAggregates.size > 1) {
+      return this.getAggregatesData(data, Array.from(uniqueAggregates));
+    }
+
+    return null;
   };
 
   nrqlInputIsValid = (data) => {
