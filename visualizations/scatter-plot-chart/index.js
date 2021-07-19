@@ -23,7 +23,6 @@ import {
 } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 import { getFacetLabel } from '../../src/utils/facets';
-import truncateLabel from '../../src/utils/truncate-label';
 import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
 
 export default class ScatterPlotChartVisualization extends React.Component {
