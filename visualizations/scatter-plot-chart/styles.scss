@@ -1,17 +1,12 @@
-.EmptyState,
-.ErrorState {
+.EmptyState {
+  height: 100%;
+  text-align: center;
+
+  &-cardBody {
     height: 100%;
-    text-align: center;
-
-    &-cardBody {
-        height: 100%;
-        box-sizing: border-box;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-}
-
-.ErrorState-headingText {
-    color: darkgrey;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
 }
