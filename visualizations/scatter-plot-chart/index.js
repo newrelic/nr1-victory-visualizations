@@ -13,6 +13,8 @@ import {
   VictoryScatter,
   VictoryContainer,
   VictoryAxis,
+  VictoryLabel,
+  VictoryTooltip,
 } from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
@@ -24,6 +26,12 @@ import {
 import NoDataState from '../../src/no-data-state';
 import { getFacetLabel } from '../../src/utils/facets';
 import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
+
+const tooltipTextStyles = {
+  fontWeight: 500,
+  fontSize: 10,
+  fontFamily: '"Open Sans","Segoe UI",Tahoma,sans-serif',
+};
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -42,6 +50,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   getAggregatesData = (rawData, aggregateFunctionDisplayNames) => {
+    // `rawData` contains an entry per combo of aggregate function and facet. Here
+    // we reduce that structure to an entry per facet each of which contains the
+    // all of the facet's aggregate function values.
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
@@ -71,6 +82,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
         case 2:
           // If present, the third aggregate function determines the size
           acc[facetGroupName].size = dataValue;
+          acc[facetGroupName].sizeDisplayName = functionDisplayName;
           break;
       }
 
@@ -91,10 +103,15 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const series = rawData[0].data.map((point) => {
       const datapoint = {
         x: point[attributeNames[0]],
+        xDisplayName: attributeNames[0],
         y: point[attributeNames[1]],
+        yDisplayName: attributeNames[1],
         color: rawData[0].metadata.color,
       };
-      if (point[attributeNames[2]]) datapoint.size = point[attributeNames[2]];
+      if (point[attributeNames[2]]) {
+        datapoint.size = point[attributeNames[2]];
+        datapoint.sizeDisplayName = attributeNames[2];
+      }
 
       return datapoint;
     });
@@ -208,6 +225,23 @@ export default class ScatterPlotChartVisualization extends React.Component {
           tickIncrement,
         }),
     };
+  };
+
+  getTooltipLabel = (datum) => {
+    const lines = [];
+
+    if ('facetGroupName' in datum) {
+      lines.push(datum.facetGroupName);
+    }
+
+    lines.push(`${datum.xDisplayName}: ${datum.x}`);
+    lines.push(`${datum.yDisplayName}: ${datum.y}`);
+
+    if ('size' in datum) {
+      lines.push(`${datum.sizeDisplayName}: ${datum.size}`);
+    }
+
+    return lines;
   };
 
   render() {
@@ -325,6 +359,37 @@ export default class ScatterPlotChartVisualization extends React.Component {
                           fillOpacity: 0.7,
                         },
                       }}
+                      labels={({ datum }) => this.getTooltipLabel(datum)}
+                      labelComponent={
+                        <VictoryTooltip
+                          labelComponent={
+                            <VictoryLabel
+                              lineHeight={1.15}
+                              style={[
+                                {
+                                  ...tooltipTextStyles,
+                                  fontWeight:
+                                    uniqueAggregates.size > 1
+                                      ? 600
+                                      : tooltipTextStyles.fontWeight,
+                                },
+                                tooltipTextStyles,
+                                tooltipTextStyles,
+                                tooltipTextStyles,
+                              ]}
+                            />
+                          }
+                          horizontal
+                          constrainToVisibleArea
+                          pointerLength={8}
+                          dx={5}
+                          flyoutStyle={{
+                            stroke: ({ datum }) => datum.color,
+                            strokeWidth: 2,
+                            filter: 'none',
+                          }}
+                        />
+                      }
                     />
                   </VictoryChart>
                   {uniqueAggregates.size > 1 && (
