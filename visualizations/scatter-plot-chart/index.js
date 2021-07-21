@@ -231,7 +231,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     };
   };
 
-  getTooltipLabel = (datum) => {
+  getTooltipLabel = ({ datum }) => {
     const lines = [];
 
     if ('facetGroupName' in datum) {
@@ -360,18 +360,18 @@ export default class ScatterPlotChartVisualization extends React.Component {
                           fillOpacity: 0.7,
                         },
                       }}
-                      labels={({ datum }) => this.getTooltipLabel(datum)}
+                      labels={this.getTooltipLabel}
                       labelComponent={
                         <VictoryTooltip
                           labelComponent={
                             <VictoryLabel
-                              lineHeight={1.15}
+                              lineHeight={1.4}
                               style={[
                                 {
                                   ...tooltipTextStyles,
                                   fontWeight:
                                     uniqueAggregates.size > 1
-                                      ? 600
+                                      ? 'var(--nr1--typography--heading--6--font-weight)'
                                       : tooltipTextStyles.fontWeight,
                                 },
                                 tooltipTextStyles,
