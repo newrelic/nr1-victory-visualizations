@@ -91,12 +91,16 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return acc;
     }, {});
 
-    return Object.entries(facetGroupData)
-      .filter((entry) => !(queryHasZField && entry.z === null))
-      .map(([facetGroupName, facetGroupData]) => ({
+    const series = Object.entries(facetGroupData).map(
+      ([facetGroupName, facetGroupData]) => ({
         facetGroupName,
         ...facetGroupData,
-      }));
+      })
+    );
+
+    return queryHasZField
+      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
+      : series;
   };
 
   getNonAggregatesData = (rawData) => {
@@ -119,7 +123,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
       return datapoint;
     });
-    return series.filter((entry) => !(queryHasZField && entry.z === null));
+
+    return queryHasZField
+      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
+      : series;
   };
 
   transformData = (data) => {
