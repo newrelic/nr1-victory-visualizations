@@ -49,7 +49,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
     ),
   };
 
-  getAggregatesData = (rawData, aggregateFunctionDisplayNames) => {
+  getAggregatesData = (rawData, functionDisplayNames) => {
+    const queryHasZField = functionDisplayNames.length > 2;
+
     // `rawData` contains an entry per combo of aggregate function and facet. Here
     // we reduce that structure to an entry per facet each of which contains the
     // all of the facet's aggregate function values.
@@ -61,7 +63,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       )[0];
       const functionDisplayName = aggregateFunction?.displayName;
       const functionPosition =
-        aggregateFunctionDisplayNames.indexOf(functionDisplayName);
+        functionDisplayNames.indexOf(functionDisplayName);
 
       if (!(facetGroupName in acc)) {
         acc[facetGroupName] = {};
@@ -81,23 +83,24 @@ export default class ScatterPlotChartVisualization extends React.Component {
           break;
         case 2:
           // If present, the third aggregate function determines the size
-          acc[facetGroupName].size = dataValue;
-          acc[facetGroupName].sizeDisplayName = functionDisplayName;
+          acc[facetGroupName].z = dataValue;
+          acc[facetGroupName].zDisplayName = functionDisplayName;
           break;
       }
 
       return acc;
     }, {});
 
-    return Object.entries(facetGroupData).map(
-      ([facetGroupName, facetGroupData]) => ({
+    return Object.entries(facetGroupData)
+      .filter((entry) => !(queryHasZField && entry.z === null))
+      .map(([facetGroupName, facetGroupData]) => ({
         facetGroupName,
         ...facetGroupData,
-      })
-    );
+      }));
   };
 
   getNonAggregatesData = (rawData) => {
+    let queryHasZField = false;
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
     const attributeNames = Array.from(uniqueNonAggregates);
     const series = rawData[0].data.map((point) => {
@@ -109,13 +112,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
         color: rawData[0].metadata.color,
       };
       if (point[attributeNames[2]]) {
-        datapoint.size = point[attributeNames[2]];
-        datapoint.sizeDisplayName = attributeNames[2];
+        queryHasZField = true;
+        datapoint.z = point[attributeNames[2]];
+        datapoint.zDisplayName = attributeNames[2];
       }
 
       return datapoint;
     });
-    return series;
+    return series.filter((entry) => !(queryHasZField && entry.z === null));
   };
 
   transformData = (data) => {
@@ -237,8 +241,8 @@ export default class ScatterPlotChartVisualization extends React.Component {
     lines.push(`${datum.xDisplayName}: ${datum.x}`);
     lines.push(`${datum.yDisplayName}: ${datum.y}`);
 
-    if ('size' in datum) {
-      lines.push(`${datum.sizeDisplayName}: ${datum.size}`);
+    if ('z' in datum) {
+      lines.push(`${datum.zDisplayName}: ${datum.z}`);
     }
 
     return lines;
@@ -255,8 +259,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
     if (!nrqlQueryPropsAvailable) {
       return <EmptyState />;
     }
-
-    const defaultPlotSize = 1;
 
     return (
       <AutoSizer>
@@ -351,7 +353,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       }}
                     />
                     <VictoryScatter
-                      size={defaultPlotSize}
                       data={series}
                       style={{
                         data: {
