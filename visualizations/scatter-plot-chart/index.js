@@ -28,9 +28,9 @@ import { getFacetLabel } from '../../src/utils/facets';
 import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
 
 const tooltipTextStyles = {
-  fontWeight: 500,
+  fontFamily: 'var(--nr1--typography--body--1--font-family)',
+  fontWeight: 'var(--nr1--typography--body--1--font-weight)',
   fontSize: 10,
-  fontFamily: '"Open Sans","Segoe UI",Tahoma,sans-serif',
 };
 
 export default class ScatterPlotChartVisualization extends React.Component {
