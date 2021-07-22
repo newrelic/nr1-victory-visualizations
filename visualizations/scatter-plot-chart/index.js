@@ -53,7 +53,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const queryHasZField = functionDisplayNames.length > 2;
 
     // `rawData` contains an entry per combo of aggregate function and facet. Here
-    // we reduce that structure to an entry per facet each of which contains the
+    // we reduce that structure to an entry per facet each of which contains
     // all of the facet's aggregate function values.
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
@@ -72,14 +72,14 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
       switch (functionPosition) {
         case 0:
-          // The first aggregate function determines the x axis value
+          // The first aggregate function determines the x-axis value
           acc[facetGroupName].color = metadata.color;
           acc[facetGroupName].x = dataValue;
           acc[facetGroupName].xUnitType = unitType;
           acc[facetGroupName].xDisplayName = functionDisplayName;
           break;
         case 1:
-          // The second aggregate function determines the y axis value
+          // The second aggregate function determines the y-axis value
           acc[facetGroupName].y = dataValue;
           acc[facetGroupName].yUnitType = unitType;
           acc[facetGroupName].yDisplayName = functionDisplayName;
@@ -119,6 +119,8 @@ export default class ScatterPlotChartVisualization extends React.Component {
         yDisplayName: attributeNames[1],
         color: rawData[0].metadata.color,
       };
+
+      // If present, the third attribute queried determines the size
       if (point[attributeNames[2]]) {
         queryHasZField = true;
         datapoint.z = point[attributeNames[2]];
@@ -160,7 +162,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const uniqueAttributeNames = Array.from(uniqueNonAggregates);
     const uniqueAggregatesNames = Array.from(uniqueAggregates);
 
-    // `unitType` is a value to map NRQL data with units -- only works with Aggregate Queries
+    // `unitType` is a value to map NRQL data with units -- only works with aggregate queries
     const unitType = data[0].metadata.units_data.y
       ? data[0].metadata.units_data.y
       : 'UNKNOWN';
@@ -181,7 +183,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       xDomainValues = transformedData.map((point) => point.x);
     }
 
-    // find the increment of ticks to determine decimal formatting
+    // Find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
     const xMin = Math.min(...xDomainValues);
     const xMax = Math.max(...xDomainValues);
@@ -224,7 +226,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       yDomainValues = transformedData.map((point) => point.y);
     }
 
-    // find the increment of ticks to determine decimal formatting
+    // Find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
     const yMin = Math.min(...yDomainValues);
     const yMax = Math.max(...yDomainValues);
