@@ -383,6 +383,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     />
                     <VictoryScatter
                       data={series}
+                      minBubbleSize={2.5}
                       style={{
                         data: {
                           fill: ({ datum }) => datum.color,
