@@ -383,7 +383,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                     />
                     <VictoryScatter
                       data={series}
-                      minBubbleSize={2.5}
+                      minBubbleSize={2.5} // only applied when z values are present
                       style={{
                         data: {
                           fill: ({ datum }) => datum.color,
