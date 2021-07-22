@@ -260,7 +260,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
   };
 
   valueLabel = (displayName, value, unitType) =>
-    `${displayName}: ${value?.toLocaleString() ?? ''}${typeToUnit(unitType)}`;
+    `${displayName}: ${value?.toLocaleString() ?? ''}${
+      typeToUnit(unitType) ?? ''
+    }`;
 
   render() {
     const { nrqlQueries } = this.props;
