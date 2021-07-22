@@ -47,9 +47,20 @@ export default class ScatterPlotChartVisualization extends React.Component {
         query: PropTypes.string,
       })
     ),
+
+    /**
+     * Object with a singular boolean value.
+     * Determines if "other" attributes are included in visualization.
+     */
+    other: PropTypes.shape({
+      visible: PropTypes.bool,
+    }),
   };
 
   getAggregatesData = (rawData, functionDisplayNames) => {
+    const {
+      other: { visible: showOther },
+    } = this.props;
     const queryHasZField = functionDisplayNames.length > 2;
 
     // `rawData` contains an entry per combo of aggregate function and facet. Here
@@ -57,6 +68,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
     // all of the facet's aggregate function values.
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
+      if (!showOther && facetGroupName === 'Other') {
+        return acc;
+      }
+
       const dataValue = data?.[0]?.y;
       const unitType = metadata?.units_data?.y;
       const aggregateFunction = metadata?.groups.filter(
