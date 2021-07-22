@@ -1,3 +1,24 @@
+# [1.5.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.4.0...v1.5.0) (2021-07-22)
+
+
+### Bug Fixes
+
+* **ScatterPlot:** improve bubble sizing, remove entries with null z ([2cc2146](https://github.com/newrelic/nr1-victory-visualizations/commit/2cc214609495b18c3152fb725ee7c919323c947c))
+* **ScatterPlot:** remove entries with null z ([1531a3d](https://github.com/newrelic/nr1-victory-visualizations/commit/1531a3d4c7673b5ed609d900b21e08ca936b0657))
+
+
+### Features
+
+* **ScatterPlot:** Add toggle for visibility of Other entry ([90f6d82](https://github.com/newrelic/nr1-victory-visualizations/commit/90f6d821377f5f990a2d1f6e15cc8788ec132e23))
+* **ScatterPlot:** add unit types to non-aggregate data points ([d54ca2c](https://github.com/newrelic/nr1-victory-visualizations/commit/d54ca2c737c4febb6e800f7db40c998bdfea2706))
+* **ScatterPlot:** format tooltip numeric values, include unit label ([14c29c3](https://github.com/newrelic/nr1-victory-visualizations/commit/14c29c3093c9bc6abdfe171f03588d8f444ff38c))
+* **ScatterPlot:** increase min bubble size when z value is provided ([27ac832](https://github.com/newrelic/nr1-victory-visualizations/commit/27ac8328da2aada6227bc8eb5c6841272ac75f4e))
+* **ScatterPlot:** increase min bubble size when z value is provided ([0daa1f2](https://github.com/newrelic/nr1-victory-visualizations/commit/0daa1f24b37e562bb703dc062351420186ccf1f5))
+* **ScatterPlot:** Provide tooltip on data point hover ([21d8c66](https://github.com/newrelic/nr1-victory-visualizations/commit/21d8c6671c30ae682f60cead2af814a11f95fce1))
+* Add basic scatter plot chart implementation ([6a46c57](https://github.com/newrelic/nr1-victory-visualizations/commit/6a46c57b2df041bda71bd7e84dddc848a13cff14))
+* Add basic scatter plot chart implementation ([ab8d968](https://github.com/newrelic/nr1-victory-visualizations/commit/ab8d968197dbf8402cc0d3c865e13688f14835a1))
+* add util to collect attributes from a NRQL select clause that are non-aggregate ([faf0975](https://github.com/newrelic/nr1-victory-visualizations/commit/faf0975c62d5489ce2cb8dad8f7949c1489412cf))
+
 # [1.4.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.3.1...v1.4.0) (2021-06-10)
 
 
