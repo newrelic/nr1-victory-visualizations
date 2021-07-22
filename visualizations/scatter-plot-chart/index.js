@@ -8,7 +8,14 @@ import {
   Spinner,
   AutoSizer,
 } from 'nr1';
-import { VictoryChart, VictoryScatter, VictoryContainer, VictoryAxis } from 'victory';
+import {
+  VictoryChart,
+  VictoryScatter,
+  VictoryContainer,
+  VictoryAxis,
+  VictoryLabel,
+  VictoryTooltip,
+} from 'victory';
 import Legend from '../../src/legend';
 import NrqlQueryError from '../../src/nrql-query-error/nrql-query-error';
 import theme from '../../src/theme';
@@ -18,8 +25,13 @@ import {
 } from '../../src/utils/nrql-validation-helper';
 import NoDataState from '../../src/no-data-state';
 import { getFacetLabel } from '../../src/utils/facets';
-import truncateLabel from '../../src/utils/truncate-label';
 import { formatNumberTicks, typeToUnit } from '../../src/utils/units';
+
+const tooltipTextStyles = {
+  fontFamily: 'var(--nr1--typography--body--1--font-family)',
+  fontWeight: 'var(--nr1--typography--body--1--font-weight)',
+  fontSize: 10,
+};
 
 export default class ScatterPlotChartVisualization extends React.Component {
   // Custom props you wish to be configurable in the UI must also be defined in
@@ -37,66 +49,115 @@ export default class ScatterPlotChartVisualization extends React.Component {
     ),
   };
 
-  getAggregatesData = (rawData) => {
+  getAggregatesData = (rawData, functionDisplayNames) => {
+    const queryHasZField = functionDisplayNames.length > 2;
+
+    // `rawData` contains an entry per combo of aggregate function and facet. Here
+    // we reduce that structure to an entry per facet each of which contains
+    // all of the facet's aggregate function values.
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
+      const unitType = metadata?.units_data?.y;
+      const aggregateFunction = metadata?.groups.filter(
+        (group) => group.type === 'function'
+      )[0];
+      const functionDisplayName = aggregateFunction?.displayName;
+      const functionPosition =
+        functionDisplayNames.indexOf(functionDisplayName);
 
-      acc[facetGroupName]
-        ? acc[facetGroupName].y
-          ? (acc[facetGroupName] = {
-              ...acc[facetGroupName],
-              size: dataValue,
-            })
-          : (acc[facetGroupName] = {
-              ...acc[facetGroupName],
-              y: dataValue,
-              yDisplayName: metadata.groups[0].displayName,
-            })
-        : (acc[facetGroupName] = {
-            color: metadata?.color,
-            x: dataValue,
-            xDisplayName: metadata.groups[0].displayName,
-          });
+      if (!(facetGroupName in acc)) {
+        acc[facetGroupName] = {};
+      }
+
+      switch (functionPosition) {
+        case 0:
+          // The first aggregate function determines the x-axis value
+          acc[facetGroupName].color = metadata.color;
+          acc[facetGroupName].x = dataValue;
+          acc[facetGroupName].xUnitType = unitType;
+          acc[facetGroupName].xDisplayName = functionDisplayName;
+          break;
+        case 1:
+          // The second aggregate function determines the y-axis value
+          acc[facetGroupName].y = dataValue;
+          acc[facetGroupName].yUnitType = unitType;
+          acc[facetGroupName].yDisplayName = functionDisplayName;
+          break;
+        case 2:
+          // If present, the third aggregate function determines the size
+          acc[facetGroupName].z = dataValue;
+          acc[facetGroupName].zUnitType = unitType;
+          acc[facetGroupName].zDisplayName = functionDisplayName;
+          break;
+      }
 
       return acc;
     }, {});
 
-    return Object.entries(facetGroupData).map(
+    const series = Object.entries(facetGroupData).map(
       ([facetGroupName, facetGroupData]) => ({
         facetGroupName,
         ...facetGroupData,
       })
     );
+
+    return queryHasZField
+      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
+      : series;
   };
 
   getNonAggregatesData = (rawData) => {
+    let queryHasZField = false;
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
+    const { data, metadata } = rawData[0];
     const attributeNames = Array.from(uniqueNonAggregates);
-    const series = rawData[0].data.map((point) => {
+    const xAttributeName = attributeNames[0];
+    const yAttributeName = attributeNames[1];
+    const zAttributeName = attributeNames[2];
+    const xUnitType = metadata.units_data[xAttributeName];
+    const yUnitType = metadata.units_data[yAttributeName];
+    const zUnitType = metadata.units_data[zAttributeName];
+    const color = metadata.color;
+
+    const series = data.map((point) => {
       const datapoint = {
-        x: point[attributeNames[0]],
-        y: point[attributeNames[1]],
-        color: rawData[0].metadata.color,
+        x: point[xAttributeName],
+        y: point[yAttributeName],
+        xDisplayName: xAttributeName,
+        yDisplayName: yAttributeName,
+        xUnitType,
+        yUnitType,
+        color,
       };
-      if (point[attributeNames[2]]) datapoint.size = point[attributeNames[2]];
+      // If present, the third attribute queried determines the size
+      if (point[zAttributeName]) {
+        queryHasZField = true;
+        datapoint.z = point[zAttributeName];
+        datapoint.zDisplayName = zAttributeName;
+        datapoint.zUnitType = zUnitType;
+      }
 
       return datapoint;
     });
-    return series;
+
+    return queryHasZField
+      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
+      : series;
   };
 
   transformData = (data) => {
-    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    let series;
-
     if (uniqueNonAggregates.size > 1) {
-      series = this.getNonAggregatesData(data);
-    } else if (uniqueAggregates.size > 1) {
-      series = this.getAggregatesData(data);
+      return this.getNonAggregatesData(data);
     }
-    return series;
+
+    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
+    if (uniqueAggregates.size > 1) {
+      return this.getAggregatesData(data, Array.from(uniqueAggregates));
+    }
+
+    return null;
   };
 
   nrqlInputIsValid = (data) => {
@@ -112,7 +173,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const uniqueAttributeNames = Array.from(uniqueNonAggregates);
     const uniqueAggregatesNames = Array.from(uniqueAggregates);
 
-    // `unitType` is a value to map NRQL data with units -- only works with Aggregate Queries
+    // `unitType` is a value to map NRQL data with units -- only works with aggregate queries
     const unitType = data[0].metadata.units_data.y
       ? data[0].metadata.units_data.y
       : 'UNKNOWN';
@@ -133,7 +194,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       xDomainValues = transformedData.map((point) => point.x);
     }
 
-    // find the increment of ticks to determine decimal formatting
+    // Find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
     const xMin = Math.min(...xDomainValues);
     const xMax = Math.max(...xDomainValues);
@@ -176,7 +237,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
       yDomainValues = transformedData.map((point) => point.y);
     }
 
-    // find the increment of ticks to determine decimal formatting
+    // Find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
     const yMin = Math.min(...yDomainValues);
     const yMax = Math.max(...yDomainValues);
@@ -194,6 +255,28 @@ export default class ScatterPlotChartVisualization extends React.Component {
     };
   };
 
+  tooltipLabel = ({ datum }) => {
+    const lines = [];
+
+    if ('facetGroupName' in datum) {
+      lines.push(datum.facetGroupName);
+    }
+
+    lines.push(this.valueLabel(datum.xDisplayName, datum.x, datum.xUnitType));
+    lines.push(this.valueLabel(datum.yDisplayName, datum.y, datum.yUnitType));
+
+    if ('z' in datum) {
+      lines.push(this.valueLabel(datum.zDisplayName, datum.z, datum.zUnitType));
+    }
+
+    return lines;
+  };
+
+  valueLabel = (displayName, value, unitType) =>
+    `${displayName}: ${value?.toLocaleString() ?? ''}${
+      typeToUnit(unitType) ?? ''
+    }`;
+
   render() {
     const { nrqlQueries } = this.props;
     const nrqlQueryPropsAvailable =
@@ -205,8 +288,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
     if (!nrqlQueryPropsAvailable) {
       return <EmptyState />;
     }
-
-    const defaultPlotSize = 1;
 
     return (
       <AutoSizer>
@@ -301,14 +382,45 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       }}
                     />
                     <VictoryScatter
-                      size={defaultPlotSize}
                       data={series}
+                      minBubbleSize={2.5} // only applied when z values are present
                       style={{
                         data: {
                           fill: ({ datum }) => datum.color,
                           fillOpacity: 0.7,
                         },
                       }}
+                      labels={this.tooltipLabel}
+                      labelComponent={
+                        <VictoryTooltip
+                          labelComponent={
+                            <VictoryLabel
+                              lineHeight={1.4}
+                              style={[
+                                {
+                                  ...tooltipTextStyles,
+                                  fontWeight:
+                                    uniqueAggregates.size > 1
+                                      ? 'var(--nr1--typography--heading--6--font-weight)'
+                                      : tooltipTextStyles.fontWeight,
+                                },
+                                tooltipTextStyles,
+                                tooltipTextStyles,
+                                tooltipTextStyles,
+                              ]}
+                            />
+                          }
+                          horizontal
+                          constrainToVisibleArea
+                          pointerLength={8}
+                          dx={5}
+                          flyoutStyle={{
+                            stroke: ({ datum }) => datum.color,
+                            strokeWidth: 2,
+                            filter: 'none',
+                          }}
+                        />
+                      }
                     />
                   </VictoryChart>
                   {uniqueAggregates.size > 1 && (
@@ -350,20 +462,6 @@ const EmptyState = () => (
         FROM Transaction SELECT average(duration), max(totalTime),
         max(databaseDuration) FACET appName
       </code>
-    </CardBody>
-  </Card>
-);
-
-const ErrorState = () => (
-  <Card className="ErrorState">
-    <CardBody className="ErrorState-cardBody">
-      <HeadingText
-        className="ErrorState-headingText"
-        spacingType={[HeadingText.SPACING_TYPE.LARGE]}
-        type={HeadingText.TYPE.HEADING_3}
-      >
-        Oops! Something went wrong.
-      </HeadingText>
     </CardBody>
   </Card>
 );
