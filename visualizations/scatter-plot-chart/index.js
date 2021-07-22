@@ -110,21 +110,32 @@ export default class ScatterPlotChartVisualization extends React.Component {
   getNonAggregatesData = (rawData) => {
     let queryHasZField = false;
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
+    const { data, metadata } = rawData[0];
     const attributeNames = Array.from(uniqueNonAggregates);
-    const series = rawData[0].data.map((point) => {
-      const datapoint = {
-        x: point[attributeNames[0]],
-        xDisplayName: attributeNames[0],
-        y: point[attributeNames[1]],
-        yDisplayName: attributeNames[1],
-        color: rawData[0].metadata.color,
-      };
+    const xAttributeName = attributeNames[0];
+    const yAttributeName = attributeNames[1];
+    const zAttributeName = attributeNames[2];
+    const xUnitType = metadata.units_data[xAttributeName];
+    const yUnitType = metadata.units_data[yAttributeName];
+    const zUnitType = metadata.units_data[zAttributeName];
+    const color = metadata.color;
 
+    const series = data.map((point) => {
+      const datapoint = {
+        x: point[xAttributeName],
+        y: point[yAttributeName],
+        xDisplayName: xAttributeName,
+        yDisplayName: yAttributeName,
+        xUnitType,
+        yUnitType,
+        color,
+      };
       // If present, the third attribute queried determines the size
-      if (point[attributeNames[2]]) {
+      if (point[zAttributeName]) {
         queryHasZField = true;
-        datapoint.z = point[attributeNames[2]];
-        datapoint.zDisplayName = attributeNames[2];
+        datapoint.z = point[zAttributeName];
+        datapoint.zDisplayName = zAttributeName;
+        datapoint.zUnitType = zUnitType;
       }
 
       return datapoint;
