@@ -58,6 +58,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const facetGroupData = rawData.reduce((acc, { data, metadata }) => {
       const facetGroupName = getFacetLabel(metadata?.groups);
       const dataValue = data?.[0]?.y;
+      const unitType = metadata?.units_data?.y;
       const aggregateFunction = metadata?.groups.filter(
         (group) => group.type === 'function'
       )[0];
@@ -74,16 +75,19 @@ export default class ScatterPlotChartVisualization extends React.Component {
           // The first aggregate function determines the x axis value
           acc[facetGroupName].color = metadata.color;
           acc[facetGroupName].x = dataValue;
+          acc[facetGroupName].xUnitType = unitType;
           acc[facetGroupName].xDisplayName = functionDisplayName;
           break;
         case 1:
           // The second aggregate function determines the y axis value
           acc[facetGroupName].y = dataValue;
+          acc[facetGroupName].yUnitType = unitType;
           acc[facetGroupName].yDisplayName = functionDisplayName;
           break;
         case 2:
           // If present, the third aggregate function determines the size
           acc[facetGroupName].z = dataValue;
+          acc[facetGroupName].zUnitType = unitType;
           acc[facetGroupName].zDisplayName = functionDisplayName;
           break;
       }
@@ -238,22 +242,25 @@ export default class ScatterPlotChartVisualization extends React.Component {
     };
   };
 
-  getTooltipLabel = ({ datum }) => {
+  tooltipLabel = ({ datum }) => {
     const lines = [];
 
     if ('facetGroupName' in datum) {
       lines.push(datum.facetGroupName);
     }
 
-    lines.push(`${datum.xDisplayName}: ${datum.x}`);
-    lines.push(`${datum.yDisplayName}: ${datum.y}`);
+    lines.push(this.valueLabel(datum.xDisplayName, datum.x, datum.xUnitType));
+    lines.push(this.valueLabel(datum.yDisplayName, datum.y, datum.yUnitType));
 
     if ('z' in datum) {
-      lines.push(`${datum.zDisplayName}: ${datum.z}`);
+      lines.push(this.valueLabel(datum.zDisplayName, datum.z, datum.zUnitType));
     }
 
     return lines;
   };
+
+  valueLabel = (displayName, value, unitType) =>
+    `${displayName}: ${value?.toLocaleString() ?? ''}${typeToUnit(unitType)}`;
 
   render() {
     const { nrqlQueries } = this.props;
@@ -367,7 +374,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                           fillOpacity: 0.7,
                         },
                       }}
-                      labels={this.getTooltipLabel}
+                      labels={this.tooltipLabel}
                       labelComponent={
                         <VictoryTooltip
                           labelComponent={
