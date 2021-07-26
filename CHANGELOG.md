@@ -1,3 +1,10 @@
+## [1.5.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.5.0...v1.5.1) (2021-07-26)
+
+
+### Bug Fixes
+
+* **ScatterPlot:** Add catalog info and screenshots for scatter plot release ([aa130a8](https://github.com/newrelic/nr1-victory-visualizations/commit/aa130a822f9233fb2a6c9ac78051769c1c87651d))
+
 # [1.5.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.4.0...v1.5.0) (2021-07-22)
 
 
