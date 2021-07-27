@@ -125,22 +125,24 @@ export default class ScatterPlotChartVisualization extends React.Component {
       })
     );
 
+    const seriesWithoutNulls = series.filter(
+      (entry) => !this.entryHasNulls(entry, queryHasZField)
+    );
+
     return {
-      series: queryHasZField
-        ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-        : series,
+      series: seriesWithoutNulls,
       range: { xMin, xMax, yMin, yMax },
     };
   };
 
   getNonAggregatesData = (rawData) => {
-    let queryHasZField = false;
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
-    const { data, metadata } = rawData[0];
+    const queryHasZField = uniqueNonAggregates.size > 2;
     const attributeNames = Array.from(uniqueNonAggregates);
     const xAttributeName = attributeNames[0];
     const yAttributeName = attributeNames[1];
     const zAttributeName = attributeNames[2];
+    const { data, metadata } = rawData[0];
     const xUnitType = metadata.units_data[xAttributeName];
     const yUnitType = metadata.units_data[yAttributeName];
     const zUnitType = metadata.units_data[zAttributeName];
@@ -169,7 +171,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
       // If present, the third attribute queried determines the size
       if (point[zAttributeName]) {
-        queryHasZField = true;
         datapoint.z = point[zAttributeName];
         datapoint.zDisplayName = zAttributeName;
         datapoint.zUnitType = zUnitType;
@@ -178,12 +179,24 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return datapoint;
     });
 
+    const seriesWithoutNulls = series.filter(
+      (entry) => !this.entryHasNulls(entry, queryHasZField)
+    );
+
     return {
-      series: queryHasZField
-        ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-        : series,
+      series: seriesWithoutNulls,
       range: { xMin, xMax, yMin, yMax },
     };
+  };
+
+  entryHasNulls = (entry, queryHasZField) => {
+    const axisValues = [entry.x, entry.y];
+
+    if (queryHasZField) {
+      axisValues.push(entry.z);
+    }
+
+    return axisValues.some((v) => v === null || v === undefined);
   };
 
   transformData = (data) => {
@@ -310,6 +323,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
               }
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
               const { series, range } = this.transformData(data);
+
+              if (!series.length) {
+                return <NoDataState />;
+              }
 
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
