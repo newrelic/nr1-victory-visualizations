@@ -185,27 +185,18 @@ export default class ScatterPlotChartVisualization extends React.Component {
   getXAxisLabelProps = (data, transformedData, height) => {
     const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
-    const uniqueAggregatesNames = Array.from(uniqueAggregates);
+    const xDisplayName = transformedData[0]?.xDisplayName;
+    const unitType = transformedData[0]?.xUnitType || 'UNKNOWN';
+    const label = `${xDisplayName}${typeToUnit(unitType)}`;
 
-    // `unitType` is a value to map NRQL data with units -- only works with aggregate queries
-    const unitType = data[0].metadata.units_data.y
-      ? data[0].metadata.units_data.y
-      : 'UNKNOWN';
-
-    let label;
     let xDomainValues;
-
     if (uniqueAggregates.size > 1) {
-      label = `${uniqueAggregatesNames[0]}${typeToUnit(unitType)}`;
-
       xDomainValues = transformedData
         .filter((datapoint) => {
-          return datapoint.xDisplayName === uniqueAggregatesNames[0];
+          return datapoint.xDisplayName === xDisplayName;
         })
         .map(({ x }) => x);
     } else if (uniqueNonAggregates.size > 1) {
-      label = `${uniqueAttributeNames[0]}${typeToUnit(unitType)}`;
       xDomainValues = transformedData.map((point) => point.x);
     }
 
@@ -230,25 +221,18 @@ export default class ScatterPlotChartVisualization extends React.Component {
   getYAxisLabelProps = (data, transformedData, height) => {
     const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
     const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
-    const uniqueAggregatesNames = Array.from(uniqueAggregates);
-    // `unitType` is a value to map NRQL data with units
-    const unitType = data[0].metadata.units_data.y
-      ? data[0].metadata.units_data.y
-      : 'UNKNOWN';
-    let label;
+    const yDisplayName = transformedData[0]?.yDisplayName;
+    const unitType = transformedData[0]?.yUnitType || 'UNKNOWN';
+    const label = `${yDisplayName}${typeToUnit(unitType)}`;
+
     let yDomainValues;
-
     if (uniqueAggregates.size > 1) {
-      label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
-
       yDomainValues = transformedData
         .filter((datapoint) => {
-          return datapoint.yDisplayName === uniqueAggregatesNames[1];
+          return datapoint.yDisplayName === yDisplayName;
         })
         .map(({ y }) => y);
     } else if (uniqueNonAggregates.size > 1) {
-      label = `${uniqueAttributeNames[1]}${typeToUnit(unitType)}`;
       yDomainValues = transformedData.map((point) => point.y);
     }
 
