@@ -220,23 +220,23 @@ export default class ScatterPlotChartVisualization extends React.Component {
     };
   };
 
-  getXAxisLabelProps = ({ series, xMin, xMax, tickCount }) => {
+  getXAxisLabelProps = ({ series, xMin, xMax, xTickCount }) => {
     return this.getAxisLabelProps({
       displayName: series[0]?.xDisplayName,
       unitType: series[0]?.xUnitType || 'UNKNOWN',
       min: xMin,
       max: xMax,
-      tickCount,
+      tickCount: xTickCount,
     });
   };
 
-  getYAxisLabelProps = ({ series, yMin, yMax, tickCount }) => {
+  getYAxisLabelProps = ({ series, yMin, yMax, yTickCount }) => {
     return this.getAxisLabelProps({
       displayName: series[0]?.yDisplayName,
       unitType: series[0]?.yUnitType || 'UNKNOWN',
       min: yMin,
       max: yMax,
-      tickCount,
+      tickCount: yTickCount,
     });
   };
 
@@ -329,7 +329,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 series,
                 xMin: range.xMin,
                 xMax: range.xMax,
-                tickCount: Math.round(
+                xTickCount: Math.round(
                   (width - chartLeftPadding - chartRightPadding) / 100
                 ),
               });
@@ -337,7 +337,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 series,
                 yMin: range.yMin,
                 yMax: range.yMax,
-                tickCount: Math.round((height - legendHeight) / 70),
+                yTickCount: Math.round((height - legendHeight) / 70),
               });
 
               return (
