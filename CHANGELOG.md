@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.5.1...v1.6.0) (2021-07-27)
+
+
+### Features
+
+* **ScatterPlot:** Improve query example ([0e55be8](https://github.com/newrelic/nr1-victory-visualizations/commit/0e55be82005ad4bd6c3f736b362617e3f12e5841))
+
 ## [1.5.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.5.0...v1.5.1) (2021-07-26)
 
 
