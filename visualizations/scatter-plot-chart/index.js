@@ -207,15 +207,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
     return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
   };
 
-  getXAxisLabelProps = (transformedData, xMin, xMax, height) => {
+  getXAxisLabelProps = (transformedData, xMin, xMax, tickCount) => {
     const displayName = transformedData[0]?.xDisplayName;
     const unitType = transformedData[0]?.xUnitType || 'UNKNOWN';
     const label = `${displayName}${typeToUnit(unitType)}`;
 
-    // Find the increment of ticks to determine decimal formatting
-    const tickCount = Math.round((height - 50) / 70);
-    const tickIncrement = (xMax - xMin) / tickCount;
-
     return {
       label,
       tickCount,
@@ -223,19 +219,15 @@ export default class ScatterPlotChartVisualization extends React.Component {
         formatNumberTicks({
           unitType,
           tick,
-          tickIncrement,
+          tickIncrement: (xMax - xMin) / tickCount,
         }),
     };
   };
 
-  getYAxisLabelProps = (transformedData, yMin, yMax, height) => {
+  getYAxisLabelProps = (transformedData, yMin, yMax, tickCount) => {
     const displayName = transformedData[0]?.yDisplayName;
     const unitType = transformedData[0]?.yUnitType || 'UNKNOWN';
     const label = `${displayName}${typeToUnit(unitType)}`;
-
-    // Find the increment of ticks to determine decimal formatting
-    const tickCount = Math.round((height - 50) / 70);
-    const tickIncrement = (yMax - yMin) / tickCount;
 
     return {
       label,
@@ -244,7 +236,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
         formatNumberTicks({
           unitType,
           tick,
-          tickIncrement,
+          tickIncrement: (yMax - yMin) / tickCount,
         }),
     };
   };
@@ -331,23 +323,24 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const chartRightPadding = 25;
               const legendHeight = 50;
               const spaceBelowLegend = 16;
+              const yDomainWidth = 50; // represents the maximum width of the ticks for y-axis
+              const yAxisPadding = 16;
+              const xTickCount = Math.round(
+                (width - chartLeftPadding - chartRightPadding) / 70
+              );
+              const yTickCount = Math.round((height - legendHeight) / 70);
 
               const xAxisLabelProps = this.getXAxisLabelProps(
                 series,
                 range.xMin,
                 range.xMax,
-                height
+                xTickCount
               );
-
-              // `yDomainWidth` represents the maximum width of the ticks for y-axis
-              const yDomainWidth = 50;
-              const yAxisPadding = 16;
-
               const yAxisLabelProps = this.getYAxisLabelProps(
                 series,
                 range.yMin,
                 range.yMax,
-                height
+                yTickCount
               );
 
               return (
