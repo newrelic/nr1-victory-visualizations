@@ -62,6 +62,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
       other: { visible: showOther },
     } = this.props;
     const queryHasZField = functionDisplayNames.length > 2;
+    let xMin;
+    let xMax;
+    let yMin;
+    let yMax;
 
     // `rawData` contains an entry per combo of aggregate function and facet. Here
     // we reduce that structure to an entry per facet each of which contains
@@ -92,12 +96,16 @@ export default class ScatterPlotChartVisualization extends React.Component {
           acc[facetGroupName].x = dataValue;
           acc[facetGroupName].xUnitType = unitType;
           acc[facetGroupName].xDisplayName = functionDisplayName;
+          xMin = Math.min(xMin || dataValue, dataValue);
+          xMax = Math.max(xMax || dataValue, dataValue);
           break;
         case 1:
           // The second aggregate function determines the y-axis value
           acc[facetGroupName].y = dataValue;
           acc[facetGroupName].yUnitType = unitType;
           acc[facetGroupName].yDisplayName = functionDisplayName;
+          yMin = Math.min(yMin || dataValue, dataValue);
+          yMax = Math.max(yMax || dataValue, dataValue);
           break;
         case 2:
           // If present, the third aggregate function determines the size
@@ -117,9 +125,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
       })
     );
 
-    return queryHasZField
-      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-      : series;
+    return {
+      series: queryHasZField
+        ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
+        : series,
+      range: { xMin, xMax, yMin, yMax },
+    };
   };
 
   getNonAggregatesData = (rawData) => {
@@ -134,17 +145,28 @@ export default class ScatterPlotChartVisualization extends React.Component {
     const yUnitType = metadata.units_data[yAttributeName];
     const zUnitType = metadata.units_data[zAttributeName];
     const color = metadata.color;
+    let xMin;
+    let xMax;
+    let yMin;
+    let yMax;
 
     const series = data.map((point) => {
+      const x = point[xAttributeName];
+      const y = point[yAttributeName];
       const datapoint = {
-        x: point[xAttributeName],
-        y: point[yAttributeName],
+        x,
+        y,
         xDisplayName: xAttributeName,
         yDisplayName: yAttributeName,
         xUnitType,
         yUnitType,
         color,
       };
+      xMin = Math.min(xMin || x, x);
+      xMax = Math.max(xMax || x, x);
+      yMin = Math.min(yMin || y, y);
+      yMax = Math.max(yMax || y, y);
+
       // If present, the third attribute queried determines the size
       if (point[zAttributeName]) {
         queryHasZField = true;
@@ -156,9 +178,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return datapoint;
     });
 
-    return queryHasZField
-      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-      : series;
+    return {
+      series: queryHasZField
+        ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
+        : series,
+      range: { xMin, xMax, yMin, yMax },
+    };
   };
 
   transformData = (data) => {
@@ -182,28 +207,13 @@ export default class ScatterPlotChartVisualization extends React.Component {
     return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
   };
 
-  getXAxisLabelProps = (data, transformedData, height) => {
-    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
-    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    const xDisplayName = transformedData[0]?.xDisplayName;
+  getXAxisLabelProps = (transformedData, xMin, xMax, height) => {
+    const displayName = transformedData[0]?.xDisplayName;
     const unitType = transformedData[0]?.xUnitType || 'UNKNOWN';
-    const label = `${xDisplayName}${typeToUnit(unitType)}`;
-
-    let xDomainValues;
-    if (uniqueAggregates.size > 1) {
-      xDomainValues = transformedData
-        .filter((datapoint) => {
-          return datapoint.xDisplayName === xDisplayName;
-        })
-        .map(({ x }) => x);
-    } else if (uniqueNonAggregates.size > 1) {
-      xDomainValues = transformedData.map((point) => point.x);
-    }
+    const label = `${displayName}${typeToUnit(unitType)}`;
 
     // Find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
-    const xMin = Math.min(...xDomainValues);
-    const xMax = Math.max(...xDomainValues);
     const tickIncrement = (xMax - xMin) / tickCount;
 
     return {
@@ -218,28 +228,13 @@ export default class ScatterPlotChartVisualization extends React.Component {
     };
   };
 
-  getYAxisLabelProps = (data, transformedData, height) => {
-    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
-    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    const yDisplayName = transformedData[0]?.yDisplayName;
+  getYAxisLabelProps = (transformedData, yMin, yMax, height) => {
+    const displayName = transformedData[0]?.yDisplayName;
     const unitType = transformedData[0]?.yUnitType || 'UNKNOWN';
-    const label = `${yDisplayName}${typeToUnit(unitType)}`;
-
-    let yDomainValues;
-    if (uniqueAggregates.size > 1) {
-      yDomainValues = transformedData
-        .filter((datapoint) => {
-          return datapoint.yDisplayName === yDisplayName;
-        })
-        .map(({ y }) => y);
-    } else if (uniqueNonAggregates.size > 1) {
-      yDomainValues = transformedData.map((point) => point.y);
-    }
+    const label = `${displayName}${typeToUnit(unitType)}`;
 
     // Find the increment of ticks to determine decimal formatting
     const tickCount = Math.round((height - 50) / 70);
-    const yMin = Math.min(...yDomainValues);
-    const yMax = Math.max(...yDomainValues);
     const tickIncrement = (yMax - yMin) / tickCount;
 
     return {
@@ -323,7 +318,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 );
               }
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
-              const series = this.transformData(data);
+              const { series, range } = this.transformData(data);
 
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
@@ -338,8 +333,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const spaceBelowLegend = 16;
 
               const xAxisLabelProps = this.getXAxisLabelProps(
-                data,
                 series,
+                range.xMin,
+                range.xMax,
                 height
               );
 
@@ -348,8 +344,9 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const yAxisPadding = 16;
 
               const yAxisLabelProps = this.getYAxisLabelProps(
-                data,
                 series,
+                range.yMin,
+                range.yMax,
                 height
               );
 
