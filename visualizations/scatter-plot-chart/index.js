@@ -465,17 +465,31 @@ const EmptyState = () => (
         spacingType={[HeadingText.SPACING_TYPE.LARGE]}
         type={HeadingText.TYPE.HEADING_3}
       >
-        Please provide at least one NRQL query & account ID pair
+        Please provide one NRQL query & account ID pair with two or three
+        entries in the SELECT clause
       </HeadingText>
       <HeadingText
         spacingType={[HeadingText.SPACING_TYPE.MEDIUM]}
         type={HeadingText.TYPE.HEADING_4}
       >
-        An example NRQL query you can try is:
+        An example non-aggregate NRQL query you can try is:
+      </HeadingText>
+      <code>FROM Transaction SELECT duration, externalDuration LIMIT 500</code>
+      <HeadingText
+        spacingType={[
+          HeadingText.SPACING_TYPE.LARGE,
+          HeadingText.SPACING_TYPE.MEDIUM,
+          HeadingText.SPACING_TYPE.MEDIUM,
+          HeadingText.SPACING_TYPE.MEDIUM,
+        ]}
+        type={HeadingText.TYPE.HEADING_4}
+      >
+        An example aggregate NRQL query you can try is:
       </HeadingText>
       <code>
-        FROM Transaction SELECT average(duration), max(totalTime),
-        max(databaseDuration) FACET appName
+        FROM Transaction SELECT percentage(count(*), WHERE duration &gt; 1) as
+        'Slow transactions', percentage(count(*), WHERE externalDuration &gt;
+        0.5) as 'Slow external calls', count(*) FACET appName
       </code>
     </CardBody>
   </Card>
