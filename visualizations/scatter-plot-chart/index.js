@@ -318,26 +318,26 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 return acc;
               }, []);
 
-              const chartLeftPadding = 100;
+              const yTickLabelWidth = 45;
+              const yAxisPadding = 16;
+              const chartLeftPadding = yTickLabelWidth + yAxisPadding + 25;
               const chartRightPadding = 25;
               const legendHeight = 50;
               const spaceBelowLegend = 16;
-              const yDomainWidth = 50; // represents the maximum width of the ticks for y-axis
-              const yAxisPadding = 16;
 
               const xAxisLabelProps = this.getXAxisLabelProps({
                 series,
                 xMin: range.xMin,
                 xMax: range.xMax,
-                xTickCount: Math.round(
-                  (width - chartLeftPadding - chartRightPadding) / 70
+                tickCount: Math.round(
+                  (width - chartLeftPadding - chartRightPadding) / 100
                 ),
               });
               const yAxisLabelProps = this.getYAxisLabelProps({
                 series,
                 yMin: range.yMin,
                 yMax: range.yMax,
-                yTickCount: Math.round((height - legendHeight) / 70),
+                tickCount: Math.round((height - legendHeight) / 70),
               });
 
               return (
@@ -364,7 +364,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       {...yAxisLabelProps}
                       dependentAxis
                       style={{
-                        axisLabel: { padding: yDomainWidth + yAxisPadding },
+                        axisLabel: { padding: yTickLabelWidth + yAxisPadding },
                       }}
                     />
                     <VictoryScatter
