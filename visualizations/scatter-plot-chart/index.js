@@ -62,10 +62,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
       other: { visible: showOther },
     } = this.props;
     const queryHasZField = functionDisplayNames.length > 2;
-    let xMin;
-    let xMax;
-    let yMin;
-    let yMax;
 
     // `rawData` contains an entry per combo of aggregate function and facet. Here
     // we reduce that structure to an entry per facet each of which contains
@@ -96,16 +92,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
           acc[facetGroupName].x = dataValue;
           acc[facetGroupName].xUnitType = unitType;
           acc[facetGroupName].xDisplayName = functionDisplayName;
-          xMin = Math.min(xMin || dataValue, dataValue);
-          xMax = Math.max(xMax || dataValue, dataValue);
           break;
         case 1:
           // The second aggregate function determines the y-axis value
           acc[facetGroupName].y = dataValue;
           acc[facetGroupName].yUnitType = unitType;
           acc[facetGroupName].yDisplayName = functionDisplayName;
-          yMin = Math.min(yMin || dataValue, dataValue);
-          yMax = Math.max(yMax || dataValue, dataValue);
           break;
         case 2:
           // If present, the third aggregate function determines the size
@@ -125,22 +117,32 @@ export default class ScatterPlotChartVisualization extends React.Component {
       })
     );
 
+    const seriesWithoutNulls = series.filter(
+      (entry) => !this.entryHasNulls(entry, queryHasZField)
+    );
+
+    const xValues = seriesWithoutNulls.map(({ x }) => x);
+    const yValues = seriesWithoutNulls.map(({ y }) => y);
+
     return {
-      series: queryHasZField
-        ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-        : series,
-      range: { xMin, xMax, yMin, yMax },
+      series: seriesWithoutNulls,
+      range: {
+        xMin: Math.min(...xValues),
+        xMax: Math.max(...xValues),
+        yMin: Math.min(...yValues),
+        yMax: Math.max(...yValues),
+      },
     };
   };
 
   getNonAggregatesData = (rawData) => {
-    let queryHasZField = false;
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
-    const { data, metadata } = rawData[0];
+    const queryHasZField = uniqueNonAggregates.size > 2;
     const attributeNames = Array.from(uniqueNonAggregates);
     const xAttributeName = attributeNames[0];
     const yAttributeName = attributeNames[1];
     const zAttributeName = attributeNames[2];
+    const { data, metadata } = rawData[0];
     const xUnitType = metadata.units_data[xAttributeName];
     const yUnitType = metadata.units_data[yAttributeName];
     const zUnitType = metadata.units_data[zAttributeName];
@@ -169,7 +171,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
       // If present, the third attribute queried determines the size
       if (point[zAttributeName]) {
-        queryHasZField = true;
         datapoint.z = point[zAttributeName];
         datapoint.zDisplayName = zAttributeName;
         datapoint.zUnitType = zUnitType;
@@ -178,12 +179,24 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return datapoint;
     });
 
+    const seriesWithoutNulls = series.filter(
+      (entry) => !this.entryHasNulls(entry, queryHasZField)
+    );
+
     return {
-      series: queryHasZField
-        ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-        : series,
+      series: seriesWithoutNulls,
       range: { xMin, xMax, yMin, yMax },
     };
+  };
+
+  entryHasNulls = (entry, queryHasZField) => {
+    const axisValues = [entry.x, entry.y];
+
+    if (queryHasZField) {
+      axisValues.push(entry.z);
+    }
+
+    return axisValues.some((v) => v === null || v === undefined);
   };
 
   transformData = (data) => {
@@ -290,6 +303,10 @@ export default class ScatterPlotChartVisualization extends React.Component {
               }
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
               const { series, range } = this.transformData(data);
+
+              if (!series.length) {
+                return <NoDataState />;
+              }
 
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
