@@ -62,10 +62,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
       other: { visible: showOther },
     } = this.props;
     const queryHasZField = functionDisplayNames.length > 2;
-    let xMin;
-    let xMax;
-    let yMin;
-    let yMax;
 
     // `rawData` contains an entry per combo of aggregate function and facet. Here
     // we reduce that structure to an entry per facet each of which contains
@@ -96,16 +92,12 @@ export default class ScatterPlotChartVisualization extends React.Component {
           acc[facetGroupName].x = dataValue;
           acc[facetGroupName].xUnitType = unitType;
           acc[facetGroupName].xDisplayName = functionDisplayName;
-          xMin = Math.min(xMin || dataValue, dataValue);
-          xMax = Math.max(xMax || dataValue, dataValue);
           break;
         case 1:
           // The second aggregate function determines the y-axis value
           acc[facetGroupName].y = dataValue;
           acc[facetGroupName].yUnitType = unitType;
           acc[facetGroupName].yDisplayName = functionDisplayName;
-          yMin = Math.min(yMin || dataValue, dataValue);
-          yMax = Math.max(yMax || dataValue, dataValue);
           break;
         case 2:
           // If present, the third aggregate function determines the size
@@ -129,9 +121,17 @@ export default class ScatterPlotChartVisualization extends React.Component {
       (entry) => !this.entryHasNulls(entry, queryHasZField)
     );
 
+    const xValues = seriesWithoutNulls.map(({ x }) => x);
+    const yValues = seriesWithoutNulls.map(({ y }) => y);
+
     return {
       series: seriesWithoutNulls,
-      range: { xMin, xMax, yMin, yMax },
+      range: {
+        xMin: Math.min(...xValues),
+        xMax: Math.max(...xValues),
+        yMin: Math.min(...yValues),
+        yMax: Math.max(...yValues),
+      },
     };
   };
 
