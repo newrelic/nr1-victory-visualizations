@@ -209,7 +209,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
 
   getAxisLabelProps = ({ displayName, unitType, min, max, tickCount }) => {
     return {
-      label: `${displayName}${typeToUnit(unitType)}`,
+      label: `${displayName}${typeToUnit(unitType || 'UNKNOWN')}`,
       tickCount,
       tickFormat: (tick) =>
         formatNumberTicks({
@@ -218,26 +218,6 @@ export default class ScatterPlotChartVisualization extends React.Component {
           tickIncrement: (max - min) / tickCount,
         }),
     };
-  };
-
-  getXAxisLabelProps = ({ series, xMin, xMax, xTickCount }) => {
-    return this.getAxisLabelProps({
-      displayName: series[0]?.xDisplayName,
-      unitType: series[0]?.xUnitType || 'UNKNOWN',
-      min: xMin,
-      max: xMax,
-      tickCount: xTickCount,
-    });
-  };
-
-  getYAxisLabelProps = ({ series, yMin, yMax, yTickCount }) => {
-    return this.getAxisLabelProps({
-      displayName: series[0]?.yDisplayName,
-      unitType: series[0]?.yUnitType || 'UNKNOWN',
-      min: yMin,
-      max: yMax,
-      tickCount: yTickCount,
-    });
   };
 
   tooltipLabel = ({ datum }) => {
@@ -325,19 +305,22 @@ export default class ScatterPlotChartVisualization extends React.Component {
               const legendHeight = 50;
               const spaceBelowLegend = 16;
 
-              const xAxisLabelProps = this.getXAxisLabelProps({
-                series,
-                xMin: range.xMin,
-                xMax: range.xMax,
-                xTickCount: Math.round(
+              const xAxisLabelProps = this.getAxisLabelProps({
+                displayName: series[0]?.xDisplayName,
+                unitType: series[0]?.xUnitType,
+                min: range.xMin,
+                max: range.xMax,
+                tickCount: Math.round(
                   (width - chartLeftPadding - chartRightPadding) / 100
                 ),
               });
-              const yAxisLabelProps = this.getYAxisLabelProps({
-                series,
-                yMin: range.yMin,
-                yMax: range.yMax,
-                yTickCount: Math.round((height - legendHeight) / 70),
+
+              const yAxisLabelProps = this.getAxisLabelProps({
+                displayName: series[0]?.yDisplayName,
+                unitType: series[0]?.yUnitType,
+                min: range.yMin,
+                max: range.yMax,
+                tickCount: Math.round((height - legendHeight) / 70),
               });
 
               return (
