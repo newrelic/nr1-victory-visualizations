@@ -203,7 +203,7 @@ The order of the `SELECT` fields matters. The first attribute or funciton provid
 SELECT externalCallCount, externalDuration, duration FROM Transaction LIMIT 1000
 ```
 
-With this non-aggregate query, you can highlight the effect of external calls made by your applications. Note the inclusion of the `LIMIT` clause which allows you to increase the nunber of data points displayed. See the [LIMIT clause documentation](https://docs.newrelic.com/docs/query-your-data/nrql-new-relic-query-language/get-started/nrql-syntax-clauses-functions/#sel-limit) for more.
+With this non-aggregate query, you can highlight the effect of external calls made by your applications. Note the inclusion of the `LIMIT` clause which allows you to increase the number of data points displayed. See the [LIMIT clause documentation](https://docs.newrelic.com/docs/query-your-data/nrql-new-relic-query-language/get-started/nrql-syntax-clauses-functions/#sel-limit) for more.
 
 ```
 SELECT average(externalCallCount), average(externalDuration), average(duration) FROM Transaction FACET appName LIMIT 1000
