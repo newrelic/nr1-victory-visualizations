@@ -117,37 +117,60 @@ export default class ScatterPlotChartVisualization extends React.Component {
       })
     );
 
-    return queryHasZField
-      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-      : series;
+    const seriesWithoutNulls = series.filter(
+      (entry) => !this.entryHasNulls(entry, queryHasZField)
+    );
+
+    const xValues = seriesWithoutNulls.map(({ x }) => x);
+    const yValues = seriesWithoutNulls.map(({ y }) => y);
+
+    return {
+      series: seriesWithoutNulls,
+      range: {
+        xMin: Math.min(...xValues),
+        xMax: Math.max(...xValues),
+        yMin: Math.min(...yValues),
+        yMax: Math.max(...yValues),
+      },
+    };
   };
 
   getNonAggregatesData = (rawData) => {
-    let queryHasZField = false;
     const { uniqueNonAggregates } = getUniqueNonAggregates(rawData);
-    const { data, metadata } = rawData[0];
+    const queryHasZField = uniqueNonAggregates.size > 2;
     const attributeNames = Array.from(uniqueNonAggregates);
     const xAttributeName = attributeNames[0];
     const yAttributeName = attributeNames[1];
     const zAttributeName = attributeNames[2];
+    const { data, metadata } = rawData[0];
     const xUnitType = metadata.units_data[xAttributeName];
     const yUnitType = metadata.units_data[yAttributeName];
     const zUnitType = metadata.units_data[zAttributeName];
     const color = metadata.color;
+    let xMin;
+    let xMax;
+    let yMin;
+    let yMax;
 
     const series = data.map((point) => {
+      const x = point[xAttributeName];
+      const y = point[yAttributeName];
       const datapoint = {
-        x: point[xAttributeName],
-        y: point[yAttributeName],
+        x,
+        y,
         xDisplayName: xAttributeName,
         yDisplayName: yAttributeName,
         xUnitType,
         yUnitType,
         color,
       };
+      xMin = Math.min(xMin || x, x);
+      xMax = Math.max(xMax || x, x);
+      yMin = Math.min(yMin || y, y);
+      yMax = Math.max(yMax || y, y);
+
       // If present, the third attribute queried determines the size
       if (point[zAttributeName]) {
-        queryHasZField = true;
         datapoint.z = point[zAttributeName];
         datapoint.zDisplayName = zAttributeName;
         datapoint.zUnitType = zUnitType;
@@ -156,9 +179,24 @@ export default class ScatterPlotChartVisualization extends React.Component {
       return datapoint;
     });
 
-    return queryHasZField
-      ? series.filter((entry) => entry.z !== null && entry.z !== undefined)
-      : series;
+    const seriesWithoutNulls = series.filter(
+      (entry) => !this.entryHasNulls(entry, queryHasZField)
+    );
+
+    return {
+      series: seriesWithoutNulls,
+      range: { xMin, xMax, yMin, yMax },
+    };
+  };
+
+  entryHasNulls = (entry, queryHasZField) => {
+    const axisValues = [entry.x, entry.y];
+
+    if (queryHasZField) {
+      axisValues.push(entry.z);
+    }
+
+    return axisValues.some((v) => v === null || v === undefined);
   };
 
   transformData = (data) => {
@@ -182,90 +220,15 @@ export default class ScatterPlotChartVisualization extends React.Component {
     return uniqueAggregates.size >= 2 || uniqueNonAggregates.size >= 2;
   };
 
-  getXAxisLabelProps = (data, transformedData, height) => {
-    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
-    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
-    const uniqueAggregatesNames = Array.from(uniqueAggregates);
-
-    // `unitType` is a value to map NRQL data with units -- only works with aggregate queries
-    const unitType = data[0].metadata.units_data.y
-      ? data[0].metadata.units_data.y
-      : 'UNKNOWN';
-
-    let label;
-    let xDomainValues;
-
-    if (uniqueAggregates.size > 1) {
-      label = `${uniqueAggregatesNames[0]}${typeToUnit(unitType)}`;
-
-      xDomainValues = transformedData
-        .filter((datapoint) => {
-          return datapoint.xDisplayName === uniqueAggregatesNames[0];
-        })
-        .map(({ x }) => x);
-    } else if (uniqueNonAggregates.size > 1) {
-      label = `${uniqueAttributeNames[0]}${typeToUnit(unitType)}`;
-      xDomainValues = transformedData.map((point) => point.x);
-    }
-
-    // Find the increment of ticks to determine decimal formatting
-    const tickCount = Math.round((height - 50) / 70);
-    const xMin = Math.min(...xDomainValues);
-    const xMax = Math.max(...xDomainValues);
-    const tickIncrement = (xMax - xMin) / tickCount;
-
+  getAxisLabelProps = ({ displayName, unitType, min, max, tickCount }) => {
     return {
-      label,
+      label: `${displayName}${typeToUnit(unitType || 'UNKNOWN')}`,
       tickCount,
       tickFormat: (tick) =>
         formatNumberTicks({
           unitType,
           tick,
-          tickIncrement,
-        }),
-    };
-  };
-
-  getYAxisLabelProps = (data, transformedData, height) => {
-    const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
-    const { uniqueNonAggregates } = getUniqueNonAggregates(data);
-    const uniqueAttributeNames = Array.from(uniqueNonAggregates);
-    const uniqueAggregatesNames = Array.from(uniqueAggregates);
-    // `unitType` is a value to map NRQL data with units
-    const unitType = data[0].metadata.units_data.y
-      ? data[0].metadata.units_data.y
-      : 'UNKNOWN';
-    let label;
-    let yDomainValues;
-
-    if (uniqueAggregates.size > 1) {
-      label = `${uniqueAggregatesNames[1]}${typeToUnit(unitType)}`;
-
-      yDomainValues = transformedData
-        .filter((datapoint) => {
-          return datapoint.yDisplayName === uniqueAggregatesNames[1];
-        })
-        .map(({ y }) => y);
-    } else if (uniqueNonAggregates.size > 1) {
-      label = `${uniqueAttributeNames[1]}${typeToUnit(unitType)}`;
-      yDomainValues = transformedData.map((point) => point.y);
-    }
-
-    // Find the increment of ticks to determine decimal formatting
-    const tickCount = Math.round((height - 50) / 70);
-    const yMin = Math.min(...yDomainValues);
-    const yMax = Math.max(...yDomainValues);
-    const tickIncrement = (yMax - yMin) / tickCount;
-
-    return {
-      label,
-      tickCount,
-      tickFormat: (tick) =>
-        formatNumberTicks({
-          unitType,
-          tick,
-          tickIncrement,
+          tickIncrement: (max - min) / tickCount,
         }),
     };
   };
@@ -339,7 +302,11 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 );
               }
               const { uniqueAggregates } = getUniqueAggregatesAndFacets(data);
-              const series = this.transformData(data);
+              const { series, range } = this.transformData(data);
+
+              if (!series.length) {
+                return <NoDataState />;
+              }
 
               const legendItems = series.reduce((acc, curr) => {
                 if (!acc.some(({ label }) => label === curr.facetGroupName)) {
@@ -348,26 +315,30 @@ export default class ScatterPlotChartVisualization extends React.Component {
                 return acc;
               }, []);
 
-              const chartLeftPadding = 100;
+              const yTickLabelWidth = 45;
+              const yAxisPadding = 16;
+              const chartLeftPadding = yTickLabelWidth + yAxisPadding + 25;
               const chartRightPadding = 25;
               const legendHeight = 50;
               const spaceBelowLegend = 16;
 
-              const xAxisLabelProps = this.getXAxisLabelProps(
-                data,
-                series,
-                height
-              );
+              const xAxisLabelProps = this.getAxisLabelProps({
+                displayName: series[0]?.xDisplayName,
+                unitType: series[0]?.xUnitType,
+                min: range.xMin,
+                max: range.xMax,
+                tickCount: Math.round(
+                  (width - chartLeftPadding - chartRightPadding) / 100
+                ),
+              });
 
-              // `yDomainWidth` represents the maximum width of the ticks for y-axis
-              const yDomainWidth = 50;
-              const yAxisPadding = 16;
-
-              const yAxisLabelProps = this.getYAxisLabelProps(
-                data,
-                series,
-                height
-              );
+              const yAxisLabelProps = this.getAxisLabelProps({
+                displayName: series[0]?.yDisplayName,
+                unitType: series[0]?.yUnitType,
+                min: range.yMin,
+                max: range.yMax,
+                tickCount: Math.round((height - legendHeight) / 70),
+              });
 
               return (
                 <>
@@ -393,7 +364,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
                       {...yAxisLabelProps}
                       dependentAxis
                       style={{
-                        axisLabel: { padding: yDomainWidth + yAxisPadding },
+                        axisLabel: { padding: yTickLabelWidth + yAxisPadding },
                       }}
                     />
                     <VictoryScatter
