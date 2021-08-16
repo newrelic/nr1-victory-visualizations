@@ -1,3 +1,14 @@
+## [1.6.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.0...v1.6.1) (2021-08-16)
+
+
+### Bug Fixes
+
+* **ScatterPlot:** Filter out entries with null values for any axis ([ad5a3af](https://github.com/newrelic/nr1-victory-visualizations/commit/ad5a3afe8dae475278a1e35072e5504b913e8d8e))
+* **ScatterPlot:** Fix typo in catalog documentation ([c517e24](https://github.com/newrelic/nr1-victory-visualizations/commit/c517e2483305000a023fb3aa9e768887d68b77e9))
+* **ScatterPlot:** Fix unit label on y-axis ([cd93337](https://github.com/newrelic/nr1-victory-visualizations/commit/cd933378f6701c20b94896f85999c1b85480ab72))
+* **ScatterPlot:** Fix x-axis tickcount ([25cbcb5](https://github.com/newrelic/nr1-victory-visualizations/commit/25cbcb56cfe229ad511de61de48a2a411a0bad43))
+* **ScatterPlot:** Reduce wasted width space, utilize more for chart width ([e44e86e](https://github.com/newrelic/nr1-victory-visualizations/commit/e44e86e22a3f9593c3d5f56bfbea09dc5186a3a1))
+
 # [1.6.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.5.1...v1.6.0) (2021-07-27)
 
 
