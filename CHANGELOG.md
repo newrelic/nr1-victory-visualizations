@@ -1,3 +1,12 @@
+## [1.6.2](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.1...v1.6.2) (2021-09-20)
+
+
+### Bug Fixes
+
+* pin semantic release to current major version in release workflow ([024b42c](https://github.com/newrelic/nr1-victory-visualizations/commit/024b42cccc458f6858565b36be2ab497c86cbb37))
+* reduce screenshot size to meet requirements of nr1 catalog:submit process ([d935d33](https://github.com/newrelic/nr1-victory-visualizations/commit/d935d33cef5aeddd177bebaff641684f767c1e1c))
+* update node version in release workflow to accomodate breaking change in semantic release ([7621fef](https://github.com/newrelic/nr1-victory-visualizations/commit/7621fef2a0ec79f84290aaba92ed7324afdd56aa))
+
 ## [1.6.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.0...v1.6.1) (2021-08-16)
 
 
