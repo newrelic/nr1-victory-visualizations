@@ -25,7 +25,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Cache dependencies
         id: cache-node-modules
@@ -61,7 +61,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Cache dependencies
         id: cache-node-modules
@@ -167,7 +167,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 16
 
       - name: Cache dependencies
         id: cache-node-modules
@@ -211,7 +211,7 @@ jobs:
           GIT_COMMITTER_NAME: ${{ env.BOT_NAME }}
           GIT_COMMITTER_EMAIL: ${{ env.BOT_EMAIL }}
           GITHUB_TOKEN: ${{ env.BOT_TOKEN }}
-        run: npx semantic-release
+        run: npx semantic-release@^18.0.0
 
       - name: Re-enable branch protection
         id: enable-branch-protection
