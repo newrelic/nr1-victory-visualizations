@@ -8,9 +8,11 @@
 
 This Nerdpack provides NRQL-based custom visualizations built on top of the
 [Victory](https://formidable.com/open-source/victory/) charting library.
-- Stacked bar chart 
-- Range chart 
+
 - Circular progress bar
+- Range chart
+- Scatter plot chart
+- Stacked bar chart
 
 To read more about the visualizations and their configuration, visit our [documentation](/catalog/documentation.md).
 
@@ -75,14 +77,14 @@ WARRANTY OR DEDICATED SUPPORT. That said, we welcome feedback, contributions and
 There are 2 main areas to request support:
 
 - **GitHub issues/enhancement requests**: Issues and enhancement requests should be reported to the project here on GitHub. They can be submitted in the [issues tab](https://github.com/newrelic/nr1-victory-visualizations/issues) of this repository. Please search for and review the existing open issues
-before submitting a new issue.
+  before submitting a new issue.
 - **Community forum**: We also encourage you to bring your experiences and questions to the [Explorers
-Hub](https://discuss.newrelic.com/tags/c/build-on-new-relic/nerdpacks/323/victoryvisualizations), where our community members collaborate on
-solutions and new ideas. New Relic hosts and moderates this online forum where customers can interact with
-New Relic employees as well as other customers to get help and share best
-practices. Like all official New Relic open source projects, there's a related
-Community topic in the New Relic Explorers Hub. You can find this project's
-topic/threads here: https://discuss.newrelic.com/tags/c/build-on-new-relic/nerdpacks/323/victoryvisualizations
+  Hub](https://discuss.newrelic.com/tags/c/build-on-new-relic/nerdpacks/323/victoryvisualizations), where our community members collaborate on
+  solutions and new ideas. New Relic hosts and moderates this online forum where customers can interact with
+  New Relic employees as well as other customers to get help and share best
+  practices. Like all official New Relic open source projects, there's a related
+  Community topic in the New Relic Explorers Hub. You can find this project's
+  topic/threads here: https://discuss.newrelic.com/tags/c/build-on-new-relic/nerdpacks/323/victoryvisualizations
 
 Support related to Victory can be found at: https://spectrum.chat/victory?tab=posts
 
@@ -102,4 +104,3 @@ opensource+nr1-victory-visualizations@newrelic.com.
 As noted in our [security policy](../../security/policy), New Relic is committed to the privacy and security of our customers and their data. We believe that providing coordinated disclosure by security researchers and engaging with the security community are important means to achieve our security goals.
 
 If you believe you have found a security vulnerability in this project or any of New Relic's products or websites, we welcome and greatly appreciate you reporting it to New Relic through [HackerOne](https://hackerone.com/newrelic).
-
