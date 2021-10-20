@@ -1,3 +1,10 @@
+## [1.6.4](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.3...v1.6.4) (2021-10-20)
+
+
+### Bug Fixes
+
+* decrease icon size ([12d4b10](https://github.com/newrelic/nr1-victory-visualizations/commit/12d4b10734b304bd53d2ce207f0a0a89b7ee2167))
+
 ## [1.6.3](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.2...v1.6.3) (2021-10-05)
 
 ## [1.6.2](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.1...v1.6.2) (2021-09-20)
