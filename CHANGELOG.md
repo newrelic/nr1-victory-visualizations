@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.5...v1.7.0) (2021-11-05)
+
+
+### Features
+
+* add catalog keywords and categoryTerms ([b60f1e2](https://github.com/newrelic/nr1-victory-visualizations/commit/b60f1e238cf5b6ca391d7b57d24c58f4e779fd1f))
+
 ## [1.6.5](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.4...v1.6.5) (2021-10-20)
 
 
