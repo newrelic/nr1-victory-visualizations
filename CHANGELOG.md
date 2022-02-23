@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.7.0...v1.7.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* app deprecations ([c2fb5ef](https://github.com/newrelic/nr1-victory-visualizations/commit/c2fb5efaa3628dccfe2ea3165805e0185e266e50))
+
 # [1.7.0](https://github.com/newrelic/nr1-victory-visualizations/compare/v1.6.5...v1.7.0) (2021-11-05)
 
 
