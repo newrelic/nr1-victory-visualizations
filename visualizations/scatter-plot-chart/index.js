@@ -272,7 +272,7 @@ export default class ScatterPlotChartVisualization extends React.Component {
         {({ width, height }) => (
           <NrqlQuery
             query={nrqlQueries[0].query}
-            accountId={parseInt(nrqlQueries[0].accountId)}
+            accountIds={[parseInt(nrqlQueries[0].accountId)]}
             pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
           >
             {({ data, loading, error }) => {
