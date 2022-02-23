@@ -121,7 +121,7 @@ export default class RangeChartVisualization extends React.Component {
             {({ timeRange }) => (
               <NrqlQuery
                 query={nrqlQueries[0].query}
-                accountId={parseInt(nrqlQueries[0].accountId)}
+                accountIds={[parseInt(nrqlQueries[0].accountId)]}
                 pollInterval={NrqlQuery.AUTO_POLL_INTERVAL}
                 timeRange={timeRange}
               >
